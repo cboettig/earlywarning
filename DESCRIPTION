@@ -1,0 +1,11 @@
+Package: earlywarning
+Title: Detection of Early Warning Signals for Catastrophic Bifurcations 
+Version: 0.0-1
+Date: 2012-01-24
+Author: Carl Boettiger <cboettig@gmail.com>
+Maintainer: Carl Boettiger <cboettig@gmail.com>
+Description: Tools for the detection of early warning signals of critical 
+  transitions.  Package is a completely updated and revised version of the
+  original warningsignals package.  
+License: BSD
+
