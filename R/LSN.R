@@ -1,12 +1,22 @@
 
 ###########  Linearized Saddle-Node (LSN) Model ##################
-# Will depend explicitly on t
+#' Linearized Saddle Node model
+#'
+#' Estimate the mean and variance of the linearized saddle
+#' node process (in which the spring constant changes over time)
+#' @param Xo initial condition
+#' @param to initial time
+#' @param t1 final time
+#' @param pars numeric of parameters named Ro, theta, and sigma
+#' @return a list with values Ex, the expected x value, and 
+#' Vx, the expected variance
+#' @keywords internal
 LSN <- function(Xo, to, t1, pars){
 
   R <- function(t, pars){pars[1] + pars[2]*t }
 
   check <- any(R(t1,pars) < 0)
-	if(is.na(check) | check){
+	if(is.na(check) | check | pars[3] < 0){
 		Ex <- Xo
 		Vx <- rep(Inf,length(Xo))
 	} else {

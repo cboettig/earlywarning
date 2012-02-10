@@ -7,6 +7,24 @@
 # convergence (logical)
 # 
 
+#' converge generic test
+#' 
+#' @param object a class of model fit
+#' @param ... additional arguments 
+#' @return convergence status (logical)
+#' @export 
+converge <- function(object, ...) UseMethod("converge")
+
+#' Test if a gaussian model fit has converged
+#' 
+#' @param object a class of model fit
+#' @param ... additional arguments 
+#' @return convergence status (logical)
+#' @S3method converge gauss
+#' @method converge gauss
+converge.gauss <- function(object, ...){
+  object$convergence
+}
 
 #' extract the fitted model parameters
 #' 
@@ -37,20 +55,26 @@ update.gauss <- function(object, ...){
 }
 
 #' simulate method
+#' 
 #' @param object any gauss-class object
 #' @param ... additional arguments (currently ignored)
 #' @return a data frame with the time simulated values
 #' @S3method simulate gauss
 #' @method simulate gauss
 simulate.gauss <- function(object, ...){
+  if(object$model == "LSN") 
+    setmodel <- LSN
+  else if(object$model == "OU") 
+    setmodel <- constOU
    times <- object$X[,1]
    N <- length(times)
-   X <- numeric(N-1)
-   X[1] <- X[1,2]
-   for(i in 1:(N-1) ){
-     X[i+1] <- rc.gauss(setmodel, 1, x0=X[i], to=times[i],t1=times[i+1], object$pars)
+   X <- numeric(N - 1)
+   X[1] <- object$X[1,2]
+   for(i in 1:(N - 1) ){
+     X[i + 1] <- rc.gauss(setmodel, 1, x0 = X[i], to = times[i], 
+                        t1 = times[i + 1], object$pars)
    }
-   data.frame(times[1:(N-1)], X)
+   data.frame(times, X)
 }
 
 
@@ -66,21 +90,27 @@ logLik.gauss <- function(object, ...){
 }
 
 
-# Internal functions for gaussian models 
-#' @details (called internally by full names despite being written in S3-style notation)
-#' @param setmodel a function returning mean and variance for the desired model class
+#' random number draw from a gauss model
+#' 
+#' @param setmodel a function returning mean and variance for 
+#' the desired model class
 #' @param n replicates
 #' @param x0 the initial value 
 #' @param to initial time
 #' @param t1 end time
 #' @param pars parameters passed to setmodel function
 #' @return a normal random variate with mean and sd determined by setmodel
+#' @details (called internally by full names despite being written 
+#' in S3-style notation)
 rc.gauss <- function(setmodel, n=1, x0, to, t1, pars){
     P <- setmodel(x0, to, t1, pars)
       rnorm(n, mean=P$Ex, sd=sqrt(P$Vx))
 }
 
-#' @param setmodel a function returning mean and variance for the desired model class
+#' probability density 
+#' 
+#' @param setmodel a function returning mean and variance for the 
+#' desired model class
 #' @param x0 the initial value 
 #' @param to initial time
 #' @param t1 end time
@@ -92,8 +122,10 @@ dc.gauss  <- function(setmodel, x, x0, to, t1, pars, log = FALSE){
           dnorm(x, mean=P$Ex, sd=sqrt(P$Vx), log=log)
 }
 
-
-#' @param setmodel a function returning mean and variance for the desired model class
+#' cumulative density function
+#'
+#' @param setmodel a function returning mean and variance for
+#' the desired model class
 #' @param x0 the initial value 
 #' @param to initial time
 #' @param t1 end time
@@ -101,10 +133,11 @@ dc.gauss  <- function(setmodel, x, x0, to, t1, pars, log = FALSE){
 #' @param lower.tail logical 
 #' @param log.p a logical indicating whether log of the density is desired
 #' @return the cumulative probability density for the given interval 
-pc.gauss  <- function(setmodel, x, x0, to, t1, pars, lower.tail = TRUE, log.p = FALSE){ 
+pc.gauss  <- function(setmodel, x, x0, to, t1, pars,
+                      lower.tail = TRUE, log.p = FALSE){ 
     P <- setmodel(x0, to, t1, pars)
-      pnorm(x, mean=P$Ex, sd=sqrt(P$Vx),
-        lower.tail = lower.tail, log.p = log.p)
+    pnorm(x, mean=P$Ex, sd=sqrt(P$Vx),
+          lower.tail = lower.tail, log.p = log.p)
 }
 
 
