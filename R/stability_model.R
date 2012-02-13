@@ -1,6 +1,7 @@
 #' @title stability model fitting
 #'
-#' @param X data sampling time and sampled value as columns
+#' @param X data sampling time and sampled value as columns. If only
+#' one column is provided, assumes that the time is uniform
 #' @param model the model used
 #' @param p initial parameter guesses, if NULL, will guess from data
 #' @param ... additional parameters passed to the optim routine
@@ -20,8 +21,11 @@ stability_model <- function(X, model=c("LSN", "OU"), p = NULL, ...,
   # reformat time series objects into proper data frames
   if(is(X, "ts"))
     X <- data.frame(as.numeric(time(X)), X@.Data)
-
-  # Select the model method and estimate starting parameters #
+  # if time values are not provided
+  else if(is.null(dim(X)))
+    X <- data.frame(1:length(X), X)
+  
+  # Estimate reasonable starting parameters for model specified #
   model <- match.arg(model)
   if(model=="LSN"){
     setmodel <- LSN 
