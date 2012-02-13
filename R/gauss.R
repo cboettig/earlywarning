@@ -32,7 +32,7 @@ converge.gauss <- function(object, ...){
 #' @param ... aditional arguments (currently ignored)
 #' @return a (named) vector of the MLE parameters
 #' @S3method fitted gauss
-#' @method gauss
+#' @method fitted gauss
 fitted.gauss <- function(object, ...){
   object$pars
 }

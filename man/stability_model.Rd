@@ -6,7 +6,9 @@
     store_data = TRUE)
 }
 \arguments{
-  \item{X}{data sampling time and sampled value as columns}
+  \item{X}{data sampling time and sampled value as columns.
+  If only one column is provided, assumes that the time is
+  uniform}
 
   \item{model}{the model used}
 

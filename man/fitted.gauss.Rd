@@ -2,7 +2,7 @@
 \alias{fitted.gauss}
 \title{extract the fitted model parameters}
 \usage{
-  \method{gauss}{} (object, ...)
+  \method{fitted}{gauss} (object, ...)
 }
 \arguments{
   \item{object}{a gauss class object}
