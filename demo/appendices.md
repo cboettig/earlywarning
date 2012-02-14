@@ -19,7 +19,10 @@ observed <- warningtrend(X, window_autocorr)
 end.rcode-->
 
 
- fit the models 
+ fit the models
+ \[ dX = (\theta - X\) dt + \sigma dB_t \]
+
+
 <!--begin.rcode fit 
 A <- stability_model(X, "OU")
 B <- stability_model(X, "LSN")
