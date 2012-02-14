@@ -61,20 +61,23 @@ update.gauss <- function(object, ...){
 #' @return a data frame with the time simulated values
 #' @S3method simulate gauss
 #' @method simulate gauss
-simulate.gauss <- function(object, ...){
+simulate.gauss <- function(object, nsim = 1, seed = NULL, ...){
   if(object$model == "LSN") 
     setmodel <- LSN
   else if(object$model == "OU") 
     setmodel <- constOU
-   times <- object$X[,1]
-   N <- length(times)
-   X <- numeric(N - 1)
-   X[1] <- object$X[1,2]
-   for(i in 1:(N - 1) ){
-     X[i + 1] <- rc.gauss(setmodel, 1, x0 = X[i], to = times[i], 
-                        t1 = times[i + 1], object$pars)
-   }
-   data.frame(times, X)
+   time <- object$X[,1]
+   N <- length(time)
+   value <- sapply(1:nsim, function(j){
+     X <- numeric(N - 1)
+     X[1] <- object$X[1,2]
+     for(i in 1:(N - 1) ){
+       X[i + 1] <- rc.gauss(setmodel, 1, x0 = X[i], to = time[i], 
+                          t1 = time[i + 1], object$pars)
+     }
+     X
+   })
+   data.frame(time, value)
 }
 
 

@@ -15,3 +15,5 @@ Collate:
     'gauss.R'
     'roc_data.R'
     'stability_model.R'
+    'indicators.R'
+    'warningtrend.R'
