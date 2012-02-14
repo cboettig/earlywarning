@@ -20,7 +20,7 @@ end.rcode-->
 
 
  fit the models
- \[ dX = (\theta - X\) dt + \sigma dB_t \]
+ \\[ dX = (\theta - X\) dt + \sigma dB_t \\]
 
 
 <!--begin.rcode fit 
