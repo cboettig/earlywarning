@@ -1,3 +1,4 @@
+#
 require(earlywarning)
 
 data(ibms)
@@ -6,11 +7,14 @@ B <- stability_model(ibm_critical, "LSN")
 observed <- -2 * (logLik(A) - logLik(B))
 
 require(snow)
-cl <- makeCluster(50, type="MPI")
+cl <- makeCluster(2, type="MPI")
 clusterEvalQ(cl, library(earlywarning))
-clusterExport(cl, list("A", "B"))
+clusterExport(cl, ls())
 
-reps <- parLapply(cl, 1:100, function(i) compare(A,B))
+
+reps <- lapply(1:2, function(i) compare(A,B))
+
+reps <- parLapply(cl, 1:2, function(i) compare(A,B))
 
 stopCluster(cl)
 

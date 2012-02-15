@@ -7,13 +7,16 @@ e the current working directory
 ## Parallel for openmp:
 ##$ -pe threaded 16
 ## Launch parallel mpi threads
-#$ -pe mpi 50
+#$ -pe mpi 2
 ## Output file name
-#$ -o full_prosecutor.out
+#$ -o simulation.out 
 ## Name for queue job
-#$ -N full_prosecutor
+#$ -N simulation 
 
-module load openmpi R Rmpi
+module load gcc 
+module load openmpi 
+module load R 
+module load Rmpi
 R -f simulation.R 
 
 
