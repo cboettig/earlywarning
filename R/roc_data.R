@@ -12,7 +12,7 @@
 #' @return a data frame with thresholds, false positive and 
 #' corresponding true positive rates
 #' @export
-roc_data <- function(dat, pts=50, null_dist=NULL, test_dist=NULL){
+roc_data <- function(dat, pts=50, null_dist=NULL, test_dist=NULL, silent=TRUE){
   # Creates the ROC curve from the output of the bootstrap function
 
   if(!is.null(dat)){
@@ -22,6 +22,7 @@ roc_data <- function(dat, pts=50, null_dist=NULL, test_dist=NULL){
 
   n_null <- length(null_dist)
   n_test <- length(test_dist)
+
 
   lower <- min(null_dist, test_dist)
   upper <- max(null_dist, test_dist)
@@ -41,10 +42,11 @@ roc_data <- function(dat, pts=50, null_dist=NULL, test_dist=NULL){
   area  <- sum(f$y*delta)
 
   # display some summary information
-  message(paste("Area Under Curve = ", area))
-  id <- which(roc[,1]<=.05)[1]
-  message(paste("True positive rate = ", roc[id,2], "at false positive rate of", roc[id,1]))
-
+  if(!silent){
+    message(paste("Area Under Curve = ", area))
+    id <- which(roc[,1]<=.05)[1]
+    message(paste("True positive rate = ", roc[id,2], "at false positive rate of", roc[id,1]))
+  }
   out <- cbind(threshold,roc)
   out <- as.data.frame(out)
   names(out) <- c("Threshold", "False.positives", "True.positives")
