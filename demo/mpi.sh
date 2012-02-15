@@ -7,7 +7,7 @@ e the current working directory
 ## Parallel for openmp:
 ##$ -pe threaded 16
 ## Launch parallel mpi threads
-#$ -pe mpi 32
+#$ -pe mpi 60
 ## Output file name
 #$ -o simulation.out 
 ## Name for queue job
@@ -17,6 +17,6 @@ module load gcc
 module load openmpi 
 module load R 
 module load Rmpi
-R -f simulation.R 
+R -f manuscript_data.R 
 
 
