@@ -46,8 +46,9 @@ roc_data <- function(dat, pts=50, null_dist=NULL, test_dist=NULL){
   message(paste("True positive rate = ", roc[id,2], "at false positive rate of", roc[id,1]))
 
   out <- cbind(threshold,roc)
+  out <- as.data.frame(out)
   names(out) <- c("Threshold", "False.positives", "True.positives")
-  as.data.frame(out)
+  out
 }
 
 
