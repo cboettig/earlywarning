@@ -13,7 +13,7 @@
 #' data(ibm)
 #' bootstrap_trend(ibm_critical, window_var, method="pearson", rep=10)
 #' @export
-bootstrap_trend(X, indicator, ..., reps=100){
+bootstrap_trend <- function(X, indicator, ..., reps=100){
   A <- stability_model(X, "OU")
   B <- stability_model(X, "LSN")
   Asim <- simulate(A, reps)

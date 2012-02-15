@@ -25,3 +25,5 @@ Collate:
     'warningtrend.R'
     'lik_ratios.R'
     'parameter_bootstraps.R'
+    'bootstrap_trend.R'
+    'get_replicates.R'
