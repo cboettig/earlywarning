@@ -27,19 +27,19 @@ stability_model <- function(X, model=c("LSN", "OU"), p = NULL, ...,
   
 
   if(!is.null(p)){ ## got everything? then rock & roll
-    f <- switch(model, 
+    f1 <- switch(model, 
                 LSN = f_closure(X, LSN),
-                constOU = f_closure(X, constOU))
-    o <- optim(p, f, ...)
+                OU = f_closure(X, constOU))
+    o <- optim(p, f1, ...)
 
   } else if(is.null(p)){ ## oh, need p? try:
     p <- c(Ro=1/max(time(X[,1])), theta=mean(X[,2]), sigma=sd(X[,2]))
-    f <- f_closure(X, constOU)
-    o <- optim(p, f, ...)
+    f2 <- f_closure(X, constOU)
+    o <- optim(p, f2, ...)
 
     # if model is "OU", we're done.  otherwise:
     if(model=="LSN"){
-      f <- f_closure(X, LSN) # switch to the LSN model
+      f3 <- f_closure(X, LSN) # switch to the LSN model
       p_est <- o$par  # & use the OU estimated pars as starting guess
       # but rescale them to the new definitions:
       Ro <- as.numeric(p_est[1]^2)
@@ -48,7 +48,7 @@ stability_model <- function(X, model=c("LSN", "OU"), p = NULL, ...,
       p <- c(Ro=Ro, m=0, theta=theta, sigma=sigma)
 
       ## now fit the LSN model
-      o <- optim(p, f, ...)
+      o <- optim(p, f3, ...)
     }
   }
 
