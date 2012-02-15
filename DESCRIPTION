@@ -8,7 +8,12 @@ Description: Tools for the detection of early warning signals of critical
     transitions.  Package is a completely updated and revised version of the
     original warningsignals package.
 License: BSD
-Imports: odesolve, psych
+Imports:
+    odesolve,
+    psych
+Suggests:
+    ggplot2,
+    Hmisc
 Collate:
     'LSN.R'
     'compare.R'
@@ -18,3 +23,5 @@ Collate:
     'stability_model.R'
     'indicators.R'
     'warningtrend.R'
+    'lik_ratios.R'
+    'parameter_bootstraps.R'

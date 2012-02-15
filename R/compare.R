@@ -25,7 +25,7 @@ compare <- function(A, B){
   while(!done){
     Bsim <- simulate(B)
     BfitB <- update(B, X = Bsim)
-    AfitB <- update(B, X = Bsim)
+    AfitB <- update(A, X = Bsim)
     done <- converge(AfitB) && converge(BfitB)
   }
   list(AA = AfitA, BB = BfitB, AB = AfitB, BA = BfitA)

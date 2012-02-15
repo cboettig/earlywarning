@@ -2,17 +2,25 @@
 \alias{roc_data}
 \title{Compute data to draw an ROC curve}
 \usage{
-  roc_data(null_dist, test_dist, pts = 50)
+  roc_data(dat, pts = 50, null_dist = NULL,
+    test_dist = NULL)
 }
 \arguments{
-  \item{a}{distribution (vector of samples) of the test
-  statistic under the null hypothesis}
-
-  \item{the}{values under the test hypothesis}
+  \item{dat}{a data.frame with columns "simulation",
+  indicating "null" or "test", "value", with the value of
+  the test statistic, and "rep" indicating the replicate
+  number Or set dat=NULL and specify null_dist and
+  test_dist directly, see below.}
 
   \item{pts}{(optional) number of output points desired,
   defaults to 50, should not be more than the number of
   points in each distribution}
+
+  \item{null_dist}{a distribution (vector of samples) of
+  the test statistic under the null hypothesis, if not
+  given as a data frame}
+
+  \item{test_dist}{the values under the test hypothesis}
 }
 \value{
   a data frame with thresholds, false positive and

@@ -1,4 +1,4 @@
-#' calculate the trend statistic from a given indicator
+#' calculate the correlation coefficient of some summary statistic over time
 #'
 #' @param X the data, either a time-series, a numeric, or a matrix
 #' with times in the first column and values in the second column. 
