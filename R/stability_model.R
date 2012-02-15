@@ -51,7 +51,7 @@ stability_model <- function(X, model=c("LSN", "OU"), p = NULL, ...,
       o <- optim(p, f3, ...)
     }
   }
-
+  names(X) <- c("time", "value")
   ## Collect the results and we're done
   if(!store_data) # remove the data object to save space?
     X <- NULL
