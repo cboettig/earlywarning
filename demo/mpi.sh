@@ -7,7 +7,7 @@ e the current working directory
 ## Parallel for openmp:
 ##$ -pe threaded 16
 ## Launch parallel mpi threads
-#$ -pe mpi 2
+#$ -pe mpi 32
 ## Output file name
 #$ -o simulation.out 
 ## Name for queue job
