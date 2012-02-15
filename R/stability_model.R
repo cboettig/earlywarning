@@ -27,42 +27,53 @@ stability_model <- function(X, model=c("LSN", "OU"), p = NULL, ...,
   
   # Estimate reasonable starting parameters for model specified #
   model <- match.arg(model)
-  if(model=="LSN"){
-    setmodel <- LSN 
-  if(is.null(p)){
-      p <- c(1/max(time(X[,1])), mean(X[,2]),sd(X[,2]))
-      Ro <- p[1]^2
-      theta <- p[2]+p[1]
-      sigma<- abs(p[3]/sqrt(2*p[1]+ p[2]))
-      p <- c(Ro=Ro, m=0, theta=theta, sigma=sigma)
-    }
-    } else if(model=="OU"){
-    setmodel <- constOU
-    if(is.null(p)){
-      p <- c(Ro=1/max(time(X[,1])), theta=mean(X[,2]),
-        sigma=sd(X[,2]))
-    }
-  } else {
-    stop(paste("Model", model, "not recognized"))
-  }
-  #---------------------------------------------------------#
 
-  ## Define the likelihood function and compute maximum likelihood
-  f <- function(p){
+  if(!is.null(p)){ # got everything? then rock & roll
+    f <- switch(model, 
+                LSN = f_closure(X, LSN),
+                constOU = f_closure(X, constOU))
+    o <- optim(p, f, ...)
+
+  } else if(is.null(p)){ #oh, need p? try:
+
+    p <- c(Ro=1/max(time(X[,1])), theta=mean(X[,2]), sigma=sd(X[,2]))
+    f <- f_closure(X, constOU)
+    o <- optim(p, f, ...)
+
+    # if model is "OU", we're done.  otherwise: 
+    if(model=="LSN"){
+      f <- f_closure(X, LSN) # switch to the LSN model
+      p_est <- o$par  # & use the OU estimated pars as starting guess
+print(p_est)
+      # but rescale them:
+      Ro <- as.numeric(p_est[1]^2)
+      theta <- as.numeric(p_est[2]+p_est[1])
+      sigma <- as.numeric(abs(p_est[3]/sqrt(2*p_est[1]+ p_est[2])))
+      p <- c(Ro=Ro, m=0, theta=theta, sigma=sigma)
+print(p)
+      o <- optim(p, f, ...)
+    }
+  }
+
+  ## Collect the results and we're done
+  if(!store_data) # remove the data object to save space?
+    X <- NULL
+  # format the output
+  out <- list(X=X, pars=o$par, model=model, loglik = -o$value,
+              convergence=(o$convergence==0) )
+  class(out) <- c("gauss", "list")
+  out
+}
+
+
+# an internal helper function
+f_closure <- function(X, setmodel){
+  function(p){
       n <- length(X[,1])
       out <- -sum(dc.gauss(setmodel, X[2:n,2], X[1:(n-1),2], to=X[1:(n-1),1],
                             t1=X[2:n,1], p, log=T))
       out
   }
-  o <- optim(p, f, ...)
-
-  if(!store_data) # remove the data object to save space?
-    X <- NULL
-  # format the output
-  out <- list(X=X, pars=o$par, model=model, loglik = o$value,
-       convergence=(o$convergence==0) )
-  class(out) <- c("gauss", "list")
-  out
 }
 
 
