@@ -10,7 +10,9 @@ Description: Tools for the detection of early warning signals of critical
 License: BSD
 Imports:
     odesolve,
-    psych
+    psych,
+    reshape2,
+    plyr
 Suggests:
     ggplot2,
     Hmisc
@@ -25,3 +27,6 @@ Collate:
     'warningtrend.R'
     'lik_ratios.R'
     'parameter_bootstraps.R'
+    'bootstrap_trend.R'
+    'get_replicates.R'
+    'summary_statistic.R'

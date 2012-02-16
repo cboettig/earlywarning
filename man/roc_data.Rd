@@ -3,7 +3,7 @@
 \title{Compute data to draw an ROC curve}
 \usage{
   roc_data(dat, pts = 50, null_dist = NULL,
-    test_dist = NULL)
+    test_dist = NULL, silent = TRUE)
 }
 \arguments{
   \item{dat}{a data.frame with columns "simulation",
