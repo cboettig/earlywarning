@@ -29,3 +29,4 @@ Collate:
     'parameter_bootstraps.R'
     'bootstrap_trend.R'
     'summary_statistic.R'
+    'get_replicates.R'

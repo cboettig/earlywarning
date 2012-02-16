@@ -1,6 +1,7 @@
 export(bootstrap_trend)
 export(compare)
 export(converge)
+export(get_replicates)
 export(lik_ratios)
 export(parameter_bootstraps)
 export(roc_data)
