@@ -28,5 +28,4 @@ Collate:
     'lik_ratios.R'
     'parameter_bootstraps.R'
     'bootstrap_trend.R'
-    'get_replicates.R'
     'summary_statistic.R'
