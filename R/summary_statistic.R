@@ -3,9 +3,9 @@
 #' 
 #' @param dat a data frame with columns "time", "reps", and "value"
 #' observed in a timeseries of replicates.   
-#' @param indicator a function taking X and windowsize, such as \link{window_var}
-#' @param windowsize, passed to indicator function
-#' @param ... additional optional arguments to the indicator function
+#' @param indicator a function taking X, such as \link{window_var}
+#' @param ... additional optional arguments to the indicator function,
+#' such as windowsize
 #' @return a data frame with columns "time", "reps", and "value",
 #' where values are the sliding-window computed summary statistics produced
 #' by indicator.  
@@ -15,9 +15,9 @@
 #' @import plyr
 #' @import reshape2
 #' @export
-summary_statistic <- function(dat, indicator, windowsize, ...){
+summary_statistic <- function(dat, indicator, ...){
   tmp <- ddply(dat, "reps", function(X) 
-    indicator(X$value, windowsize=windowsize, ...))
+    indicator(X$value, ...))
   stat <- melt(t(tmp))
   stat <- stat[-1,]
   names(stat) <- c("time", "reps", "value")
