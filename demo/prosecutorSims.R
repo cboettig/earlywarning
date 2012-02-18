@@ -66,9 +66,3 @@ ggplot(indicators) + geom_density(aes(m))
 
 
 
-
-var <- dlply(dat, "reps", function(X) window_var(X$value))
-tmp <- melt(var)
-ggplot(tmp) + geom_line(aes(1:length(value), value)) + facet_wrap(~ L1) +
-  opts(title="Variance in replicates conditioned on the crash")
-
