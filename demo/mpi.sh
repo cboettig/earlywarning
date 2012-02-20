@@ -9,9 +9,9 @@ e the current working directory
 ## Launch parallel mpi threads
 #$ -pe mpi 60
 ## Output file name
-#$ -o data.out 
+#$ -o manuscript 
 ## Name for queue job
-#$ -N paperdata 
+#$ -N manuscript
 
 module load gcc 
 module load openmpi 
