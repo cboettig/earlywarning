@@ -30,23 +30,22 @@ zoom <- ddply(dat, "reps", function(X){
     index <- max(tip-800,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
+#save("zoom", file="zoom.rda")
 
-require(ggplot2)
-ggplot(subset(zoom, reps < 10 & value > 300)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+#require(ggplot2)
+#ggplot(subset(zoom, reps < 10 & value > 300)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 
 
-#L <- length(unique(dat$reps))
-
-#library(snow)
-## snow method
-#cluster <- makeCluster(80, type="MPI")
-#clusterEvalQ(cluster, library(earlywarning)) # load a library
-#clusterExport(cluster, ls()) # export everything in workspace
-#models <- parLapply(cluster, 1:L, function(i)
-#  stability_model(dat[dat$rep==i, c("time", "population")], "LSN")
-#  )
-#stopCluster(cluster)
-#save("models", file="models.rda")
+L <- length(unique(dat$reps))
+library(snow)
+cluster <- makeCluster(80, type="MPI")
+clusterEvalQ(cluster, library(earlywarning)) # load a library
+clusterExport(cluster, ls()) # export everything in workspace
+models <- parLapply(cluster, 1:L, function(i)
+  stability_model(dat[dat$rep==i, c("time", "value")], "LSN")
+  )
+stopCluster(cluster)
+save("models", file="models.rda")
 
 
 #
