@@ -57,22 +57,26 @@ require(plyr)
 require(earlywarning)
 indicators <- ddply(zoom, "reps", function(X){
     Y <- data.frame(time=X$time, value=X$value)
-    tau <- warningtrend(Y, window_var)
+    tau_var <- warningtrend(Y, window_var)
+    tau_acorr <- warningtrend(Y, window_autocorr)
     i <- X$rep[1]
     m <- models[[i]]$pars["m"]
-    c(tau, m)
+    c(var=tau_var, acor=tau_acorr, m=m)
 })
 
-
-png("fallacy.png")
+require(reshape2)
 dat <- melt(indicators, id="reps")
+png("fallacy.png")
 require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0))
 dev.off()
 
 
-ggplot(indicators) + geom_density(aes(kendall_coef))
-ggplot(indicators) + geom_density(aes(m))
+require(socialR)
+upload("fallacy.png", script="prosecutorSims.R", tag="stochpop warningsignals")
+
+#ggplot(indicators) + geom_density(aes(kendall_coef))
+#ggplot(indicators) + geom_density(aes(m))
 
 
 
