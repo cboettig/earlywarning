@@ -32,8 +32,9 @@ zoom <- ddply(dat, "reps", function(X){
     })
 #save("zoom", file="zoom.rda")
 
-#require(ggplot2)
-#ggplot(subset(zoom, reps < 10 & value > 300)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+load("zoom.rda")
+require(ggplot2)
+ggplot(subset(zoom, reps < 10 & value > 300)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 
 
 L <- length(unique(dat$reps))
@@ -48,28 +49,29 @@ stopCluster(cluster)
 save("models", file="models.rda")
 
 
-#
-## plot indicators
-#require(plyr)
-#require(earlywarning)
-#indicators <- ddply(zoom, "reps", function(X){
-#    Y <- data.frame(time=X$time[index], value=X$value[index])
-#    tau <- warningtrend(Y, window_var)
-#    i <- X$rep[1]
-#    m <- models[[i]]$pars["m"]
-#    c(tau, m)
-#})
-#
-#require(beanplot)
-#png("beanplot.png", width=480*2)
-#par(mfrow=c(1,2))
-#beanplot(m, indicators, what=c(0,1,0,0))
-#beanplot(kendall_coef, subset(indicators, abs(m) <1), what=c(0,1,0,0))
-#dev.off()
-#
+ load("zoom.rda")
+ load("models.rda")
+# plot indicators
+require(plyr)
+require(earlywarning)
+indicators <- ddply(zoom, "reps", function(X){
+    Y <- data.frame(time=X$time, value=X$value)
+    tau <- warningtrend(Y, window_var)
+    i <- X$rep[1]
+    m <- models[[i]]$pars["m"]
+    c(tau, m)
+})
 
-#ggplot(indicators) + geom_density(aes(kendall_coef))
-#ggplot(indicators) + geom_density(aes(m))
+
+png("fallacy.png")
+dat <- melt(indicators, id="reps")
+require(beanplot)
+beanplot(value ~ variable, data=dat, what=c(0,1,0,0))
+dev.off()
+
+
+ggplot(indicators) + geom_density(aes(kendall_coef))
+ggplot(indicators) + geom_density(aes(m))
 
 
 
