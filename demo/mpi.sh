@@ -9,14 +9,14 @@ e the current working directory
 ## Launch parallel mpi threads
 #$ -pe mpi 60
 ## Output file name
-#$ -o manuscript 
+#$ -o fallacy 
 ## Name for queue job
-#$ -N manuscript
+#$ -N fallacy
 
 module load gcc 
 module load openmpi 
 module load R 
 module load Rmpi
-R -f manuscript_data.R 
+R -f prosecutorSims.R 
 
 
