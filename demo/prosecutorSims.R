@@ -37,13 +37,14 @@ require(ggplot2)
 ggplot(subset(zoom, reps < 10 & value > 300)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 
 
-L <- length(unique(dat$reps))
+L <- length(unique(zoom$reps))
 library(snow)
-cluster <- makeCluster(80, type="MPI")
+## snow method
+cluster <- makeCluster(60, type="MPI")
 clusterEvalQ(cluster, library(earlywarning)) # load a library
 clusterExport(cluster, ls()) # export everything in workspace
 models <- parLapply(cluster, 1:L, function(i)
-  stability_model(dat[dat$rep==i, c("time", "value")], "LSN")
+  stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN")
   )
 stopCluster(cluster)
 save("models", file="models.rda")
