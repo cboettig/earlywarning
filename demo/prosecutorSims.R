@@ -23,7 +23,7 @@
 load("crashed.rda")
 
 
-## Zoom in on the relevant area of data near the crash
+# Zoom in on the relevant area of data near the crash
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value==0))
@@ -36,20 +36,21 @@ save("zoom", file="zoom.rda")
 load("zoom.rda")
 require(ggplot2)
 ggplot(subset(zoom, reps < 10)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggsave("zoom.png")
+#
+#
 
-
-
-L <- length(unique(zoom$reps))
-library(snow)
+#L <- length(unique(zoom$reps))
+#library(snow)
 ## snow method
-cluster <- makeCluster(60, type="MPI")
-clusterEvalQ(cluster, library(earlywarning)) # load a library
-clusterExport(cluster, ls()) # export everything in workspace
-models <- parLapply(cluster, 1:L, function(i)
-  stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN")
-  )
-stopCluster(cluster)
-save("models", file="models.rda")
+#cluster <- makeCluster(60, type="MPI")
+#clusterEvalQ(cluster, library(earlywarning)) # load a library
+#clusterExport(cluster, ls()) # export everything in workspace
+#models <- parLapply(cluster, 1:L, function(i)
+#  stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN")
+#  )
+#stopCluster(cluster)
+#save("models", file="models.rda")
 
 
  load("zoom.rda")
@@ -76,8 +77,9 @@ dev.off()
 require(ggplot2)
 ggplot(subset(dat, variable != "m.m")) + geom_density(aes(value, fill=variable), alpha=.6)
 ggsave("false_positives.png")
-require(socialR)
-upload("fallacy.png false_postives.png", script="prosecutorSims.R", tag="stochpop warningsignals")
+
+#require(socialR)
+#upload("fallacy.png false_postives.png", script="prosecutorSims.R", tag="stochpop warningsignals")
 
 #ggplot(indicators) + geom_density(aes(kendall_coef))
 #ggplot(indicators) + geom_density(aes(m))
