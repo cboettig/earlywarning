@@ -30,14 +30,14 @@ zoom <- ddply(dat, "reps", function(X){
     index <- max(tip-800,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
-#save("zoom", file="zoom.rda")
+zoom <- subset(zoom, value > 300)
+save("zoom", file="zoom.rda")
 
 load("zoom.rda")
 require(ggplot2)
-ggplot(subset(zoom, reps < 10 & value > 300)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggplot(subset(zoom, reps < 10)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 
 
-zoom <- subset(zoom, value > 300)
 
 L <- length(unique(zoom$reps))
 library(snow)
@@ -66,16 +66,18 @@ indicators <- ddply(zoom, "reps", function(X){
     c(var=tau_var, acor=tau_acorr, m=m)
 })
 
-#require(reshape2)
-#dat <- melt(indicators, id="reps")
-#png("fallacy.png")
-#require(beanplot)
-#beanplot(value ~ variable, data=dat, what=c(0,1,0,0))
-#dev.off()
+require(reshape2)
+dat <- melt(indicators, id="reps")
+png("fallacy.png")
+require(beanplot)
+beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
+dev.off()
 
-
-#require(socialR)
-#upload("fallacy.png", script="prosecutorSims.R", tag="stochpop warningsignals")
+require(ggplot2)
+ggplot(subset(dat, variable != "m.m")) + geom_density(aes(value, fill=variable), alpha=.6)
+ggsave("false_positives.png")
+require(socialR)
+upload("fallacy.png false_postives.png", script="prosecutorSims.R", tag="stochpop warningsignals")
 
 #ggplot(indicators) + geom_density(aes(kendall_coef))
 #ggplot(indicators) + geom_density(aes(m))
