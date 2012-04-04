@@ -23,7 +23,7 @@
 load("crashed.rda")
 
 
-## Zoom in on the relevant area of data near the crash
+# Zoom in on the relevant area of data near the crash
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value==0))
@@ -36,11 +36,12 @@ save("zoom", file="zoom.rda")
 load("zoom.rda")
 require(ggplot2)
 ggplot(subset(zoom, reps < 10)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggsave("zoom.png")
+#
+#
 
-
-
-L <- length(unique(zoom$reps))
-library(snow)
+#L <- length(unique(zoom$reps))
+#library(snow)
 ## snow method
 #cluster <- makeCluster(60, type="MPI")
 #clusterEvalQ(cluster, library(earlywarning)) # load a library
