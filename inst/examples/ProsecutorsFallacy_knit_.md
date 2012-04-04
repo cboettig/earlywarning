@@ -12,7 +12,7 @@ pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
 Run the individual based simulation
 ``` {r eval=FALSE}
 require(populationdynamics)
-sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1)
+sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
 save("sn", "file=prosecutor.rda")
 ````
 
@@ -47,7 +47,7 @@ ggplot(subset(zoom, reps < 10)) + geom_line(aes(time, value)) + facet_wrap(~reps
 
 Compute warning signals on all each of these
 
-``` {r }
+``` {r eval=FALSE}
 L <- length(unique(zoom$reps))
 library(snow)
 cluster <- makeCluster(60, type="MPI")
