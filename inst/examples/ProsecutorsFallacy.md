@@ -71,7 +71,7 @@ require(ggplot2)
 ggplot(subset(zoom, reps < 10)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk replicate_crashes](figures/replicate_crashes.pdf) 
+![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7042/7049361193_e9c119f4b2_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -128,7 +128,7 @@ dat <- melt(indicators, id="reps")
 ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
 ```
 
-![plot of chunk indicators](figures/indicators.pdf) 
+![plot of chunk indicators](http://farm6.staticflickr.com/5446/7049363731_562c72f6b4_o.png) 
 
 
 
@@ -139,7 +139,7 @@ require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
 ```
 
-![plot of chunk beanplot](figures/beanplot.pdf) 
+![plot of chunk beanplot](http://farm8.staticflickr.com/7244/7049363893_5f946f03df_o.png) 
 
 
 
