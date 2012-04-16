@@ -3,8 +3,8 @@
 render_gfm()
 opts_chunk$set(warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, fig.path='figures/', cache=TRUE, verbose=TRUE) 
 #opts_knit$set(upload.fun = socialR::flickr.url)
-opts_chunk$set(dev='Cairo_png', cache.path='cache-upload/')
-#opts_chunk$set(dev='Cairo_pdf', cache.path='cache-pdf/')
+opts_chunk$set(dev='png', cache.path='cache-upload/')
+#opts_chunk$set(dev='pdf', cache.path='cache-pdf/')
 ````
 
 # Code for Prosecutors Fallacy 
@@ -19,11 +19,12 @@ pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
     i = 0, Da = 0, Dt = 0, p = 2)
 require(populationdynamics)
 require(earlywarning)
+require(reshape2)
 ````
 Run the individual based simulation
 ``` {r }
 sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
-save("sn", "file=prosecutor.rda")
+save("sn", file="prosecutor.rda")
 ````
 
 ``` {r }
