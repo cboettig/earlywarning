@@ -2,7 +2,7 @@
 #opts_knit$restore()
 render_gfm()
 opts_chunk$set(warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, fig.path='figures/', cache=TRUE) 
-opts_knit$set(upload.fun = socialR::flickr.url)
+#opts_knit$set(upload.fun = socialR::flickr.url)
 opts_chunk$set(dev='Cairo_png', cache.path='cache-upload/')
 #opts_chunk$set(dev='Cairo_pdf', cache.path='cache-pdf/')
 ````
@@ -11,7 +11,7 @@ opts_chunk$set(dev='Cairo_png', cache.path='cache-upload/')
 
 Simulate a dataset from the full individual, nonlinear model, with stable parameters (*.e.g.* not approaching a bifurcation).
 
-``` {r eval=FALSE}
+``` {r }
 rm(list=ls())
 T<- 5000
 n_pts <- 50000
@@ -21,12 +21,12 @@ require(populationdynamics)
 require(earlywarning)
 ````
 Run the individual based simulation
-``` {r eval=FALSE}
+``` {r }
 sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
 save("sn", "file=prosecutor.rda")
 ````
 
-``` {r eval=FALSE}
+``` {r }
 load("prosecutor.rda")
 d <- dim(sn$x1)
 crashed <- which(sn$x1[d[1],]==0)
@@ -42,7 +42,7 @@ load("crashed.rda")
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value==0))
-    index <- max(tip-800,1):tip
+    index <- max(tip-500,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
 zoom <- subset(zoom, value > 300)
@@ -58,7 +58,7 @@ ggplot(subset(zoom, reps < 10)) + geom_line(aes(time, value)) + facet_wrap(~reps
 Compute model-based warning signals on all each of these.  
 Computationally intensive, so we run this section on a cluster of 60 processors.  
 
-``` {r eval=FALSE}
+``` {r }
 load("zoom.rda")
 L <- length(unique(zoom$reps))
 library(snow)
@@ -101,6 +101,7 @@ ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap
 ``` {r beanplot, fig.height=4, fig.width=5}
 require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
+save(list=ls(), file="~/public_html/data/ProsecutorsFallacy.rda")
 ````
 
 
