@@ -1,7 +1,7 @@
 ``` {r echo=FALSE}
 #opts_knit$restore()
 render_gfm()
-opts_chunk$set(warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, fig.path='figures/', cache=TRUE) 
+opts_chunk$set(warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, fig.path='figures/', cache=TRUE, verbose=TRUE) 
 #opts_knit$set(upload.fun = socialR::flickr.url)
 opts_chunk$set(dev='Cairo_png', cache.path='cache-upload/')
 #opts_chunk$set(dev='Cairo_pdf', cache.path='cache-pdf/')
