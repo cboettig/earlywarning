@@ -68,6 +68,8 @@ f_closure <- function(X, setmodel){
       n <- length(X[,1])
       out <- -sum(dc.gauss(setmodel, X[2:n,2], X[1:(n-1),2], to=X[1:(n-1),1],
                             t1=X[2:n,1], p, log=T))
+      if(abs(out) == Inf | is.nan(out))
+        out <- 1e19
       out
   }
 }
