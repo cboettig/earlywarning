@@ -1,7 +1,7 @@
 ``` {r echo=FALSE}
 #opts_knit$restore()
 render_gfm()
-opts_chunk$set(warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, fig.path='figures/', cache=TRUE, verbose=TRUE) 
+opts_chunk$set(warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, fig.path='figures/', cache=TRUE, verbose=TRUE, refresh=4) 
 #opts_knit$set(upload.fun = socialR::flickr.url)
 opts_chunk$set(dev='png', cache.path='cache-upload/')
 #opts_chunk$set(dev='pdf', cache.path='cache-pdf/')
@@ -23,7 +23,7 @@ require(reshape2)
 ````
 Run the individual based simulation
 ``` {r }
-sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
+sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=10000)
 save("sn", file="prosecutor.rda")
 ````
 
@@ -62,20 +62,27 @@ Computationally intensive, so we run this section on a cluster of 60 processors.
 ``` {r }
 load("zoom.rda")
 L <- length(unique(zoom$reps))
-library(snow)
-cluster <- makeCluster(60, type="MPI")
-clusterEvalQ(cluster, library(earlywarning)) # load a library
-clusterExport(cluster, ls()) # export everything in workspace
-models <- parLapply(cluster, 1:L, function(i)
-  stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN")
+L
+````
+
+
+``` {r parallel}
+library(snowfall)
+sfInit(par=T, cpu=16)
+sfLibrary(earlywarning) # load a library
+sfExportAll()
+models <- sfLapply(1:L, function(i)
+  try(stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN"))
 )
-stopCluster(cluster)
+````
+
+``` {r }
 save("models", file="models.rda")
 ````
 
 Load the resulting data and compute indicators:
 
-``` {r }
+``` {r  refresh=2 }
 load("zoom.rda")
 load("models.rda")
 require(plyr)
@@ -92,14 +99,14 @@ indicators <- ddply(zoom, "reps", function(X){
 
 Plot distribution of indicators
 
-``` {r indicators, fig.height=3, fig.width=5}
+``` {r indicator_plot, fig.height=3, fig.width=5, refresh=2 }
 require(reshape2)
 dat <- melt(indicators, id="reps")
 ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
 ````
 
 
-``` {r beanplot, fig.height=4, fig.width=5}
+``` {r beanplot, fig.height=4, fig.width=5, refresh=2}
 require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
 save(list=ls(), file="~/public_html/data/ProsecutorsFallacy.rda")
