@@ -71,7 +71,7 @@ library(snowfall)
 sfInit(par=T, cpu=16)
 sfLibrary(earlywarning) # load a library
 sfExportAll()
-models <- sfLapply(zoom$rep, function(i)
+models <- sfLapply(unique(zoom$rep), function(i)
   try(stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN"))
 )
 ````

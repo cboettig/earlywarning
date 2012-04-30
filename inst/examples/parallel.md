@@ -1,11 +1,5 @@
 
 
-```
-## Error: could not find function "render_gfm"
-```
-
-
-
 
 # Code for Prosecutors Fallacy 
 
@@ -37,8 +31,7 @@ select_crashes <- function(n){
 	crashed <- which(sn$x1[d[1],]==0)
 	sn$x1[,crashed] 
 }
-
-sfInit(parallel=TRUE, cpu=4)
+sfInit(parallel=TRUE, cpu=6)
 ```
 
 
@@ -64,7 +57,7 @@ Library populationdynamics loaded.
 
 ```r
 sfExportAll()
-examples <- sfLapply(1:16, function(i) select_crashes(5000))
+examples <- sfLapply(1:16, function(i) select_crashes(25000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
 save(list=ls(), file="crashed.rda")
@@ -110,21 +103,6 @@ Error: arguments imply differing number of rows: 1, 0
 
 Compute model-based warning signals on all each of these.  
 Computationally intensive, so we run this section on a cluster of 60 processors.  
-
-
-
-```r
-load("zoom.rda")
-length(unique(zoom$reps))
-```
-
-
-
-```
-[1] 236
-```
-
-
 
 
 
@@ -186,7 +164,7 @@ dat <- melt(indicators, id="reps")
 ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
 ```
 
-![plot of chunk indicators](http://farm9.staticflickr.com/8007/7128760939_b47450c4c9_o.png) 
+![plot of chunk indicators](http://farm9.staticflickr.com/8018/7129335221_d95fe62bbd_o.png) 
 
 
 
@@ -197,7 +175,7 @@ require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
 ```
 
-![plot of chunk beanplot](http://farm8.staticflickr.com/7126/6982673652_798eee621d_o.png) 
+![plot of chunk beanplot](figures/beanplot.png) 
 
 ```r
 save(list=ls(), file="ProsecutorsFallacy.rda")
