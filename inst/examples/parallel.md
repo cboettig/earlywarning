@@ -57,7 +57,7 @@ Library populationdynamics loaded.
 
 ```r
 sfExportAll()
-examples <- sfLapply(1:16, function(i) select_crashes(25000))
+examples <- sfLapply(1:16, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
 save(list=ls(), file="crashed.rda")
@@ -89,16 +89,10 @@ save("zoom", file="zoom.rda")
 ```r
 load("zoom.rda")
 require(ggplot2)
-ggplot(subset(zoom, reps < 10)) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-
-
-```
-Error: arguments imply differing number of rows: 1, 0
-```
-
-
+![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7112/7129491761_e6d5ceee2f_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -164,7 +158,7 @@ dat <- melt(indicators, id="reps")
 ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
 ```
 
-![plot of chunk indicators](http://farm9.staticflickr.com/8018/7129335221_d95fe62bbd_o.png) 
+![plot of chunk indicators](http://farm8.staticflickr.com/7225/7129493489_7ebf36701c_o.png) 
 
 
 
@@ -175,7 +169,7 @@ require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
 ```
 
-![plot of chunk beanplot](http://farm8.staticflickr.com/7224/6983253614_e675f2367f_o.png) 
+![plot of chunk beanplot](http://farm8.staticflickr.com/7108/7129494241_0cd9fd72a0_o.png) 
 
 ```r
 save(list=ls(), file="ProsecutorsFallacy.rda")
