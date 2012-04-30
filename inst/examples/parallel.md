@@ -175,7 +175,7 @@ require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
 ```
 
-![plot of chunk beanplot](figures/beanplot.png) 
+![plot of chunk beanplot](http://farm8.staticflickr.com/7224/6983253614_e675f2367f_o.png) 
 
 ```r
 save(list=ls(), file="ProsecutorsFallacy.rda")
