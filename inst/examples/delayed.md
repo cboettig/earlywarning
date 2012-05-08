@@ -1,4 +1,6 @@
 
+
+
 # Model-based detection of early warning under a delay
 
 What happens when we attempt to fit the linear change model to a signal in which the environment is initially constant and then begins degrading?
@@ -9,7 +11,29 @@ First let's simulate some such data
 
 ```r
 require(populationdynamics)
+```
+
+
+
+```
+## Loading required package: populationdynamics
+```
+
+
+
+```r
 require(earlywarning)
+```
+
+
+
+```
+## Loading required package: earlywarning
+```
+
+
+
+```r
 pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, 
     h = 200, i = 0, Da = 0.45, Dt = 50, p = 2)
 sn <- saddle_node_ibm(pars, times = seq(0, 100, 
@@ -33,13 +57,25 @@ B <- stability_model(X, "LSN")
 
 
 ```
-Warning message: NaNs produced
+## Warning message: sigma= -33.8220003780527
 ```
 
 
 
 ```
-Error: non-finite value supplied by optim
+## Warning message: sigma= -3.92744924017626
+```
+
+
+
+```
+## Warning message: sigma= -1.36097098501402
+```
+
+
+
+```
+## Warning message: sigma= -0.077731857432894
 ```
 
 
@@ -52,7 +88,7 @@ observed
 
 
 ```
-[1] 45.79
+## [1] 0.0002019
 ```
 
 
@@ -64,14 +100,38 @@ observed
 
 ```r
 require(snowfall)
+```
+
+
+
+```
+## Loading required package: snowfall
+```
+
+
+
+```
+## Loading required package: snow
+```
+
+
+
+```r
 sfInit(parallel = TRUE, cpu = 16)
 ```
 
 
 
 ```
-R Version:  R version 2.14.1 (2011-12-22) 
+## R Version:  R version 2.14.1 (2011-12-22) 
+## 
+```
 
+
+
+```
+## snowfall 1.84 initialized (using snow 0.3-8): parallel execution on 16 CPUs.
+## 
 ```
 
 
@@ -83,13 +143,20 @@ sfLibrary(earlywarning)
 
 
 ```
-Library earlywarning loaded.
+## Library earlywarning loaded.
 ```
 
 
 
 ```
-Warning message: 'keep.source' is deprecated and will be ignored
+## Library earlywarning loaded in cluster.
+## 
+```
+
+
+
+```
+## Warning message: 'keep.source' is deprecated and will be ignored
 ```
 
 
@@ -112,18 +179,70 @@ Plot the likelihood ratio distribution with a line indicating the observed value
 
 ```r
 require(ggplot2)
+```
+
+
+
+```
+## Loading required package: ggplot2
+```
+
+
+
+```
+## Loading required package: reshape
+```
+
+
+
+```
+## Loading required package: plyr
+```
+
+
+
+```
+## 
+## Attaching package: 'reshape'
+## 
+```
+
+
+
+```
+## The following object(s) are masked from 'package:plyr':
+## 
+##     rename, round_any
+## 
+```
+
+
+
+```
+## Loading required package: grid
+```
+
+
+
+```
+## Loading required package: proto
+```
+
+
+
+```r
 ggplot(lr) + geom_density(aes(value, color = simulation)) + 
     geom_vline(aes(xintercept = observed))
 ```
 
-![plot of chunk unnamed-chunk-4](http://farm9.staticflickr.com/8001/7160138254_f7ca7361a5_o.png) 
+![plot of chunk unnamed-chunk-4](http://farm6.staticflickr.com/5271/7160367060_4429c4b393_o.png) 
 
 ```r
 ggplot(roc) + geom_line(aes(False.positives, True.positives)) + 
     geom_abline(aes(yintercept = 0, slope = 1), lwd = 0.2)
 ```
 
-![plot of chunk unnamed-chunk-4](http://farm6.staticflickr.com/5456/7160138614_d6201dcf3b_o.png) 
+![plot of chunk unnamed-chunk-4](http://farm8.staticflickr.com/7245/7160368130_4be23e863c_o.png) 
 
 
 

@@ -1,4 +1,7 @@
-`ro cache=TRUE, upload.fun=socialR::flickr.url, message=FALSE, comment=NA, width=10, height=6 or`
+``` {r settings, echo=FALSE}
+opts_knit$set(cache=TRUE, upload.fun=socialR::flickr.url, message=FALSE, comment=NA) 
+````
+
 # Model-based detection of early warning under a delay
 
 What happens when we attempt to fit the linear change model to a signal in which the environment is initially constant and then begins degrading?
