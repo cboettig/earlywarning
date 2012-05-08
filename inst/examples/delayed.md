@@ -82,6 +82,14 @@ save(list = ls(), file = "delayed.rda")
 ```
 
 
+```r 
+ggplot(lr) + geom_density(aes(value, color=simulation)) + geom_vline(aes(xintercept =observed))
+ggplot(roc) + geom_line(aes(False.positives, True.positives)) + geom_abline(aes(yintercept=0, slope=1), lwd=.2)
+```
+
+
+![delay](http://farm8.staticflickr.com/7237/7158837318_8a0b80d0a1_o.png)
+![roc](http://farm8.staticflickr.com/7084/7158838012_73c4f8d6ef_o.png)
 
 
 
