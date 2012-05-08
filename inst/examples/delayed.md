@@ -116,14 +116,14 @@ ggplot(lr) + geom_density(aes(value, color = simulation)) +
     geom_vline(aes(xintercept = observed))
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-41.png) 
+![plot of chunk unnamed-chunk-4](http://farm9.staticflickr.com/8001/7160138254_f7ca7361a5_o.png) 
 
 ```r
 ggplot(roc) + geom_line(aes(False.positives, True.positives)) + 
     geom_abline(aes(yintercept = 0, slope = 1), lwd = 0.2)
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-42.png) 
+![plot of chunk unnamed-chunk-4](http://farm6.staticflickr.com/5456/7160138614_d6201dcf3b_o.png) 
 
 
 
