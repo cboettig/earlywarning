@@ -17,8 +17,8 @@ X <- ts(sn$x1,start=sn$time[1], deltat=sn$time[2]-sn$time[1])
 Observe that this produces timeseries has 200 points in the interval `(0,100)` with a linear change begining half way through, at `Dt=50`, where it begins approaching a saddle-node bifurcation.  Let's fit both our models:
 
 ``` {r }
-A <- stability_model(chemostat, "OU")
-B <- stability_model(chemostat, "LSN")
+A <- stability_model(X, "OU")
+B <- stability_model(X, "LSN")
 observed <- -2 * (logLik(A) - logLik(B))
 observed
 ````
