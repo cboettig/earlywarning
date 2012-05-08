@@ -57,25 +57,259 @@ B <- stability_model(X, "LSN")
 
 
 ```
-## Warning message: sigma= -33.8220003780527
+## Warning message: sigma= -38.7139686745508
 ```
 
 
 
 ```
-## Warning message: sigma= -3.92744924017626
+## Warning message: sigma= -17.0179591378854
 ```
 
 
 
 ```
-## Warning message: sigma= -1.36097098501402
+## Warning message: NaNs produced
 ```
 
 
 
 ```
-## Warning message: sigma= -0.077731857432894
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
+```
+
+
+
+```
+## Warning message: NaNs produced
 ```
 
 
@@ -88,7 +322,7 @@ observed
 
 
 ```
-## [1] 0.0002019
+## [1] 4.805
 ```
 
 
@@ -235,14 +469,14 @@ ggplot(lr) + geom_density(aes(value, color = simulation)) +
     geom_vline(aes(xintercept = observed))
 ```
 
-![plot of chunk unnamed-chunk-4](http://farm6.staticflickr.com/5271/7160367060_4429c4b393_o.png) 
+![plot of chunk unnamed-chunk-4](http://farm8.staticflickr.com/7214/7160815820_7d69dd9628_o.png) 
 
 ```r
 ggplot(roc) + geom_line(aes(False.positives, True.positives)) + 
     geom_abline(aes(yintercept = 0, slope = 1), lwd = 0.2)
 ```
 
-![plot of chunk unnamed-chunk-4](http://farm8.staticflickr.com/7245/7160368130_4be23e863c_o.png) 
+![plot of chunk unnamed-chunk-4](http://farm8.staticflickr.com/7094/7160816212_cbf590f5d4_o.png) 
 
 
 
