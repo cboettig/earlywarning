@@ -3,7 +3,8 @@
 
 # Code for Prosecutors Fallacy 
 
-Load the required libraries 
+Load the required libraries
+ 
 
 
 ```r
@@ -74,7 +75,7 @@ Zoom in on the relevant area of data near the crash
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value==0))
-    index <- max(tip-500,1):tip
+    index <- max(tip-300,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
 zoom <- subset(zoom, value > 300)
@@ -84,6 +85,8 @@ save("zoom", file="zoom.rda")
 
 
 
+A plot of the first 9 datasets over the interval used for the warning signal calculation.
+
 
 
 ```r
@@ -92,11 +95,10 @@ require(ggplot2)
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7112/7129491761_e6d5ceee2f_o.png) 
+![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7037/7133603721_1e42985acf_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
-Computationally intensive, so we run this section on a cluster of 60 processors.  
 
 
 
@@ -158,9 +160,10 @@ dat <- melt(indicators, id="reps")
 ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
 ```
 
-![plot of chunk indicators](http://farm8.staticflickr.com/7225/7129493489_7ebf36701c_o.png) 
+![plot of chunk indicators](http://farm9.staticflickr.com/8003/6987519442_b17aab38e6_o.png) 
 
 
+Beanplot version of the indicators
 
 
 
@@ -169,7 +172,7 @@ require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
 ```
 
-![plot of chunk beanplot](http://farm8.staticflickr.com/7108/7129494241_0cd9fd72a0_o.png) 
+![plot of chunk beanplot](http://farm9.staticflickr.com/8015/6987519692_35187d9305_o.png) 
 
 ```r
 save(list=ls(), file="ProsecutorsFallacy.rda")
