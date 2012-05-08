@@ -9,18 +9,9 @@ First let's simulate some such data
 
 ```r
 require(populationdynamics)
-```
-
-
-
-```r
 require(earlywarning)
-```
-
-
-```r
 pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, 
-    h = 200, i = 0, Da = 0.5, Dt = 50, p = 2)
+    h = 200, i = 0, Da = 0.45, Dt = 50, p = 2)
 sn <- saddle_node_ibm(pars, times = seq(0, 100, 
     length = 200))
 X <- ts(sn$x1, start = sn$time[1], deltat = sn$time[2] - 
@@ -41,6 +32,18 @@ B <- stability_model(X, "LSN")
 
 
 
+```
+Warning message: NaNs produced
+```
+
+
+
+```
+Error: non-finite value supplied by optim
+```
+
+
+
 ```r
 observed <- -2 * (logLik(A) - logLik(B))
 observed
@@ -49,7 +52,7 @@ observed
 
 
 ```
-## [1] 2.343
+[1] 45.79
 ```
 
 
@@ -61,15 +64,34 @@ observed
 
 ```r
 require(snowfall)
+sfInit(parallel = TRUE, cpu = 16)
 ```
 
+
+
+```
+R Version:  R version 2.14.1 (2011-12-22) 
+
+```
 
 
 
 ```r
-sfInit(parallel = TRUE, cpu = 16)
 sfLibrary(earlywarning)
 ```
+
+
+
+```
+Library earlywarning loaded.
+```
+
+
+
+```
+Warning message: 'keep.source' is deprecated and will be ignored
+```
+
 
 
 ```r
@@ -82,16 +104,26 @@ save(list = ls(), file = "delayed.rda")
 ```
 
 
-```r 
-ggplot(lr) + geom_density(aes(value, color=simulation)) + geom_vline(aes(xintercept =observed))
-ggplot(roc) + geom_line(aes(False.positives, True.positives)) + geom_abline(aes(yintercept=0, slope=1), lwd=.2)
+
+
+Plot the likelihood ratio distribution with a line indicating the observed value.  Also plot the ROC curve.  
+
+
+
+```r
+require(ggplot2)
+ggplot(lr) + geom_density(aes(value, color = simulation)) + 
+    geom_vline(aes(xintercept = observed))
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-41.png) 
 
-![delay](http://farm8.staticflickr.com/7237/7158837318_8a0b80d0a1_o.png)
-![roc](http://farm8.staticflickr.com/7084/7158838012_73c4f8d6ef_o.png)
+```r
+ggplot(roc) + geom_line(aes(False.positives, True.positives)) + 
+    geom_abline(aes(yintercept = 0, slope = 1), lwd = 0.2)
+```
 
-
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-42.png) 
 
 
 

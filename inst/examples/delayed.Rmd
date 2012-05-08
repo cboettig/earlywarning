@@ -39,6 +39,7 @@ save(list=ls(), file="delayed.rda")
 Plot the likelihood ratio distribution with a line indicating the observed value.  Also plot the ROC curve.  
 
 ``` {r }
+require(ggplot2)
 ggplot(lr) + geom_density(aes(value, color=simulation)) + geom_vline(aes(xintercept =observed))
 ggplot(roc) + geom_line(aes(False.positives, True.positives)) + geom_abline(aes(yintercept=0, slope=1), lwd=.2)
 ````
