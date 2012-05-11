@@ -1,12 +1,10 @@
-``` {r echo=FALSE}
-opts_chunk$set(warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE) 
-````
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, reset = 1 or`
 
 # Code for Prosecutors Fallacy 
 
 Load the required libraries
  
-``` {r libraries}
+``` {r libraries_ss}
 require(populationdynamics)
 require(earlywarning)
 require(reshape2)
@@ -17,10 +15,10 @@ Simulate a dataset from the full individual, nonlinear model, with stable parame
 
 This defines our simulation function
 
-``` {r simdat-function }
+``` {r simdat-function_ss }
 select_crashes <- function(n){
 	T<- 5000
-	n_pts <- n
+	n_pts <- 500000
 	pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
     i = 0, Da = 0, Dt = 0, p = 2)
 	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
@@ -32,18 +30,19 @@ select_crashes <- function(n){
 
 To take advantage of parallelization, we loop over this function a set number of times.  
 
-``` {r simdat}
+``` {r simdat_ss}
 sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
 sfExportAll()
-examples <- sfLapply(1:36, function(i) select_crashes(50000))
+examples <- sfLapply(1:36, function(i) select_crashes())
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
+levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ````
 
 Zoom in on the relevant area of data near the crash
 
-``` {r subsetdata }
+``` {r subsetdata_ss }
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value==0))
@@ -55,36 +54,31 @@ zoom <- subset(zoom, value > 300)
 
 A plot of the first 9 datasets over the interval used for the warning signal calculation.
 
-``` {r replicate_crashes}
+``` {r replicate_crashes_ss}
 require(ggplot2)
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ddply(zoom, "reps", function(X) length(X$time))$V1
 ````
 
 
 Load the resulting data and compute indicators:
 
-``` {r fitstats }
+``` {r fitstats_ss }
 require(plyr)
 require(earlywarning)
 
 indicators <- ddply(zoom, "reps", function(X){
-		try({
     Y <- data.frame(time=X$time, value=X$value)
     tau_var <- warningtrend(Y, window_var)
     tau_acorr <- warningtrend(Y, window_autocorr)
-    i <- X$rep[1]
     c(var=tau_var, acor=tau_acorr)
-		})
 })
-
-# drop runs that are too short to compute
-indicators  <- indicators[sapply(indicators, function(m) !is(m, "try-error"))]
 
 ````
 
 Plot distribution of indicators
 
-``` {r my-indicators, fig.height=4, fig.width=6}
+``` {r my-indicators_ss, fig.height=4, fig.width=6}
 require(reshape2)
 dat <- melt(indicators, id="reps")
 ggplot(dat) + geom_histogram(aes(value)) + facet_wrap(~variable)
@@ -92,10 +86,10 @@ ggplot(dat) + geom_histogram(aes(value)) + facet_wrap(~variable)
 
 Beanplot version of the indicators
 
-``` {r my-beanplot, fig.height=4, fig.width=6}
+``` {r my-beanplot_ss, fig.height=4, fig.width=6}
 require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
-save(list=ls(), file="ProsecutorsFallacy.rda")
+save(list=ls(), file="summarystats.rda")
 ````
 
 

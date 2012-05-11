@@ -1,6 +1,5 @@
 
 
-
 # Code for Prosecutors Fallacy 
 
 Load the required libraries
@@ -19,6 +18,8 @@ require(snowfall)
 
 Simulate a dataset from the full individual, nonlinear model, with stable parameters (*.e.g.* not approaching a bifurcation).
 
+This defines our simulation function
+
 
 
 ```r
@@ -32,7 +33,17 @@ select_crashes <- function(n){
 	crashed <- which(sn$x1[d[1],]==0)
 	sn$x1[,crashed] 
 }
-sfInit(parallel=TRUE, cpu=6)
+```
+
+
+
+
+To take advantage of parallelization, we loop over this function a set number of times.  
+
+
+
+```r
+sfInit(parallel=TRUE, cpu=12)
 ```
 
 
@@ -58,10 +69,10 @@ Library populationdynamics loaded.
 
 ```r
 sfExportAll()
-examples <- sfLapply(1:16, function(i) select_crashes(50000))
+examples <- sfLapply(1:20, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
-save(list=ls(), file="crashed.rda")
+levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ```
 
 
@@ -75,11 +86,10 @@ Zoom in on the relevant area of data near the crash
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value==0))
-    index <- max(tip-300,1):tip
+    index <- max(tip-100,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
 zoom <- subset(zoom, value > 300)
-save("zoom", file="zoom.rda")
 ```
 
 
@@ -90,12 +100,11 @@ A plot of the first 9 datasets over the interval used for the warning signal cal
 
 
 ```r
-load("zoom.rda")
 require(ggplot2)
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7037/7133603721_1e42985acf_o.png) 
+![plot of chunk replicate_crashes](figure/replicate_crashes.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -104,7 +113,6 @@ Compute model-based warning signals on all each of these.
 
 
 ```r
-load("zoom.rda")
 L <- length(unique(zoom$reps))
 sfLibrary(earlywarning)
 ```
@@ -122,29 +130,46 @@ sfExportAll()
 models <- sfLapply(unique(zoom$rep), function(i)
   try(stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN"))
 )
-save("models", file="models.rda")
 ```
 
 
 
 
-Load the resulting data and compute indicators:
 
 
 
 ```r
-load("zoom.rda")
-load("models.rda")
 require(plyr)
 require(earlywarning)
 indicators <- ddply(zoom, "reps", function(X){
+	try({
     Y <- data.frame(time=X$time, value=X$value)
     tau_var <- warningtrend(Y, window_var)
     tau_acorr <- warningtrend(Y, window_autocorr)
     i <- X$rep[1]
     m <- models[[i]]$pars["m"]
     c(var=tau_var, acor=tau_acorr, m=m)
+	})
 })
+```
+
+
+
+```
+Error: Results do not have equal lengths
+```
+
+
+
+```r
+
+indicators <- indicators[sapply(indicators, function(x) !is(x, "try-error"))]
+```
+
+
+
+```
+Error: object 'indicators' not found
 ```
 
 
@@ -157,10 +182,27 @@ Plot distribution of indicators
 ```r
 require(reshape2)
 dat <- melt(indicators, id="reps")
+```
+
+
+
+```
+Error: object 'indicators' not found
+```
+
+
+
+```r
 ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
 ```
 
-![plot of chunk indicators](http://farm9.staticflickr.com/8003/6987519442_b17aab38e6_o.png) 
+
+
+```
+Error: object 'variable' not found
+```
+
+
 
 
 Beanplot version of the indicators
@@ -172,7 +214,13 @@ require(beanplot)
 beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
 ```
 
-![plot of chunk beanplot](http://farm9.staticflickr.com/8015/6987519692_35187d9305_o.png) 
+
+
+```
+Error: object 'variable' not found
+```
+
+
 
 ```r
 save(list=ls(), file="ProsecutorsFallacy.rda")
