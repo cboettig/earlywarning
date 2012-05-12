@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, reset = 1 or`
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, reset = 111 cache.path="summarystat/" or`
 
 # Code for Prosecutors Fallacy 
 
@@ -16,9 +16,9 @@ Simulate a dataset from the full individual, nonlinear model, with stable parame
 This defines our simulation function
 
 ``` {r simdat-function_ss }
-select_crashes <- function(n){
+select_crashes <- function(){
 	T<- 5000
-	n_pts <- 500000
+	n_pts <- 100000
 	pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
     i = 0, Da = 0, Dt = 0, p = 2)
 	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
@@ -29,18 +29,28 @@ select_crashes <- function(n){
 ````
 
 To take advantage of parallelization, we loop over this function a set number of times.  
+``` {r parallelme}
+library(snow)
+cluster <- makeCluster(36, type = "MPI")
+clusterExport(cluster, list="select_crashes")
+clusterExport(cluster, list=ls())
+clusterEvalQ(cluster, library(populationdynamics))
+```
+
 
 ``` {r simdat_ss}
-sfInit(parallel=TRUE, cpu=12)
-sfLibrary(populationdynamics)
-sfExportAll()
-examples <- sfLapply(1:36, function(i) select_crashes())
+examples <- parLapply(cluster, 1:36, function(i) select_crashes())
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
 levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ````
 
 Zoom in on the relevant area of data near the crash
+
+
+``` {r savethat}
+save(list="dat", file="dat.rda")
+````
 
 ``` {r subsetdata_ss }
 require(plyr)
@@ -51,6 +61,9 @@ zoom <- ddply(dat, "reps", function(X){
     })
 zoom <- subset(zoom, value > 300)
 ````
+
+
+
 
 A plot of the first 9 datasets over the interval used for the warning signal calculation.
 
@@ -92,6 +105,8 @@ beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
 save(list=ls(), file="summarystats.rda")
 ````
 
-
+``` {r }
+stopCluster(cluster)
+````
 
 

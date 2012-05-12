@@ -113,23 +113,7 @@ Compute model-based warning signals on all each of these.
 
 
 ```r
-L <- length(unique(zoom$reps))
-sfLibrary(earlywarning)
-```
-
-
-
-```
-Library earlywarning loaded.
-```
-
-
-
-```r
-sfExportAll()
-models <- sfLapply(unique(zoom$rep), function(i)
-  try(stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN"))
-)
+#L <- length(unique(zoom$reps))#sfLibrary(earlywarning)#sfExportAll()#models <- sfLapply(unique(zoom$rep), function(i)#  try(stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN"))#)
 ```
 
 
@@ -146,9 +130,9 @@ indicators <- ddply(zoom, "reps", function(X){
     Y <- data.frame(time=X$time, value=X$value)
     tau_var <- warningtrend(Y, window_var)
     tau_acorr <- warningtrend(Y, window_autocorr)
-    i <- X$rep[1]
-    m <- models[[i]]$pars["m"]
-    c(var=tau_var, acor=tau_acorr, m=m)
+#    i <- X$rep[1]
+#    m <- models[[i]]$pars["m"]
+    c(var=tau_var, acor=tau_acorr)
 	})
 })
 ```
@@ -193,13 +177,14 @@ Error: object 'indicators' not found
 
 
 ```r
-ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
+#ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
+ggplot(dat) + geom_histogram(aes(value)) + facet_wrap(~variable)
 ```
 
 
 
 ```
-Error: object 'variable' not found
+Error: At least one layer must contain all variables used for facetting
 ```
 
 
