@@ -86,10 +86,9 @@ Zoom in on the relevant area of data near the crash
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value==0))
-    index <- max(tip-100,1):tip
+    index <- max(tip-500,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
-#zoom <- subset(zoom, value > 300)
 save(list="zoom", file="zoom.rda")
 ```
 
@@ -105,116 +104,27 @@ require(ggplot2)
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk replicate_crashes](figure/replicate_crashes.png) 
+![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7094/7184271362_9ce2a4c57e_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
 
 
 
-
 ```r
-#L <- length(unique(zoom$reps))#sfLibrary(earlywarning)#sfExportAll()#models <- sfLapply(unique(zoom$rep), function(i)#  try(stability_model(zoom[zoom$rep==i, c("time", "value")], "LSN"))#)
+library(data.table)
+library(reshape2)
+library(earlywarning)
+library(ggplot2)
+load("zoom.rda")
+dt <- data.table(subset(zoom, value>250))
+var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+dat <- melt(data.frame(var=var, acor=acor))
+ggplot(dat) + geom_histogram(aes(value), binwidth=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
 ```
 
-
-
-
-
-
-
-```r
-require(plyr)
-require(earlywarning)
-indicators <- ddply(zoom, "reps", function(X){
-	try({
-    Y <- data.frame(time=X$time, value=X$value)
-    tau_var <- warningtrend(Y, window_var)
-    tau_acorr <- warningtrend(Y, window_autocorr)
-#    i <- X$rep[1]
-#    m <- models[[i]]$pars["m"]
-    c(var=tau_var, acor=tau_acorr)
-	})
-})
-```
-
-
-
-```
-Error: Results do not have equal lengths
-```
-
-
-
-```r
-
-indicators <- indicators[sapply(indicators, function(x) !is(x, "try-error"))]
-```
-
-
-
-```
-Error: object 'indicators' not found
-```
-
-
-
-
-Plot distribution of indicators
-
-
-
-```r
-require(reshape2)
-dat <- melt(indicators, id="reps")
-```
-
-
-
-```
-Error: object 'indicators' not found
-```
-
-
-
-```r
-#ggplot(subset(dat, variable != "m.m")) + geom_histogram(aes(value)) + facet_wrap(~variable)
-ggplot(dat) + geom_histogram(aes(value)) + facet_wrap(~variable)
-```
-
-
-
-```
-Error: At least one layer must contain all variables used for facetting
-```
-
-
-
-
-Beanplot version of the indicators
-
-
-
-```r
-require(beanplot)
-beanplot(value ~ variable, data=dat, what=c(0,1,0,0), bw="nrd0")
-```
-
-
-
-```
-Error: object 'variable' not found
-```
-
-
-
-```r
-save(list=ls(), file="ProsecutorsFallacy.rda")
-```
-
-
-
-
+![plot of chunk unnamed-chunk-1](http://farm6.staticflickr.com/5234/7184271686_f756c66041_o.png) 
 
 
 

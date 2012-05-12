@@ -90,6 +90,8 @@ zoom <- ddply(dat, "reps", function(X){
     data.frame(time=X$time[index], value=X$value[index])
     })
 zoom <- subset(zoom, value > 300)
+
+save(list="zoom", file="zoom.rda")
 ```
 
 
