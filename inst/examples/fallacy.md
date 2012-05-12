@@ -101,10 +101,10 @@ A plot of the first 9 datasets over the interval used for the warning signal cal
 
 ```r
 require(ggplot2)
-ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggplot(subset(zoom, value>250 & reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7094/7184271362_9ce2a4c57e_o.png) 
+![plot of chunk replicate_crashes](http://farm9.staticflickr.com/8152/7184614268_afeea67382_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -124,7 +124,7 @@ dat <- melt(data.frame(var=var, acor=acor))
 ggplot(dat) + geom_histogram(aes(value), binwidth=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
 ```
 
-![plot of chunk unnamed-chunk-1](http://farm6.staticflickr.com/5234/7184271686_f756c66041_o.png) 
+![plot of chunk unnamed-chunk-1](http://farm6.staticflickr.com/5156/7184614770_993cc91a1c_o.png) 
 
 
 
