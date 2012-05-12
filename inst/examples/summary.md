@@ -40,7 +40,7 @@ ggplot(dat) + geom_histogram(aes(value), binwidth = 0.2) + facet_wrap(~variable)
     xlim(c(-1, 1))
 ```
 
-![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1.png) 
+![plot of chunk unnamed-chunk-1](http://farm9.staticflickr.com/8166/7184272034_a7a25808ef_o.png) 
 
 
 
