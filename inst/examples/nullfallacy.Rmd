@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, refresh="yesplease" or`
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, refresh="all" or`
 
 # Code for Prosecutors Fallacy 
 
@@ -21,11 +21,11 @@ select_crashes <- function(n){
 	n_pts <- n
 	pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
     i = 0, Da = 0, Dt = 0, p = 2)
-	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
+	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=500)
 	d <- dim(sn$x1)
 	crashed <- which(sn$x1[d[1],]==0)
 #	sn$x1[,crashed] 
-	sn$x1
+	sn$x1[1:2501,]
 }
 ````
 
@@ -35,9 +35,10 @@ To take advantage of parallelization, we loop over this function a set number of
 sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
 sfExportAll()
-examples <-  select_crashes(50000)
-dat <- melt(examples)
+#examples <-  sfLapply(1:4, function(i) select_crashes(50000))
 #dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
+examples <- select_crashes(50000)
+dat <- melt(examples)
 names(dat) = c("time", "reps", "value")
 levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ````
@@ -49,8 +50,8 @@ require(plyr)
 nullzoom <- ddply(dat, "reps", function(X){
 #    tip <- min(which(X$value==0))
 #    index <- max(tip-500,1):tip
-		index = 1:501
-    data.frame(time=X$time[index], value=X$value[index])
+#    data.frame(time=X$time[index], value=X$value[index])
+    data.frame(time=X$time, value=X$value)
     })
 save(list="nullzoom", file="nullzoom.rda")
 ````
