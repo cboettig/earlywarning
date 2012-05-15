@@ -95,16 +95,29 @@ save(list="zoom", file="zoom.rda")
 
 
 
+
+A plot of all the replicates 
+
+ 
+
+
+```r
+require(ggplot2)
+ggplot(dat) + geom_line(aes(time, value, group=reps), alpha=.01) 
+```
+
+![plot of chunk replicates_superplot](http://farm8.staticflickr.com/7081/7206232560_c98e017932_o.png) 
+
+
 A plot of the first 9 datasets over the interval used for the warning signal calculation.
 
 
 
 ```r
-require(ggplot2)
 ggplot(subset(zoom, value>250 & reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7240/7206172300_3a77621ed6_o.png) 
+![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7077/7206232846_32f4ec08dc_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -133,7 +146,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) 
  geom_density(data=nulldat, aes(value), bw=0.2)
 ```
 
-![plot of chunk plots_fallacy](http://farm8.staticflickr.com/7238/7206172564_ec8f270dc2_o.png) 
+![plot of chunk plots_fallacy](http://farm9.staticflickr.com/8163/7206233084_35bc9043ce_o.png) 
 
 
 

@@ -52,11 +52,18 @@ zoom <- ddply(dat, "reps", function(X){
 save(list="zoom", file="zoom.rda")
 ````
 
+
+A plot of all the replicates 
+
+ 
+``` {r replicates_superplot}
+require(ggplot2)
+ggplot(dat) + geom_line(aes(time, value, group=reps), alpha=.01) 
+````
+
 A plot of the first 9 datasets over the interval used for the warning signal calculation.
 
 ``` {r replicate_crashes}
-require(ggplot2)
-ggplot(zoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
 ggplot(subset(zoom, value>250 & reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ````
 
