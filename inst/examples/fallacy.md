@@ -101,10 +101,16 @@ A plot of the first 9 datasets over the interval used for the warning signal cal
 
 ```r
 require(ggplot2)
+ggplot(zoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
+```
+
+![plot of chunk replicate_crashes](http://farm6.staticflickr.com/5075/7206172000_ba8260c946_o.png) 
+
+```r
 ggplot(subset(zoom, value>250 & reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk replicate_crashes](http://farm9.staticflickr.com/8152/7184614268_afeea67382_o.png) 
+![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7240/7206172300_3a77621ed6_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -116,15 +122,24 @@ library(data.table)
 library(reshape2)
 library(earlywarning)
 library(ggplot2)
-load("zoom.rda")
+#load("zoom.rda")
 dt <- data.table(subset(zoom, value>250))
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
-dat <- melt(data.frame(var=var, acor=acor))
-ggplot(dat) + geom_histogram(aes(value), binwidth=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
+dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
+
+load("nullzoom3.rda")
+nulldt <- data.table(nullzoom)
+nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
+
+ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
+ facet_wrap(~variable) + xlim(c(-1, 1)) + 
+ geom_density(data=nulldat, aes(value), bw=0.2)
 ```
 
-![plot of chunk unnamed-chunk-1](http://farm6.staticflickr.com/5156/7184614770_993cc91a1c_o.png) 
+![plot of chunk plots_fallacy](http://farm8.staticflickr.com/7238/7206172564_ec8f270dc2_o.png) 
 
 
 

@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, refresh="allmoremore" or`
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="2012-05-15-nullfallacy/" or`
 
 # Code for Prosecutors Fallacy 
 
@@ -35,7 +35,7 @@ To take advantage of parallelization, we loop over this function a set number of
 sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
 sfExportAll()
-examples <-  sfLapply(1:6, function(i) select_crashes(50000))
+examples <-  sfLapply(1:24, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 #examples <- select_crashes(50000)
 dat <- melt(examples)

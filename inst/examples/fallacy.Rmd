@@ -24,8 +24,7 @@ select_crashes <- function(n){
 	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
 	d <- dim(sn$x1)
 	crashed <- which(sn$x1[d[1],]==0)
-#	sn$x1[,crashed] 
-	sn$x1
+	sn$x1[,crashed] 
 }
 ````
 
@@ -45,35 +44,44 @@ Zoom in on the relevant area of data near the crash
 
 ``` {r subsetdata }
 require(plyr)
-nullzoom <- ddply(dat, "reps", function(X){
-#    tip <- min(which(X$value==0))
-#    index <- max(tip-500,1):tip
-		index = 1:501
+zoom <- ddply(dat, "reps", function(X){
+    tip <- min(which(X$value==0))
+    index <- max(tip-500,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
-save(list="nullzoom", file="nullzoom.rda")
+save(list="zoom", file="zoom.rda")
 ````
 
 A plot of the first 9 datasets over the interval used for the warning signal calculation.
 
 ``` {r replicate_crashes}
 require(ggplot2)
-ggplot(subset(nullzoom, value>250 & reps %in% levels(nullzoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggplot(zoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
+ggplot(subset(zoom, value>250 & reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ````
 
 Compute model-based warning signals on all each of these.  
 
-``` {r }
+``` {r plots_fallacy}
 library(data.table)
 library(reshape2)
 library(earlywarning)
 library(ggplot2)
 #load("zoom.rda")
-dt <- data.table(subset(nullzoom, value>250))
+dt <- data.table(subset(zoom, value>250))
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
-dat <- melt(data.frame(var=var, acor=acor))
-ggplot(dat) + geom_histogram(aes(value), binwidth=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
+dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
+
+load("nullzoom3.rda")
+nulldt <- data.table(nullzoom)
+nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
+
+ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
+ facet_wrap(~variable) + xlim(c(-1, 1)) + 
+ geom_density(data=nulldat, aes(value), bw=0.2)
 ````
 
 
