@@ -70,7 +70,7 @@ Library populationdynamics loaded.
 
 ```r
 sfExportAll()
-examples <-  sfLapply(1:6, function(i) select_crashes(50000))
+examples <-  sfLapply(1:24, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 #examples <- select_crashes(50000)
 dat <- melt(examples)
@@ -108,7 +108,7 @@ require(ggplot2)
 ggplot(nullzoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
 ```
 
-![plot of chunk replicate_crashes_null](http://farm6.staticflickr.com/5272/7205773782_38f05db4f5_o.png) 
+![plot of chunk replicate_crashes_null](http://farm6.staticflickr.com/5199/7206264330_05a87bb60e_o.png) 
 
 
 
@@ -130,7 +130,7 @@ dat <- melt(data.frame(var=var, acor=acor))
 ggplot(dat) + geom_density(aes(value), bw=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
 ```
 
-![plot of chunk summarize_null](http://farm9.staticflickr.com/8012/7205774110_861672eda7_o.png) 
+![plot of chunk summarize_null](http://farm9.staticflickr.com/8007/7206264600_0f338b9776_o.png) 
 
 
 
