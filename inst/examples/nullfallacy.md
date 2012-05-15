@@ -32,7 +32,7 @@ select_crashes <- function(n){
 	d <- dim(sn$x1)
 	crashed <- which(sn$x1[d[1],]==0)
 #	sn$x1[,crashed] 
-	sn$x1[1:2501,]
+	sn$x1[1:501,]
 }
 ```
 
@@ -70,9 +70,9 @@ Library populationdynamics loaded.
 
 ```r
 sfExportAll()
-#examples <-  sfLapply(1:4, function(i) select_crashes(50000))
-#dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
-examples <- select_crashes(50000)
+examples <-  sfLapply(1:6, function(i) select_crashes(50000))
+dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
+#examples <- select_crashes(50000)
 dat <- melt(examples)
 names(dat) = c("time", "reps", "value")
 levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
@@ -108,17 +108,7 @@ require(ggplot2)
 ggplot(nullzoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
 ```
 
-![plot of chunk replicate_crashes_null](http://farm6.staticflickr.com/5447/7205157696_9397e7a625_o.png) 
-
-```r
-ggplot(subset(nullzoom, reps %in% levels(nullzoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
-```
-
-
-
-```
-Error: arguments imply differing number of rows: 1, 0
-```
+![plot of chunk replicate_crashes_null](http://farm6.staticflickr.com/5272/7205773782_38f05db4f5_o.png) 
 
 
 
@@ -140,7 +130,7 @@ dat <- melt(data.frame(var=var, acor=acor))
 ggplot(dat) + geom_density(aes(value), bw=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
 ```
 
-![plot of chunk summarize_null](http://farm8.staticflickr.com/7217/7205158716_5770fc49d1_o.png) 
+![plot of chunk summarize_null](http://farm9.staticflickr.com/8012/7205774110_861672eda7_o.png) 
 
 
 
