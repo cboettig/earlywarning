@@ -101,12 +101,6 @@ A plot of the first 9 datasets over the interval used for the warning signal cal
 
 ```r
 require(ggplot2)
-ggplot(zoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
-```
-
-![plot of chunk replicate_crashes](http://farm6.staticflickr.com/5075/7206172000_ba8260c946_o.png) 
-
-```r
 ggplot(subset(zoom, value>250 & reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
