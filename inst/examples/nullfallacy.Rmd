@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, refresh="ready" or`
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, refresh="yesplease" or`
 
 # Code for Prosecutors Fallacy 
 
@@ -15,7 +15,7 @@ Simulate a dataset from the full individual, nonlinear model, with stable parame
 
 This defines our simulation function
 
-``` {r simdatf}
+``` {r simdatf_null}
 select_crashes <- function(n){
 	T<- 5000
 	n_pts <- n
@@ -31,19 +31,20 @@ select_crashes <- function(n){
 
 To take advantage of parallelization, we loop over this function a set number of times.  
 
-``` {r simdat}
+``` {r simdat_null}
 sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
 sfExportAll()
-examples <- sfLapply(1:20, function(i) select_crashes(50000))
-dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
+examples <-  select_crashes(50000)
+dat <- melt(examples)
+#dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
 levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ````
 
 Zoom in on the relevant area of data near the crash
 
-``` {r subsetdata }
+``` {r subsetdata_null }
 require(plyr)
 nullzoom <- ddply(dat, "reps", function(X){
 #    tip <- min(which(X$value==0))
@@ -56,14 +57,15 @@ save(list="nullzoom", file="nullzoom.rda")
 
 A plot of the first 9 datasets over the interval used for the warning signal calculation.
 
-``` {r replicate_crashes}
+``` {r replicate_crashes_null}
 require(ggplot2)
-ggplot(subset(nullzoom, value>250 & reps %in% levels(nullzoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggplot(nullzoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
+ggplot(subset(nullzoom, reps %in% levels(nullzoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ````
 
 Compute model-based warning signals on all each of these.  
 
-``` {r }
+``` {r summarize_null}
 library(data.table)
 library(reshape2)
 library(earlywarning)
@@ -73,7 +75,7 @@ dt <- data.table(subset(nullzoom, value>250))
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 dat <- melt(data.frame(var=var, acor=acor))
-ggplot(dat) + geom_histogram(aes(value), binwidth=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
+ggplot(dat) + geom_density(aes(value), bw=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
 ````
 
 
