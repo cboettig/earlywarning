@@ -72,7 +72,7 @@ library(reshape2)
 library(earlywarning)
 library(ggplot2)
 #load("zoom.rda")
-dt <- data.table(subset(nullzoom, value>250))
+dt <- data.table(nullzoom)
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 dat <- melt(data.frame(var=var, acor=acor))
