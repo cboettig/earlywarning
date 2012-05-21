@@ -1,23 +1,61 @@
-#
+`ro  cache=TRUE, cache.path="chemostat/chemostat-", message=FALSE, warning=FALSE or`
+
+Load libraries and set up the parallel processing environment for 20 clusters
+
+```{r library}
 require(earlywarning)
 require(snow)
-cl <- makeCluster(60, type="MPI")
+require(ggplot2)
+require(reshape2)
+cl <- makeCluster(20, type="MPI")
 clusterEvalQ(cl, library(earlywarning))
+````
 
+Fit both models to the original data, record the observed likelihood ratio of the original data
 
+```{r models}
 data("chemostat")
 A.chemo <- stability_model(chemostat, "OU")
 B.chemo <- stability_model(chemostat, "LSN")
 observed.chemo <- -2 * (logLik(A.chemo) - logLik(B.chemo))
+````
+
+
+Perform the bootstrapped model comparison using 500 replicates on the parallel cluster.  
+
+```{r comparison, results="hide", echo=TRUE}
 clusterExport(cl,ls())
+clusterExport(cl,list=c("A.chemo", "B.chemo"))
 reps.chemo <- parLapply(cl, 1:500, function(i) compare(A.chemo, B.chemo))
 lr.chemo <- lik_ratios(reps.chemo)
 roc.chemo <- roc_data(lr.chemo)
+````
 
-save(list=ls(), file="manuscript_data.rda")
+```{r lr_ratio} 
+require(ggplot2)
+ggplot(lr.chemo) + geom_density(aes(value, fill=simulation), alpha=0.6) + geom_vline(aes(xintercept=observed.chemo))
+```
+
+```{r roc}
+ggplot(roc.chemo) + geom_line(aes(False.positives, True.positives))
+````
 
 
-stopCluster(cl)
 
+```{r generics} 
+X <- chemostat
+pow <- reps.chemo
+````
 
+Plot of the raw data
 
+```{r rawdata}
+rawdata <- data.frame(time=as.numeric(time(X)), state=X@.Data)
+p_raw <- ggplot(rawdata, aes(time, state)) + geom_line() + 
+	opts(title=paste(pow$label, "timeseries data"))
+p_raw
+````
+
+```{r save}
+save(list=ls(), file="chemostat.rda")
+````

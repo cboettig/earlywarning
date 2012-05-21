@@ -11,6 +11,7 @@ Description: Tools for the detection of early warning signals of critical
     original warningsignals package.
 License: BSD
 Imports:
+		methods,
     odesolve,
     psych,
     reshape2,

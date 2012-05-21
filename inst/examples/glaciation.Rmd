@@ -1,22 +1,43 @@
-# Example analysis for Glaciation data set
-require(earlywarning)
-require(snow)
-cl <- makeCluster(60, type="MPI")
+
+# Glaciation data example
+
+`ro cache=TRUE, cache.path="glaciation/", message=FALSE, warning=FALSE or`
+
+```{r cache=FALSE}
+library(earlywarning)
+library(snow)
+library(methods)
+cl <- makeCluster(20, type="MPI")
 clusterEvalQ(cl, library(earlywarning))
+````
 
+```{r }
 data("glaciation")
-A.deut <- stability_model(glaciation, "OU")
-B.deut <- stability_model(glaciation, "LSN")
-observed.deut <- -2 * (logLik(A.deut) - logLik(B.deut))
+A <- stability_model(glaciation, "OU")
+B <- stability_model(glaciation, "LSN")
+observed <- -2 * (logLik(A) - logLik(B))
+````
+
+```{r }
 clusterExport(cl, ls())
-reps.deut <- parLapply(cl, 1:500, function(i) compare(A.deut, B.deut))
-lr.deut <- lik_ratios(reps.deut)
-roc.deut <- roc_data(lr.deut)
+clusterExport(cl, list = c("A", "B"))
+reps <- parLapply(cl, 1:500, function(i) compare(A,B))
+lr <- lik_ratios(reps)
+roc <- roc_data(lr)
+````
 
+```{r }
 save(list=ls(), file="glaciation.rda")
-
-
 stopCluster(cl)
+````
 
+```{r } 
+require(ggplot2)
+ggplot(lr) + geom_density(aes(value, fill=simulation), alpha=0.6) + geom_vline(aes(xintercept=observed))
+```
+
+```{r }
+ggplot(roc) + geom_line(aes(False.positives, True.positives))
+````
 
 
