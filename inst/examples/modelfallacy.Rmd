@@ -78,6 +78,12 @@ models <- sfLapply(unique(zoom$rep), function(i)
 save(list="models", file="modelfallacy.rda")
 ````
 
+```{r }
+m <- unlist(sapply(models, function(M) if(is(M, "gauss")) M$pars["m"]))
+range(m)
+sum(m[<0])
+````
+
 Compute model-based warning signals on all each of these.  
 
 ``` {r plots_fallacy}
