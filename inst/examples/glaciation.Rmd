@@ -1,4 +1,4 @@
-#
+# Example analysis for Glaciation data set
 require(earlywarning)
 require(snow)
 cl <- makeCluster(60, type="MPI")
