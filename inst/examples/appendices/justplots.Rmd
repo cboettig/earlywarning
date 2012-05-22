@@ -1,0 +1,47 @@
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, refresh="ready", dev='Cairo_pdf', fig.width=6, fig.height=5, fig.path="./" or`
+
+``` {r cache=FALSE}
+library(ggplot2)
+pdf.options(pointsize=8)
+theme_bw()
+````
+
+``` {r replicate_crashes, fig.width=12, fig.height=10}
+library(data.table)
+library(reshape2)
+library(earlywarning)
+load("zoom.rda")
+ggplot(subset(zoom, value>250 & reps %in% levels(zoom$reps)[1:9])) + 
+  geom_line(aes(time, value)) +
+  facet_wrap(~reps, scales="free") +
+  theme_bw()
+````
+
+
+
+```{r stats}
+dt <- data.table(subset(zoom, value>250))
+var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
+
+load("nullzoom3.rda")
+nulldt <- data.table(nullzoom)
+nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
+````
+
+``` {r indicators}
+ggplot(dat) + 
+  geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
+  facet_wrap(~variable) + xlim(c(-1, 1)) + 
+  geom_density(data=nulldat, aes(value), bw=0.2) + theme_bw()
+````
+
+ 
+``` {r }
+#ggplot(dat) + geom_line(aes(time, value, group=reps), alpha=.01) 
+````
+
+
