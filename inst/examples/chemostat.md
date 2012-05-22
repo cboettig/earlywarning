@@ -26,6 +26,109 @@ clusterEvalQ(cl, library(earlywarning))
 
 
 
+```
+## [[1]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[2]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[3]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[4]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[5]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[6]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[7]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[8]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[9]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[10]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[11]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[12]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[13]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[14]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[15]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[16]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[17]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[18]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[19]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+## [[20]]
+##  [1] "earlywarning" "snow"         "Rmpi"         "methods"     
+##  [5] "stats"        "graphics"     "grDevices"    "utils"       
+##  [9] "datasets"     "base"        
+## 
+```
+
 
 
 
@@ -67,7 +170,7 @@ ggplot(lr.chemo) + geom_density(aes(value, fill = simulation), alpha = 0.6) +
     geom_vline(aes(xintercept = observed.chemo))
 ```
 
-![plot of chunk lr_ratio](http://farm8.staticflickr.com/7216/7245336930_0b53d83cbd_o.png) 
+![plot of chunk lr_ratio](figure/lr_ratio.png) 
 
 
 
@@ -76,7 +179,7 @@ ggplot(lr.chemo) + geom_density(aes(value, fill = simulation), alpha = 0.6) +
 ggplot(roc.chemo) + geom_line(aes(False.positives, True.positives))
 ```
 
-![plot of chunk roc](http://farm8.staticflickr.com/7095/7245337560_441dc65c14_o.png) 
+![plot of chunk roc](figure/roc.png) 
 
 
 
@@ -102,7 +205,7 @@ p_raw <- ggplot(rawdata, aes(time, state)) + geom_line() + opts(title = paste(po
 p_raw
 ```
 
-![plot of chunk rawdata](http://farm6.staticflickr.com/5324/7245337910_5176c76079_o.png) 
+![plot of chunk rawdata](figure/rawdata.png) 
 
 
 
