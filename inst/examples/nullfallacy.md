@@ -108,7 +108,17 @@ require(ggplot2)
 ggplot(nullzoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
 ```
 
-![plot of chunk replicate_crashes_null](http://farm6.staticflickr.com/5199/7206264330_05a87bb60e_o.png) 
+![plot of chunk replicate_crashes_null](http://farm8.staticflickr.com/7223/7216645534_a60e185ef5_o.png) 
+
+```r
+ggplot(subset(nullzoom, reps %in% levels(nullzoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+```
+
+
+
+```
+Error: arguments imply differing number of rows: 1, 0
+```
 
 
 
@@ -123,14 +133,14 @@ library(reshape2)
 library(earlywarning)
 library(ggplot2)
 #load("zoom.rda")
-dt <- data.table(subset(nullzoom, value>250))
+dt <- data.table(nullzoom)
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 dat <- melt(data.frame(var=var, acor=acor))
 ggplot(dat) + geom_density(aes(value), bw=0.2) + facet_wrap(~variable) + xlim(c(-1, 1))
 ```
 
-![plot of chunk summarize_null](http://farm9.staticflickr.com/8007/7206264600_0f338b9776_o.png) 
+![plot of chunk summarize_null](http://farm8.staticflickr.com/7217/7216645906_6c6ddcf63a_o.png) 
 
 
 
