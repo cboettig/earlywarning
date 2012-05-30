@@ -1,0 +1,28 @@
+`r opts_knit$set(upload.fun=socialR::flickr.url)`
+
+## Chance transition
+
+```{r fig.keep="last"}
+load("data/zoom.rda")
+dat <- subset(zoom, reps==4)
+curve(((x-250)/300)^4 - 1.55*((x-250)/300)^2, 0, 650, lwd=2, xlab="state", ylab="potential")
+par(new=TRUE)
+plot(dat$value, dat$time, type="l", xlim=c(0,650), xaxt="n", yaxt="n", ylim=c(.997*min(dat$time), max(dat$time)*1.005), xlab="", ylab="")
+axis(4)
+````
+
+
+## bifurcation
+
+```{r fig.keep="last"}
+curve(((x-250)/300)^4 - 1.55*((x-250)/300)^2, 0, 650, lwd=2, xlab="state", ylab="potential", col=rgb(.4,.4,.4), lty=2)
+curve(.5*( ((x-250)/300)^4 + ((x-250)/300)^3 - 1.55*((x-250)/300)^2), lwd=2, add=T, col=rgb(.2,.2,.2), lty=2)
+curve(.2*( ((x-250)/300)^4 + 5*((x-250)/300)^3 - 1.55*((x-250)/300)^2), lwd=2, add=T)
+par(new=TRUE)
+plot(dat$value, dat$time, type="l", xlim=c(0,650), xaxt="n", yaxt="n", ylim=c(.997*min(dat$time), max(dat$time)*1.005), xlab="", ylab="")
+axis(4)
+points(550, 0, pch=19, col="darkgray", cex=7)
+````
+
+
+
