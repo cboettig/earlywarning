@@ -7,12 +7,12 @@ Overplot the data of one of the replicates.
 ```{r fig.keep="last"}
 load("data/zoom.rda")
 dat <- subset(zoom, reps==4)
-f1 <- ((x-250)/300)^4 - 1.55*((x-250)/300)^2
+f1 <- function(x) ((x-250)/300)^4 - 1.55*((x-250)/300)^2
 curve(f1, 0, 650, lwd=2, xlab="state", ylab="potential")
 par(new=TRUE)
 plot(dat$value, dat$time, type="l", xlim=c(0,650), xaxt="n", yaxt="n", ylim=c(.997*min(dat$time), max(dat$time)*1.005), xlab="", ylab="")
 axis(4)
-mtext(4, "time")
+mtext("time", 4)
 ````
 
 
@@ -46,7 +46,7 @@ lines(bifur$state, bifur$f3, lwd=2)
 par(new=TRUE)
 plot(X, times, type="l", axes=FALSE, xlim=c(0, 650), ylim=c(0, 1.2*max(times)), xlab="", ylab="")
 axis(4)
-mtext(4, "time")
+mtext("time", 4)
 #points(550, 0, pch=19, col="darkgray", cex=7)
 ````
 

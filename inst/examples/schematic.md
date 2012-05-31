@@ -9,34 +9,17 @@ Overplot the data of one of the replicates.
 ```r
 load("data/zoom.rda")
 dat <- subset(zoom, reps == 4)
-f1 <- ((x - 250)/300)^4 - 1.55 * ((x - 250)/300)^2
-```
-
-
-
-```
-## Error: object 'x' not found
-```
-
-
-
-```r
+f1 <- function(x) ((x - 250)/300)^4 - 1.55 * ((x - 250)/300)^2
 curve(f1, 0, 650, lwd = 2, xlab = "state", ylab = "potential")
 par(new = TRUE)
 plot(dat$value, dat$time, type = "l", xlim = c(0, 650), xaxt = "n", 
     yaxt = "n", ylim = c(0.997 * min(dat$time), max(dat$time) * 1.005), xlab = "", 
     ylab = "")
 axis(4)
-mtext(4, "time")
+mtext("time", 4)
 ```
 
-
-
-```
-## Warning message: NAs introduced by coercion
-```
-
-![plot of chunk unnamed-chunk-1](http://farm9.staticflickr.com/8143/7309278100_7e52358f0f_o.png) 
+![plot of chunk unnamed-chunk-1](http://farm9.staticflickr.com/8164/7309288908_96e52ae8e9_o.png) 
 
 
 
@@ -81,16 +64,10 @@ par(new = TRUE)
 plot(X, times, type = "l", axes = FALSE, xlim = c(0, 650), ylim = c(0, 
     1.2 * max(times)), xlab = "", ylab = "")
 axis(4)
-mtext(4, "time")
+mtext("time", 4)
 ```
 
-
-
-```
-## Warning message: NAs introduced by coercion
-```
-
-![plot of chunk unnamed-chunk-3](http://farm9.staticflickr.com/8027/7309278744_030698ab1f_o.png) 
+![plot of chunk unnamed-chunk-3](http://farm9.staticflickr.com/8163/7309289806_2e80c92c7a_o.png) 
 
 ```r
 # points(550, 0, pch=19, col='darkgray', cex=7)
