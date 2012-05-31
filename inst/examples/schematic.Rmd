@@ -2,6 +2,8 @@
 
 ## Chance transition
 
+Overplot the data of one of the replicates. 
+
 ```{r fig.keep="last"}
 load("data/zoom.rda")
 dat <- subset(zoom, reps==4)
@@ -14,14 +16,30 @@ axis(4)
 
 ## bifurcation
 
+simulate an example with a bifurcation for comparison.  
+
+```{r }
+  library(populationdynamics)
+	T<- 5000
+	n_pts <- 50000
+	pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
+    i = 0, Da = .5, Dt = 0, p = 2)
+	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1)
+  X <- sn$x1
+  X <- X[X>250]
+  times <- 1:length(X)*T/n_pts
+  plot(X, times, type="l")
+````
+
+
 ```{r fig.keep="last"}
 curve(((x-250)/300)^4 - 1.55*((x-250)/300)^2, 0, 650, lwd=2, xlab="state", ylab="potential", col=rgb(.4,.4,.4), lty=2)
 curve(.5*( ((x-250)/300)^4 + ((x-250)/300)^3 - 1.55*((x-250)/300)^2), lwd=2, add=T, col=rgb(.2,.2,.2), lty=2)
 curve(.2*( ((x-250)/300)^4 + 5*((x-250)/300)^3 - 1.55*((x-250)/300)^2), lwd=2, add=T)
 par(new=TRUE)
-plot(dat$value, dat$time, type="l", xlim=c(0,650), xaxt="n", yaxt="n", ylim=c(.997*min(dat$time), max(dat$time)*1.005), xlab="", ylab="")
+plot(times, X, type="l", xlim=c(0,650), xaxt="n", yaxt="n", ylim=c(.997*min(dat$time), max(dat$time)*1.005), xlab="", ylab="")
 axis(4)
-points(550, 0, pch=19, col="darkgray", cex=7)
+#points(550, 0, pch=19, col="darkgray", cex=7)
 ````
 
 
