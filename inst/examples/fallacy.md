@@ -1,5 +1,4 @@
 
-
 # Code for Prosecutors Fallacy 
 
 Load the required libraries
@@ -46,27 +45,6 @@ To take advantage of parallelization, we loop over this function a set number of
 sfInit(parallel=TRUE, cpu=12)
 ```
 
-
-
-```
-R Version:  R version 2.15.0 (2012-03-30) 
-
-```
-
-
-
-```r
-sfLibrary(populationdynamics)
-```
-
-
-
-```
-Library populationdynamics loaded.
-```
-
-
-
 ```r
 sfExportAll()
 examples <- sfLapply(1:20, function(i) select_crashes(50000))
@@ -76,11 +54,7 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ```
 
 
-
-
 Zoom in on the relevant area of data near the crash
-
-
 
 ```r
 require(plyr)
@@ -93,36 +67,7 @@ save(list="zoom", file="zoom.rda")
 ```
 
 
-
-
-
-A plot of all the replicates 
-
- 
-
-
-```r
-require(ggplot2)
-ggplot(dat) + geom_line(aes(time, value, group=reps), alpha=.01) 
-```
-
-![plot of chunk replicates_superplot](http://farm8.staticflickr.com/7081/7206232560_c98e017932_o.png) 
-
-
-A plot of the first 9 datasets over the interval used for the warning signal calculation.
-
-
-
-```r
-ggplot(subset(zoom, value>250 & reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
-```
-
-![plot of chunk replicate_crashes](http://farm8.staticflickr.com/7077/7206232846_32f4ec08dc_o.png) 
-
-
-Compute model-based warning signals on all each of these.  
-
-
+Compute warning signals on all each of these.  
 
 ```r
 library(data.table)
