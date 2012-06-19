@@ -1,5 +1,4 @@
 
-
 # Code for Prosecutors Fallacy 
 ` require(knitcitations)`
 This code is written in the `R` language for statistical computing.  
@@ -88,27 +87,6 @@ given time.
 sfInit(parallel=TRUE, cpu=12)
 ```
 
-
-
-```
-R Version:  R version 2.15.0 (2012-03-30) 
-
-```
-
-
-
-```r
-sfLibrary(populationdynamics)
-```
-
-
-
-```
-Library populationdynamics loaded.
-```
-
-
-
 ```r
 sfExportAll()
 examples <- sfLapply(1:20, function(i) select_crashes(50000))
@@ -118,11 +96,7 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ```
 
 
-
-
 Zoom in on the relevant area of data near the crash
-
-
 
 ```r
 require(plyr)
@@ -134,47 +108,7 @@ zoom <- ddply(dat, "reps", function(X){
 ```
 
 
-
-
-
-
-Compute model-based warning signals on all each of these.  
-
-
-
-```r
-dt <- data.table(subset(zoom, value>250))
-var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
-acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
-dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
-```
-
-
-
-
-### Null distribution 
-
-To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
-
-
-
-```r
-select_crashes <- function(n){
-	T<- 5000
-	n_pts <- n
-	pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
-    i = 0, Da = 0, Dt = 0, p = 2)
-	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=500)
-	d <- dim(sn$x1)
-	sn$x1[1:501,]
-}
-```
-
-
-
-
-
-
+Compute warning signals on all each of these.  
 
 ```r
 sfInit(parallel=TRUE, cpu=12)
