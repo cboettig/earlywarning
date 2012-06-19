@@ -240,7 +240,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) 
  geom_density(data=nulldat, aes(value), bw=0.2)
 ```
 
-![plot of chunk figure2](appendix/figure2.png) 
+![plot of chunk figure2](http://farm8.staticflickr.com/7241/7404339476_856fc52ce4_o.png) 
 
 
 <p>Boettiger C (2012).
@@ -257,7 +257,22 @@ ISSN 0022-3654, <a href="http://dx.doi.org/10.1021/j100540a008">http://dx.doi.or
 <EM>Journal of The Royal Society Interface</EM>.
 ISSN 1742-5689, <a href="http://dx.doi.org/10.1098/rsif.2012.0125">http://dx.doi.org/10.1098/rsif.2012.0125</a>.
 
+<p>Boettiger C (2012).
+<EM>earlywarning: Detection of Early Warning Signals for Catastrophic Bifurcations</EM>.
+R package version 0.0-1.
 Boettiger C (2012). _populationdynamics: Tools to simulate various
 population dynamics models in ecology_. R package version 0.0-1.
+
+Gillespie DT (1977). "Exact Stochastic Simulation of Coupled
+Chemical Reactions." _The Journal of Physical Chemistry_, *81*.
+ISSN 0022-3654, <URL: http://dx.doi.org/10.1021/j100540a008>.
+
+Boettiger C and Hastings A (2012). "Quantifying Limits to
+Detection of Early Warning For Critical Transitions." _Journal of
+The Royal Society Interface_. ISSN 1742-5689, <URL:
+http://dx.doi.org/10.1098/rsif.2012.0125>.
+
+Boettiger C (2012). _earlywarning: Detection of Early Warning
+Signals for Catastrophic Bifurcations_. R package version 0.0-1.
 
 
