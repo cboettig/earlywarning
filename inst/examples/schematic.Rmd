@@ -1,4 +1,5 @@
-`r opts_knit$set(upload.fun=socialR::flickr.url)`
+`ro upload.fun=socialR::flickr.url, dev='Cairo_pdf')`
+`r opts_chunk$set(dev='Cairo_pdf')`
 
 ## Chance transition
 

@@ -1,7 +1,12 @@
 
 
 # Code for Prosecutors Fallacy 
-`r require(knitcitations)`
+``` {r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+require(knitcitations)
+cleanbib()
+````
+
+
 This code is written in the `R` language for statistical computing.  
 Population dynamics are simulated using the `populationdynamics` package
 `r citep(citation("populationdynamics"))` for exact simulations of 
@@ -240,4 +245,6 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) 
 ![plot of chunk figure2](appendix/figure2.png) 
 
 
-`r bibliography()`
+``` {r echo=FALSE, comment=NA, warning=FALSE, results="asis"}
+bibliography(debug=TRUE)
+```

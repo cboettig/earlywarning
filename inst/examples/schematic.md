@@ -1,3 +1,4 @@
+`ro upload.fun=socialR::flickr.url, dev='Cairo_pdf')`
 
 
 ## Chance transition
@@ -19,7 +20,7 @@ axis(4)
 mtext("time", 4)
 ```
 
-![plot of chunk unnamed-chunk-1](http://farm9.staticflickr.com/8164/7309288908_96e52ae8e9_o.png) 
+![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1.pdf) 
 
 
 
@@ -67,7 +68,7 @@ axis(4)
 mtext("time", 4)
 ```
 
-![plot of chunk unnamed-chunk-3](http://farm9.staticflickr.com/8163/7309289806_2e80c92c7a_o.png) 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.pdf) 
 
 ```r
 # points(550, 0, pch=19, col='darkgray', cex=7)

@@ -1,7 +1,10 @@
 
 
 # Code for Prosecutors Fallacy 
-`TRUE`
+
+
+
+
 This code is written in the `R` language for statistical computing.  
 Population dynamics are simulated using the `populationdynamics` package
 (Boettiger, 2012) for exact simulations of 
@@ -240,4 +243,21 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) 
 ![plot of chunk figure2](appendix/figure2.png) 
 
 
-list(title = "populationdynamics: Tools to simulate various population dynamics models in ecology", author = list(list(given = "Carl", family = "Boettiger", role = NULL, email = "cboettig@gmail.com", comment = NULL)), year = "2012", note = "R package version 0.0-1"), list(title = "Exact Stochastic Simulation of Coupled Chemical Reactions", author = list(list(given = c("Daniel", "T."), family = "Gillespie", role = NULL, email = NULL, comment = NULL)), journal = "The Journal of Physical Chemistry", year = "1977", month = "12", volume = "81", doi = "10.1021/j100540a008", issn = "0022-3654"), list(title = "Quantifying Limits to Detection of Early Warning For Critical Transitions", author = list(list(given = "C.", family = "Boettiger", role = NULL, email = NULL, comment = NULL), list(given = "A.", family = "Hastings", role = NULL, email = NULL, comment = NULL)), journal = "Journal of The Royal Society Interface", year = "2012", month = "05", doi = "10.1098/rsif.2012.0125", issn = "1742-5689")
+<p>Boettiger C (2012).
+<EM>populationdynamics: Tools to simulate various population dynamics models in ecology</EM>.
+R package version 0.0-1.
+
+<p>Gillespie DT (1977).
+&ldquo;Exact Stochastic Simulation of Coupled Chemical Reactions.&rdquo;
+<EM>The Journal of Physical Chemistry</EM>, <B>81</B>.
+ISSN 0022-3654, <a href="http://dx.doi.org/10.1021/j100540a008">http://dx.doi.org/10.1021/j100540a008</a>.
+
+<p>Boettiger C and Hastings A (2012).
+&ldquo;Quantifying Limits to Detection of Early Warning For Critical Transitions.&rdquo;
+<EM>Journal of The Royal Society Interface</EM>.
+ISSN 1742-5689, <a href="http://dx.doi.org/10.1098/rsif.2012.0125">http://dx.doi.org/10.1098/rsif.2012.0125</a>.
+
+Boettiger C (2012). _populationdynamics: Tools to simulate various
+population dynamics models in ecology_. R package version 0.0-1.
+
+
