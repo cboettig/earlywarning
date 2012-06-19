@@ -242,7 +242,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) 
  geom_density(data=nulldat, aes(value), bw=0.2)
 ```
 
-![plot of chunk figure2](appendix/figure2.png) 
+![plot of chunk figure2](http://farm8.staticflickr.com/7241/7404339476_856fc52ce4_o.png) 
 
 
 ``` {r echo=FALSE, comment=NA, warning=FALSE, results="asis"}
