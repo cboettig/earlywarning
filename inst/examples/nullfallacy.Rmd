@@ -2,18 +2,57 @@
 
 # Code for Prosecutors Fallacy 
 
-Load the required libraries
- 
-``` {r libraries}
-require(populationdynamics)
-require(earlywarning)
-require(reshape2)
-require(snowfall)
+``` {r prelim, cache=FALSE, echo=FALSE}
+require(knitcitations)
 ````
 
-Simulate a dataset from the full individual, nonlinear model, with stable parameters (*.e.g.* not approaching a bifurcation).
+This code is written in the `R` language for statistical computing.  
+Population dynamics are simulated using the `populationdynamics` package
+`r citep(citation("populationdynamics"))` for exact simulations of 
+discrete birth-death processes in continuous time using the Gillespie
+agorithm `r citep("10.1021/j100540a008")`.  Early warning signals
+of variance and autocorrelation, as well as the model-based estimate
+of `r citet("10.1098/rsif.2012.0125") are estimated using the 
+`earlywarning` package `r citep(citation("earlywarning")`.  These
+packages can be installed from Github using the `devtools` R package
 
-This defines our simulation function
+```r
+library(devtools)
+install_github("populationdynamics", "cboettig")
+install_github("earlywarning", "cboettig")
+```
+
+In the examples of this manuscript, the population dynamics are given by
+
+<div>
+\begin{align}
+  \frac{dP(n,t)}{dt} &= b_{n-1} P(n-1,t) + d_{n+1}P(n+1,t) - (b_n+d_n) P(n,t)  \label{master}, \\
+    b_n &= \frac{e K n^2}{n^2 + h^2}, \\
+    d_n &= e n + a,
+\end{align}
+</div>
+
+which is provided by the `saddle_node_ibm` model in `populationdynamics`. 
+
+For each of the warning signal statistics in question, 
+we need to generate the distibution over all replicates
+and then over replicates which have been selected conditional 
+on having experienced a crash.  
+
+We begin by running the simulation of the process for all replicates.  
+First, we load the required libraries.  
+ 
+``` {r libraries}
+library(populationdynamics)
+library(earlywarning)
+library(reshape2)		# data manipulation
+library(data.table)	# data manipulation
+library(ggplot2)		# graphics
+library(snowfall)		# parallel
+````
+
+
+Then we fix a set of paramaters we will use for the simulation function,
 
 ``` {r simdatf_null}
 select_crashes <- function(n){
@@ -24,12 +63,15 @@ select_crashes <- function(n){
 	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=500)
 	d <- dim(sn$x1)
 	crashed <- which(sn$x1[d[1],]==0)
-#	sn$x1[,crashed] 
 	sn$x1[1:501,]
 }
 ````
 
-To take advantage of parallelization, we loop over this function a set number of times.  
+To take advantage of parallelization, we loop over this function a set
+number of times.  The `snowfall` library provides the parallelization
+of the `lapply` loop.  A few extra commands format the data into a table
+with columns of times, replicate id number, and population value at the
+given time.
 
 ``` {r simdat_null}
 sfInit(parallel=TRUE, cpu=12)
@@ -37,10 +79,9 @@ sfLibrary(populationdynamics)
 sfExportAll()
 examples <-  sfLapply(1:24, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
-#examples <- select_crashes(50000)
 dat <- melt(examples)
 names(dat) = c("time", "reps", "value")
-levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
+levels(dat$reps) <- 1:length(levels(dat$reps)) 
 ````
 
 Zoom in on the relevant area of data near the crash
@@ -48,30 +89,14 @@ Zoom in on the relevant area of data near the crash
 ``` {r subsetdata_null }
 require(plyr)
 nullzoom <- ddply(dat, "reps", function(X){
-#    tip <- min(which(X$value==0))
-#    index <- max(tip-500,1):tip
-#    data.frame(time=X$time[index], value=X$value[index])
     data.frame(time=X$time, value=X$value)
     })
 save(list="nullzoom", file="nullzoom.rda")
 ````
 
-A plot of the first 9 datasets over the interval used for the warning signal calculation.
-
-``` {r replicate_crashes_null}
-require(ggplot2)
-ggplot(nullzoom) + geom_line(aes(time, value, group=reps), alpha=.1) 
-ggplot(subset(nullzoom, reps %in% levels(nullzoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
-````
-
 Compute model-based warning signals on all each of these.  
 
 ``` {r summarize_null}
-library(data.table)
-library(reshape2)
-library(earlywarning)
-library(ggplot2)
-#load("zoom.rda")
 dt <- data.table(nullzoom)
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
