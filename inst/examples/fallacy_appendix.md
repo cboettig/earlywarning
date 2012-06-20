@@ -9,7 +9,7 @@ This code is written in the `R` language for statistical computing.
 Population dynamics are simulated using the `populationdynamics` package
 (Boettiger, 2012) for exact simulations of 
 discrete birth-death processes in continuous time using the Gillespie
-agorithm (Gillespie, 1977).  Early warning signals
+algorithm (Gillespie, 1977).  Early warning signals
 of variance and autocorrelation, as well as the model-based estimate
 of Boettiger & Hastings, (2012) are estimated using the 
 `earlywarning` package (Boettiger, 2012).  These
@@ -38,11 +38,7 @@ we need to generate the distibution over all replicates
 and then over replicates which have been selected conditional 
 on having experienced a crash.  
 
-We begin by running the simulation of the process for all replicates.  
-
-Load the required libraries
- 
-
+We begin by loading the required libraries.  
 
 ```r
 library(populationdynamics)
@@ -79,41 +75,23 @@ select_crashes <- function(n){
 
 
 
-To take advantage of parallelization, we loop over this function a set number of times.  The `snowfall` library provides the parallelization
-of the `lapply` loop.  A few extra commands format the data into a table
-with columns of times, replicate id number, and population value at the
-given time.
-
-
-
+To take advantage of parallelization, we loop over this function a set
+number of times.  The `snowfall` library provides the parallelization
+of the `lapply` loop.  We initialize a parallel framework across 12
+processors,
 
 ```r
 sfInit(parallel=TRUE, cpu=12)
-```
-
-
-
-```
-R Version:  R version 2.15.0 (2012-03-30) 
-
-```
-
-
-
-```r
 sfLibrary(populationdynamics)
+sfExportAll()
 ```
 
-
-
-```
-Library populationdynamics loaded.
-```
-
+and then loop over 20 instances of 1000 replicates each to assemble our
+dataset.  A few extra commands format the data into a table with columns
+of times, replicate id number, and population value at the given time.
 
 
 ```r
-sfExportAll()
 examples <- sfLapply(1:20, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
@@ -121,11 +99,7 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ```
 
 
-
-
 Zoom in on the relevant area of data near the crash
-
-
 
 ```r
 require(plyr)
@@ -138,17 +112,19 @@ zoom <- ddply(dat, "reps", function(X){
 
 
 
-
-
-
-Compute model-based warning signals on all each of these.  
-
+Finally we compute model-based warning signals on all each of these.  
+We take advantage of the `data.table` package to quickly apply 
+the `warningtrend` function over each of the replicates.  
 
 
 ```r
 dt <- data.table(subset(zoom, value>250))
-var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
-acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+var <- dt[, warningtrend(
+            data.frame(time=time, value=value), window_var),
+            by=reps]$V1
+acor <- dt[, warningtrend(data.frame(time=time, value=value),
+             window_autocorr),
+             by=reps]$V1
 dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 ```
 
@@ -174,24 +150,6 @@ select_crashes <- function(n){
 ```
 
 
-
-
-
-
-
-```r
-sfInit(parallel=TRUE, cpu=12)
-sfLibrary(populationdynamics)
-```
-
-
-
-```
-Library populationdynamics loaded.
-```
-
-
-
 ```r
 sfExportAll()
 examples <-  sfLapply(1:24, function(i) select_crashes(50000))
@@ -201,13 +159,6 @@ names(nulldat) = c("time", "reps", "value")
 levels(nulldat$reps) <- 1:length(levels(dat$reps)) 
 ```
 
-
-
-
-Zoom in on the relevant area of data near the crash
-
-
-
 ```r
 require(plyr)
 nullzoom <- ddply(nulldat, "reps", function(X){
@@ -216,36 +167,44 @@ nullzoom <- ddply(nulldat, "reps", function(X){
 ```
 
 
-
-
-
-
-
-
 ```r
 nulldt <- data.table(nullzoom)
-nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
-nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+nullvar <- nulldt[, warningtrend(
+                    data.frame(time=time, value=value), window_var),
+                    by=reps]$V1
+nullacor <- nulldt[, warningtrend(
+                     data.frame(time=time, value=value), window_autocorr),
+                     by=reps]$V1
 nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
 ```
 
 
+## Plot the distributions 
 
-
-
+We generate the plot of the null distribution as a density curve overlaid on the histogram of
+warning signal statistics we calculated for the conditionally selected examples.  
 
 ```r
-ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
+ggplot(dat) + 
+ geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), bw=0.2)
 ```
 
-![plot of chunk figure2](http://farm8.staticflickr.com/7241/7404339476_856fc52ce4_o.png) 
+![Figure2](appendix/figure2.png) 
 
+
+## References
 
 <p>Boettiger C (2012).
 <EM>populationdynamics: Tools to simulate various population dynamics models in ecology</EM>.
 R package version 0.0-1.
+
+<p>Boettiger C (2012).
+<EM>earlywarning: Detection of Early Warning Signals for Catastrophic Bifurcations</EM>.
+R package version 0.0-1.
+Boettiger C (2012). _populationdynamics: Tools to simulate various
+population dynamics models in ecology_. R package version 0.0-1.
 
 <p>Gillespie DT (1977).
 &ldquo;Exact Stochastic Simulation of Coupled Chemical Reactions.&rdquo;
@@ -257,22 +216,5 @@ ISSN 0022-3654, <a href="http://dx.doi.org/10.1021/j100540a008">http://dx.doi.or
 <EM>Journal of The Royal Society Interface</EM>.
 ISSN 1742-5689, <a href="http://dx.doi.org/10.1098/rsif.2012.0125">http://dx.doi.org/10.1098/rsif.2012.0125</a>.
 
-<p>Boettiger C (2012).
-<EM>earlywarning: Detection of Early Warning Signals for Catastrophic Bifurcations</EM>.
-R package version 0.0-1.
-Boettiger C (2012). _populationdynamics: Tools to simulate various
-population dynamics models in ecology_. R package version 0.0-1.
-
-Gillespie DT (1977). "Exact Stochastic Simulation of Coupled
-Chemical Reactions." _The Journal of Physical Chemistry_, *81*.
-ISSN 0022-3654, <URL: http://dx.doi.org/10.1021/j100540a008>.
-
-Boettiger C and Hastings A (2012). "Quantifying Limits to
-Detection of Early Warning For Critical Transitions." _Journal of
-The Royal Society Interface_. ISSN 1742-5689, <URL:
-http://dx.doi.org/10.1098/rsif.2012.0125>.
-
-Boettiger C (2012). _earlywarning: Detection of Early Warning
-Signals for Catastrophic Bifurcations_. R package version 0.0-1.
 
 
