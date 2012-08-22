@@ -1,15 +1,15 @@
 `ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, refresh="ready" or`
 
 # Code for Prosecutors Fallacy 
-` require(knitcitations)`
+`r require(knitcitations)`
 This code is written in the `R` language for statistical computing.  
 Population dynamics are simulated using the `populationdynamics` package
-` citep(citation("populationdynamics"))` for exact simulations of 
+`r citep(citation("populationdynamics"))` for exact simulations of 
 discrete birth-death processes in continuous time using the Gillespie
-agorithm ` citep("10.1021/j100540a008")`.  Early warning signals
+agorithm `r citep("10.1021/j100540a008")`.  Early warning signals
 of variance and autocorrelation, as well as the model-based estimate
-of ` citet("10.1098/rsif.2012.0125")` are estimated using the 
-`earlywarning` package ` citep(citation("earlywarning")`.  These
+of `r citet("10.1098/rsif.2012.0125")` are estimated using the 
+`earlywarning` package `r citep(citation("earlywarning")`.  These
 packages can be installed from Github using the `devtools` R package
 
 ```r
@@ -18,7 +18,7 @@ install_github("populationdynamics", "cboettig")
 install_github("earlywarning", "cboettig")
 ```
 
-In the examples of this manuscript, the population dynamics are given by
+For the individual-based simulation, the population dynamics are given by
 
 <div>
 \begin{align}
@@ -29,6 +29,15 @@ In the examples of this manuscript, the population dynamics are given by
 </div>
 
 which is provided by the `saddle_node_ibm` model in `populationdynamics`. 
+
+We also consider the discrete time version of the model of `r citet("10.1038/269471a0")`,
+
+<div>
+\begin{equation}
+X_{t+1} =     X  \exp\left( r \left(1 - \frac{ X_t }{  K } \right) - \frac{ a * X_t ^ {Q - 1} }{s ^ Q + H ^ Q} \right) 
+\end{equation}
+
+We will use parameters r = .75, k = 10, a=1.7, H=1, Q = 3.  In this model Q is a parameter that will force the system through a bifurcation point at a = 2.  
 
 For each of the warning signal statistics in question, 
 we need to generate the distibution over all replicates
@@ -53,7 +62,7 @@ library(snowfall)		# parallel
 Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that crash as we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
 
 
-``` {r simdatf}
+``` {r simdatf eval=FALSE}
 select_crashes <- function(n){
 	T<- 5000
 	n_pts <- n
@@ -65,6 +74,38 @@ select_crashes <- function(n){
 	sn$x1[,crashed] 
 }
 ````
+
+
+This setting toggles the simulation model to use the May formulation instead.  
+
+``` {r sim_may}
+select_crashes <- function(n){
+  n <- n/10 # doesn't need as long as the individual-based
+  sn <- 
+  sapply(1:1000, function(rep){
+    x <- vector(mode="double", length=n)
+    x[1] <- 8 # positive equilibrium
+    z <- rlnorm(n, 0, .1)
+    r = .75; k = 10; a=1.55; H=1; Q = 3
+    for(t in 1:n){
+      x[t+1] = z[t] *  x[t] * exp(r * (1 - x[t] / k) - a * x[t] ^ (Q - 1) / (x[t] ^ Q + H ^ Q)) 
+    }
+    x
+  })
+	crashed <- which(sn[n,] < 2)
+  length(crashed)/1000
+
+
+	sn[,crashed] 
+}
+````
+
+
+
+
+
+
+
 
 To take advantage of parallelization, we loop over this function a set number of times.  The `snowfall` library provides the parallelization
 of the `lapply` loop.  A few extra commands format the data into a table
