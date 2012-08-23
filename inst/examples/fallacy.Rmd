@@ -141,7 +141,7 @@ require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value<threshold))
 print(tip)
-    index <- max(tip-500,1):tip
+    index <- max(tip-200,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
 ````
@@ -191,7 +191,7 @@ select_crashes <- function(n){
     }
     x
   })
-	sn[1:501,] 
+	sn[1:201,] 
 }
 
 
