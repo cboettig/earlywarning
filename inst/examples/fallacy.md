@@ -133,6 +133,7 @@ This setting toggles the simulation model to use the May formulation instead.
 
 
 ```r
+threshold <- 1.5
 select_crashes <- function(n){
   n <- n/10 # doesn't need as long as the individual-based
   sn <- 
@@ -146,10 +147,8 @@ select_crashes <- function(n){
     }
     x
   })
-	crashed <- which(sn[n,] < 2)
-  length(crashed)/1000
-
-
+	crashed <- which(sn[n,] < threshold)
+  # length(crashed)/1000 # fraction that crash
 	sn[,crashed] 
 }
 ```
@@ -207,7 +206,7 @@ Zoom in on the relevant area of data near the crash
 ```r
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
-    tip <- min(which(X$value==0))
+    tip <- min(which(X$value<threshold))
     index <- max(tip-500,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
@@ -222,12 +221,25 @@ Error: negative length vectors are not allowed
 
 
 
+
+```r
+ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+```
+
+```
+Error: object 'zoom' not found
+```
+
+
+
+
+
 Compute model-based warning signals on all each of these.  
 
 
 
 ```r
-dt <- data.table(subset(zoom, value>250))
+dt <- data.table(subset(zoom, value>threshold))
 ```
 
 ```
@@ -284,9 +296,41 @@ select_crashes <- function(n){
 
 
 
+```r
+select_crashes <- function(n){
+  n <- n/10 # doesn't need as long as the individual-based
+  sn <- 
+  sapply(1:1000, function(rep){
+    x <- vector(mode="double", length=n)
+    x[1] <- 8 # positive equilibrium
+    z <- rlnorm(n, 0, .1)
+    r = .75; k = 10; a=1.55; H=1; Q = 3
+    for(t in 1:n){
+      x[t+1] = z[t] *  x[t] * exp(r * (1 - x[t] / k) - a * x[t] ^ (Q - 1) / (x[t] ^ Q + H ^ Q)) 
+    }
+    x
+  })
+	sn[1:501,] 
+}
+
+
+
+
+```
+
+
+
 
 ```r
 sfInit(parallel=TRUE, cpu=12)
+```
+
+```
+R Version:  R version 2.15.0 (2012-03-30) 
+
+```
+
+```r
 sfLibrary(populationdynamics)
 ```
 
@@ -342,7 +386,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) 
  geom_density(data=nulldat, aes(value), bw=0.2)
 ```
 
-![plot of chunk figure2](http://farm9.staticflickr.com/8433/7841536156_e37b327751_o.png) 
+![plot of chunk figure2](http://farm9.staticflickr.com/8282/7842271192_942487db40_o.png) 
 
 
 
