@@ -1,6 +1,8 @@
 `ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="fallacy/" or`
 
 # Code for Prosecutors Fallacy 
+<!--
+
 `r require(knitcitations)`
 This code is written in the `R` language for statistical computing.  
 Population dynamics are simulated using the `populationdynamics` package
@@ -31,6 +33,10 @@ For the individual-based simulation, the population dynamics are given by
 which is provided by the `saddle_node_ibm` model in `populationdynamics`. 
 
 We also consider the discrete time version of the model of `r citet("10.1038/269471a0")`,
+
+
+-->
+
 
 <div>
 \begin{equation}
@@ -124,7 +130,7 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 
 
 ``` {r testing}
-ggplot(subset(dat, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ````
 
 

@@ -1,6 +1,8 @@
 
 
 # Code for Prosecutors Fallacy 
+<!--
+
 `FALSE`
 This code is written in the `R` language for statistical computing.  
 Population dynamics are simulated using the `populationdynamics` package
@@ -73,6 +75,10 @@ Error in eval(expr, envir, enclos) : could not find function "citet"
 ```
 
 ,
+
+
+-->
+
 
 <div>
 \begin{equation}
@@ -203,14 +209,10 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 
 
 ```r
-ggplot(subset(dat, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
+ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-```
-Error: object 'zoom' not found
-```
-
-
+![plot of chunk testing](http://farm9.staticflickr.com/8307/7846356442_b5c13c6410_o.png) 
 
 
 
@@ -680,7 +682,7 @@ print(tip)
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm8.staticflickr.com/7133/7845930476_52f7934da5_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8443/7846356688_131f3a05fb_o.png) 
 
 
 
@@ -803,7 +805,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) 
  geom_density(data=nulldat, aes(value), bw=0.2)
 ```
 
-![plot of chunk figure2](http://farm9.staticflickr.com/8290/7845930684_54dd61daf5_o.png) 
+![plot of chunk figure2](http://farm9.staticflickr.com/8422/7846356874_fc462769c5_o.png) 
 
 
 
