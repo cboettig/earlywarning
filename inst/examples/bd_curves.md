@@ -32,14 +32,7 @@ upper <- 700
 x <- seq(lower, upper, length.out = 100)
 bx <- sapply(x, b)
 dx <- sapply(x, d)
-d0 <- melt(data.frame(state = x, birth = bx, death = dx), id = "State")
-```
-
-```
-## Error: id variables not found in data: State
-```
-
-```r
+d0 <- melt(data.frame(State = x, birth = bx, death = dx), id = "State")
 p0 <- ggplot(d0) + geom_line(aes(State, value, lty = variable)) + 
     ylab("growth rate") + opts(title = "Birth and death rate functions")
 ```
@@ -141,18 +134,11 @@ require(grid)
 pushViewport(viewport(layout = grid.layout(1, 3)))
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 print(p0, vp = vplayout(1, 1))
-```
-
-```
-## Error: object 'State' not found
-```
-
-```r
 print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1](http://farm9.staticflickr.com/8455/7901813212_238dcdd520_o.png) 
+![plot of chunk Figure1](http://farm9.staticflickr.com/8441/7901819170_1c71324095_o.png) 
 
 
 

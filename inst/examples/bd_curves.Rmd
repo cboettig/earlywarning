@@ -30,7 +30,7 @@ upper <- 700
 x <- seq(lower, upper, length.out=100)
 bx <- sapply(x, b) 
 dx <- sapply(x, d) 
-d0 <- melt(data.frame(state=x, birth=bx, death=dx), id="State")
+d0 <- melt(data.frame(State=x, birth=bx, death=dx), id="State")
 p0 <- ggplot(d0) + 
   geom_line(aes(State, value, lty=variable)) + 
   ylab("growth rate") + opts(title = "Birth and death rate functions")
