@@ -87,7 +87,7 @@ simulate an example with a bifurcation for comparison.
     i = 0, Da = .5, Dt = 0, p = 2)
 	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1)
   X <- sn$x1
-#  X <- X[X>250]
+  X <- X[X > 0]
   times <- 1:length(X)*T/n_pts
   a <- times - min(times) 
   a <- a/max(a)*(34000-19000) + 19000

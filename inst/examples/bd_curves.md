@@ -94,7 +94,7 @@ pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200, i = 0, Da = 0.5,
     Dt = 0, p = 2)
 sn <- saddle_node_ibm(pars, times = seq(0, T, length = n_pts), reps = 1)
 X <- sn$x1
-# X <- X[X>250]
+X <- X[X > 0]
 times <- 1:length(X) * T/n_pts
 a <- times - min(times)
 a <- a/max(a) * (34000 - 19000) + 19000
@@ -138,7 +138,7 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1](http://farm9.staticflickr.com/8176/7902027674_697c75fd9a_o.png) 
+![plot of chunk Figure1](http://farm9.staticflickr.com/8442/7902043166_3a4feaaef1_o.png) 
 
 
 
