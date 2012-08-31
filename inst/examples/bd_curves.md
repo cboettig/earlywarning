@@ -1,21 +1,13 @@
 
-
-
-
 ```r
+opts_knit$set(upload.fun = socialR::flickr.url)
+
 require(ggplot2)
-```
-
-```
-## Loading required package: ggplot2
-```
-
-```r
 require(reshape2)
-```
-
-```
-## Loading required package: reshape2
+theme_publish <- theme_set(theme_bw(8))
+theme_publish <- theme_update(axis.line = theme_blank(), axis.text.y = theme_blank(), 
+    axis.title.y = theme_blank(), legend.position = "bottom", panel.grid.major = theme_blank(), 
+    panel.grid.minor = theme_blank(), plot.background = theme_blank(), legend.title = theme_blank())
 ```
 
 
@@ -37,25 +29,17 @@ f <- function(n) b(n) - d(n)
 ```r
 lower <- 0
 upper <- 700
-curve(b, lower, upper, lwd = 2, xlab = "state", ylab = "growth rate")
-curve(d, lower, upper, lwd = 2, add = T, col = "red")
+x <- seq(lower, upper, length.out = 100)
+bx <- sapply(x, b)
+dx <- sapply(x, d)
+d0 <- melt(data.frame(state = x, birth = bx, death = dx), id = "state")
+p0 <- ggplot(d0) + geom_line(aes(state, value, lty = variable)) + 
+    ylab("growth rate")
 ```
-
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
-
-
-
-
-
-
-
-
 
 
 
 ```r
-
-x <- seq(lower, upper, length.out = 100)
 a <- 180
 u1 <- -1 * sapply(x, function(x) integrate(f, lower, x)$value)
 a <- 190
@@ -63,7 +47,6 @@ u2 <- -1 * sapply(x, function(x) integrate(f, lower, x)$value)
 a <- 200
 u3 <- -1 * sapply(x, function(x) integrate(f, lower, x)$value)
 ```
-
 
 
 
@@ -79,20 +62,24 @@ d2 <- data.frame(x = dat$value, value = a)
 
 
 
-
 ```r
-plot(x, u3, type = "l", lwd = 1, lty = 2, xlab = "state", ylab = "potential")
-lines(x, u1, lwd = 2, xlab = "state", ylab = "potential")
-lines(x, u2, lwd = 1, lty = 2, xlab = "state", ylab = "potential")
-par(new = TRUE)
-plot(dat$value, dat$time, type = "l", xlim = c(lower, upper), xaxt = "n", 
-    yaxt = "n", ylim = c(0.997 * min(dat$time), max(dat$time) * 1.005), xlab = "", 
-    ylab = "")
-axis(4)
-mtext("time", 4)
+df <- data.frame(x=x, value=u1)
+df$variable = "stable potential"
+d2$variable = "stable potential"
+df$panel <- "Potential Energy"
+d2$panel <- "Time of Sample Trajectory"
+d <- rbind(df, d2)
+p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) + 
+  facet_grid(panel ~ ., scale = "free") +
+  layer(data = d2, geom = "point") +
+  layer(data = df,  mapping = aes(lty=variable),  geom = c("line")) +
+  coord_cartesian(ylim=c(18000, 35000)) + 
+  xlab("State")
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
+
+
+
 
 
 simulate an example with a bifurcation for comparison.  
@@ -115,37 +102,14 @@ d3 <- data.frame(x = X, value = a)
 
 
 
-```r
-df <- data.frame(x=x, value=u1)
-df$panel <- "Potential Energy"
-d2$panel <- "Time of Sample Trajectory"
-d <- rbind(df, d2)
-ggplot(data = d, mapping = aes(x = x, y = value)) + 
-  facet_grid(panel ~ ., scale = "free") +
-  layer(data = d2, geom = "point") +
-  layer(data = df,  geom = c("line")) +
-  coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + 
-  theme_bw() + opts(axis.line=theme_blank(),
-        axis.text.y=theme_blank(),
-        axis.title.y=theme_blank(),legend.position="none",
-        panel.grid.major=theme_blank(),panel.grid.minor=theme_blank(),
-        plot.background=theme_blank())
-```
-
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9.png) 
-
-
-
-
 
 
 ```r
-df <- data.frame(x = x, `stable potential` = u1, deteriorating = u2, 
-    critical = u3)
-d1 <- melt(df, id = "x")
+df <- data.frame(x=x, "stable potential"=u1, "deteriorating"=u2, "critical"=u3)
+d1 <- melt(df, id="x")
 d1$panel <- "Potential Energy"
 d3$panel <- "Time of Sample Trajectory"
-d3$variable <- d3$x  # match col numbers to rbind
+d3$variable <- d3$x # match col numbers to rbind
 d <- rbind(d1, d3)
 ```
 
@@ -154,15 +118,25 @@ d <- rbind(d1, d3)
 ```
 
 ```r
-ggplot(data = d, mapping = aes(x = x, y = value)) + facet_grid(panel ~ 
-    ., scale = "free") + layer(data = d3, geom = "point") + layer(data = d1, 
-    mapping = aes(lty = variable), geom = c("line")) + coord_cartesian(ylim = c(18000, 
-    35000)) + xlab("State") + theme_bw() + opts(axis.line = theme_blank(), axis.text.y = theme_blank(), 
-    axis.title.y = theme_blank(), legend.position = "none", panel.grid.major = theme_blank(), 
-    panel.grid.minor = theme_blank(), plot.background = theme_blank())
+p2 <- ggplot(data = d, mapping = aes(x = x, y = value)) + 
+  facet_grid(panel ~ ., scale = "free") +
+  layer(data = d3, geom = "point") +
+  layer(data = d1,  mapping = aes(lty=variable), geom = c("line")) +
+  coord_cartesian(ylim=c(18000, 35000)) + xlab("State") 
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10.png) 
+
+
+```r
+require(grid)
+pushViewport(viewport(layout = grid.layout(1, 3)))
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+print(p0, vp = vplayout(1, 1))
+print(p1, vp = vplayout(1, 2))
+print(p2, vp = vplayout(1, 3))
+```
+
+![plot of chunk Figure1](http://farm9.staticflickr.com/8175/7901374532_9ed1321622_o.png) 
 
 
 
