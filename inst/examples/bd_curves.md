@@ -53,7 +53,7 @@ u3 <- -1 * sapply(x, function(x) integrate(f, lower, x)$value)
 
 ```r
 load("data/zoom.rda")
-dat <- subset(zoom, reps == 1)
+dat <- subset(zoom, reps == 2)
 # dat <- subset(dat, value > 250)
 a <- dat$time - min(dat$time)
 a <- a/max(a) * (34000 - 19000) + 19000
@@ -140,7 +140,7 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1](http://farm9.staticflickr.com/8460/7902148230_3bf547ea56_o.png) 
+![plot of chunk Figure1](http://farm9.staticflickr.com/8311/7902158574_9d705bef3c_o.png) 
 
 
 
