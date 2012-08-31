@@ -7,7 +7,7 @@ theme_publish <- theme_set(theme_bw(8))
 theme_publish <- 
   theme_update(axis.line=theme_blank(),
         axis.text.y=theme_blank(),
-        axis.title.y=theme_blank(),legend.position="bottom",
+        legend.position=c(0.1,.9),
         panel.grid.major=theme_blank(),panel.grid.minor=theme_blank(),
         plot.background=theme_blank(), legend.title=theme_blank())
 ```

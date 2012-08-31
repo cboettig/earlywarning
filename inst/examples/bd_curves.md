@@ -6,8 +6,8 @@ require(ggplot2)
 require(reshape2)
 theme_publish <- theme_set(theme_bw(8))
 theme_publish <- theme_update(axis.line = theme_blank(), axis.text.y = theme_blank(), 
-    axis.title.y = theme_blank(), legend.position = "bottom", panel.grid.major = theme_blank(), 
-    panel.grid.minor = theme_blank(), plot.background = theme_blank(), legend.title = theme_blank())
+    legend.position = c(0.1, 0.9), panel.grid.major = theme_blank(), panel.grid.minor = theme_blank(), 
+    plot.background = theme_blank(), legend.title = theme_blank())
 ```
 
 
@@ -136,7 +136,7 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1](http://farm9.staticflickr.com/8175/7901374532_9ed1321622_o.png) 
+![plot of chunk Figure1](http://farm9.staticflickr.com/8297/7901440864_73135d5a68_o.png) 
 
 
 
