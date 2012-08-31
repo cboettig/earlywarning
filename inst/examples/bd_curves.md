@@ -34,7 +34,7 @@ bx <- sapply(x, b)
 dx <- sapply(x, d)
 d0 <- melt(data.frame(State = x, birth = bx, death = dx), id = "State")
 p0 <- ggplot(d0) + geom_line(aes(State, value, lty = variable)) + 
-    ylab("growth rate") + opts(title = "(a) Birth and death rate functions")
+    ylab("growth rate") + opts(title = "(a) Birth rate and death rate functions \n used in the model")
 ```
 
 
@@ -71,11 +71,12 @@ d2$panel <- "Time of Sample Trajectory"
 d <- rbind(df, d2)
 p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) + 
   facet_grid(panel ~ ., scale = "free") +
-  layer(data = d2, geom = "point") +
+  layer(data = d2, geom = "point", size=1) +
   layer(data = df,  mapping = aes(lty=variable),  geom = c("line")) +
+  geom_vline(aes(xintercept=250), lty=4) +
   coord_cartesian(ylim=c(18000, 35000)) + 
   xlab("State") + ylab("arbitrary units") +
-  opts(title = "(b) Trajectory of a chance transition")
+  opts(title = "(b) Trajectory of a chance \n transition from a stable system")
 ```
 
 
@@ -121,8 +122,9 @@ d <- rbind(d1, d3)
 ```r
 p2 <- ggplot(data = d, mapping = aes(x = x, y = value)) + 
   facet_grid(panel ~ ., scale = "free") +
-  layer(data = d3, geom = "point") +
+  layer(data = d3, geom = "point", size=1) +
   layer(data = d1,  mapping = aes(lty=variable), geom = c("line")) +
+  geom_vline(aes(xintercept=250), lty=4) +
   coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + ylab("arbitrary units") +
   opts(title="(c) Trajectory during an \n underlying parameter shift")
 ```
@@ -138,7 +140,7 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1](http://farm9.staticflickr.com/8442/7902043166_3a4feaaef1_o.png) 
+![plot of chunk Figure1](http://farm9.staticflickr.com/8460/7902148230_3bf547ea56_o.png) 
 
 
 

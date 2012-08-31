@@ -33,7 +33,7 @@ dx <- sapply(x, d)
 d0 <- melt(data.frame(State=x, birth=bx, death=dx), id="State")
 p0 <- ggplot(d0) + 
   geom_line(aes(State, value, lty=variable)) + 
-  ylab("growth rate") + opts(title = "(a) Birth and death rate functions")
+  ylab("growth rate") + opts(title = "(a) Birth rate and death rate functions \n used in the model")
 ```
 
 ```{r }
@@ -65,11 +65,12 @@ d2$panel <- "Time of Sample Trajectory"
 d <- rbind(df, d2)
 p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) + 
   facet_grid(panel ~ ., scale = "free") +
-  layer(data = d2, geom = "point") +
+  layer(data = d2, geom = "point", size=1) +
   layer(data = df,  mapping = aes(lty=variable),  geom = c("line")) +
+  geom_vline(aes(xintercept=250), lty=4) +
   coord_cartesian(ylim=c(18000, 35000)) + 
   xlab("State") + ylab("arbitrary units") +
-  opts(title = "(b) Trajectory of a chance transition")
+  opts(title = "(b) Trajectory of a chance \n transition from a stable system")
 
 ```
 
@@ -79,7 +80,7 @@ p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
 
 simulate an example with a bifurcation for comparison.  
 
-```{r crash_sim}
+```{r crash_sim, cache=TRUE}
   library(populationdynamics)
 	T<- 5000
 	n_pts <- 50000
@@ -105,8 +106,9 @@ d3$variable <- d3$x # match col numbers to rbind
 d <- rbind(d1, d3)
 p2 <- ggplot(data = d, mapping = aes(x = x, y = value)) + 
   facet_grid(panel ~ ., scale = "free") +
-  layer(data = d3, geom = "point") +
+  layer(data = d3, geom = "point", size=1) +
   layer(data = d1,  mapping = aes(lty=variable), geom = c("line")) +
+  geom_vline(aes(xintercept=250), lty=4) +
   coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + ylab("arbitrary units") +
   opts(title="(c) Trajectory during an \n underlying parameter shift")
 ```
