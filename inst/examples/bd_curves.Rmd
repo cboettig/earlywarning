@@ -7,7 +7,7 @@ theme_publish <- theme_set(theme_bw(14))
 theme_publish <- 
   theme_update(axis.line=theme_blank(),
         axis.text.y=theme_blank(),
-        legend.position=c(0.1,.9),
+        legend.position=c(0.18,.9),
         panel.grid.major=theme_blank(),panel.grid.minor=theme_blank(),
         plot.background=theme_blank(), legend.title=theme_blank())
 ```
@@ -30,10 +30,10 @@ upper <- 700
 x <- seq(lower, upper, length.out=100)
 bx <- sapply(x, b) 
 dx <- sapply(x, d) 
-d0 <- melt(data.frame(state=x, birth=bx, death=dx), id="state")
+d0 <- melt(data.frame(state=x, birth=bx, death=dx), id="State")
 p0 <- ggplot(d0) + 
-  geom_line(aes(state, value, lty=variable)) + 
-  ylab("growth rate") 
+  geom_line(aes(State, value, lty=variable)) + 
+  ylab("growth rate") + opts(title = "Birth and death rate functions")
 ```
 
 ```{r }
@@ -68,7 +68,8 @@ p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   layer(data = d2, geom = "point") +
   layer(data = df,  mapping = aes(lty=variable),  geom = c("line")) +
   coord_cartesian(ylim=c(18000, 35000)) + 
-  xlab("State") + ylab("arbitrary units")
+  xlab("State") + ylab("arbitrary units") +
+  opts(title = "Trajectory of a chance transition")
 
 ```
 
@@ -106,7 +107,8 @@ p2 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   facet_grid(panel ~ ., scale = "free") +
   layer(data = d3, geom = "point") +
   layer(data = d1,  mapping = aes(lty=variable), geom = c("line")) +
-  coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + ylab("arbitrary units")
+  coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + ylab("arbitrary units") +
+  opts(title="Trajectory during an underlying parameter shift")
 ```
 
 ```{r Figure1, fig.width=15}
