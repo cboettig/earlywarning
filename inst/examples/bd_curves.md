@@ -4,7 +4,7 @@ opts_knit$set(upload.fun = socialR::flickr.url)
 
 require(ggplot2)
 require(reshape2)
-theme_publish <- theme_set(theme_bw(8))
+theme_publish <- theme_set(theme_bw(14))
 theme_publish <- theme_update(axis.line = theme_blank(), axis.text.y = theme_blank(), 
     legend.position = c(0.1, 0.9), panel.grid.major = theme_blank(), panel.grid.minor = theme_blank(), 
     plot.background = theme_blank(), legend.title = theme_blank())
@@ -74,7 +74,7 @@ p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   layer(data = d2, geom = "point") +
   layer(data = df,  mapping = aes(lty=variable),  geom = c("line")) +
   coord_cartesian(ylim=c(18000, 35000)) + 
-  xlab("State")
+  xlab("State") + ylab("arbitrary units")
 ```
 
 
@@ -122,7 +122,7 @@ p2 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   facet_grid(panel ~ ., scale = "free") +
   layer(data = d3, geom = "point") +
   layer(data = d1,  mapping = aes(lty=variable), geom = c("line")) +
-  coord_cartesian(ylim=c(18000, 35000)) + xlab("State") 
+  coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + ylab("arbitrary units")
 ```
 
 
@@ -136,7 +136,7 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1](http://farm9.staticflickr.com/8297/7901440864_73135d5a68_o.png) 
+![plot of chunk Figure1](http://farm9.staticflickr.com/8315/7901747536_20589838e7_o.png) 
 
 
 
