@@ -33,7 +33,7 @@ dx <- sapply(x, d)
 d0 <- melt(data.frame(State=x, birth=bx, death=dx), id="State")
 p0 <- ggplot(d0) + 
   geom_line(aes(State, value, lty=variable)) + 
-  ylab("growth rate") + opts(title = "Birth and death rate functions")
+  ylab("growth rate") + opts(title = "(a) Birth and death rate functions")
 ```
 
 ```{r }
@@ -49,7 +49,7 @@ u3 <- -1 * sapply(x, function(x) integrate(f, lower, x)$value)
 ```{r chance_crash_data} 
 load("data/zoom.rda")
 dat <- subset(zoom, reps==1)
-dat <- subset(dat, value > 250)
+#dat <- subset(dat, value > 250)
 a <- dat$time - min(dat$time)
 a <- a/max(a)*(34000-19000) + 19000
 d2 <- data.frame(x = dat$value, value = a)
@@ -69,7 +69,7 @@ p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   layer(data = df,  mapping = aes(lty=variable),  geom = c("line")) +
   coord_cartesian(ylim=c(18000, 35000)) + 
   xlab("State") + ylab("arbitrary units") +
-  opts(title = "Trajectory of a chance transition")
+  opts(title = "(b) Trajectory of a chance transition")
 
 ```
 
@@ -87,7 +87,7 @@ simulate an example with a bifurcation for comparison.
     i = 0, Da = .5, Dt = 0, p = 2)
 	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1)
   X <- sn$x1
-  X <- X[X>250]
+#  X <- X[X>250]
   times <- 1:length(X)*T/n_pts
   a <- times - min(times) 
   a <- a/max(a)*(34000-19000) + 19000
@@ -108,7 +108,7 @@ p2 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   layer(data = d3, geom = "point") +
   layer(data = d1,  mapping = aes(lty=variable), geom = c("line")) +
   coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + ylab("arbitrary units") +
-  opts(title="Trajectory during an underlying parameter shift")
+  opts(title="(c) Trajectory during an \n underlying parameter shift")
 ```
 
 ```{r Figure1, fig.width=15}

@@ -34,7 +34,7 @@ bx <- sapply(x, b)
 dx <- sapply(x, d)
 d0 <- melt(data.frame(State = x, birth = bx, death = dx), id = "State")
 p0 <- ggplot(d0) + geom_line(aes(State, value, lty = variable)) + 
-    ylab("growth rate") + opts(title = "Birth and death rate functions")
+    ylab("growth rate") + opts(title = "(a) Birth and death rate functions")
 ```
 
 
@@ -54,7 +54,7 @@ u3 <- -1 * sapply(x, function(x) integrate(f, lower, x)$value)
 ```r
 load("data/zoom.rda")
 dat <- subset(zoom, reps == 1)
-dat <- subset(dat, value > 250)
+# dat <- subset(dat, value > 250)
 a <- dat$time - min(dat$time)
 a <- a/max(a) * (34000 - 19000) + 19000
 d2 <- data.frame(x = dat$value, value = a)
@@ -75,7 +75,7 @@ p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   layer(data = df,  mapping = aes(lty=variable),  geom = c("line")) +
   coord_cartesian(ylim=c(18000, 35000)) + 
   xlab("State") + ylab("arbitrary units") +
-  opts(title = "Trajectory of a chance transition")
+  opts(title = "(b) Trajectory of a chance transition")
 ```
 
 
@@ -94,7 +94,7 @@ pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200, i = 0, Da = 0.5,
     Dt = 0, p = 2)
 sn <- saddle_node_ibm(pars, times = seq(0, T, length = n_pts), reps = 1)
 X <- sn$x1
-X <- X[X > 250]
+# X <- X[X>250]
 times <- 1:length(X) * T/n_pts
 a <- times - min(times)
 a <- a/max(a) * (34000 - 19000) + 19000
@@ -124,7 +124,7 @@ p2 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   layer(data = d3, geom = "point") +
   layer(data = d1,  mapping = aes(lty=variable), geom = c("line")) +
   coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + ylab("arbitrary units") +
-  opts(title="Trajectory during an underlying parameter shift")
+  opts(title="(c) Trajectory during an \n underlying parameter shift")
 ```
 
 
@@ -138,7 +138,7 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1](http://farm9.staticflickr.com/8441/7901819170_1c71324095_o.png) 
+![plot of chunk Figure1](http://farm9.staticflickr.com/8176/7902027674_697c75fd9a_o.png) 
 
 
 
