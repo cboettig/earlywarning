@@ -1,38 +1,14 @@
 `ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="fallacy/" or`
 
-# Code for Prosecutors Fallacy 
-<!--
 
-`r require(knitcitations)`
-This code is written in the `R` language for statistical computing.  
-Population dynamics are simulated using the `populationdynamics` package
-`r citep(citation("populationdynamics"))` for exact simulations of 
-discrete birth-death processes in continuous time using the Gillespie
-agorithm `r citep("10.1021/j100540a008")`.  Early warning signals
-of variance and autocorrelation, as well as the model-based estimate
-of `r citet("10.1098/rsif.2012.0125")` are estimated using the 
-`earlywarning` package `r citep(citation("earlywarning")`.  These
-packages can be installed from Github using the `devtools` R package
-
-```r
-library(devtools)
-install_github("populationdynamics", "cboettig")
-install_github("earlywarning", "cboettig")
-```
-
-For the individual-based simulation, the population dynamics are given by
+## May Model 
 
 <div>
-\begin{align}
-  \frac{dP(n,t)}{dt} &= b_{n-1} P(n-1,t) + d_{n+1}P(n+1,t) - (b_n+d_n) P(n,t)  \label{master}, \\
-    b_n &= \frac{e K n^2}{n^2 + h^2}, \\
-    d_n &= e n + a,
-\end{align}
-</div>
+\begin{equation}
+X_{t+1} =     X_t  \exp\left( r \left(1 - \frac{ X_t }{  K } \right) - \frac{ a * X_t ^ {Q - 1} }{s ^ Q + H ^ Q} \right) 
+\end{equation}
 
-which is provided by the `saddle_node_ibm` model in `populationdynamics`. 
-
--->
+We will use parameters r = .75, k = 10, a=1.7, H=1, Q = 3.  In this model Q is a parameter that will force the system through a bifurcation point at a = 2.  
 
 For each of the warning signal statistics in question, 
 we need to generate the distibution over all replicates
@@ -44,7 +20,6 @@ We begin by running the simulation of the process for all replicates.
 Load the required libraries
  
 ``` {r libraries}
-library(populationdynamics)
 library(earlywarning)
 library(reshape2)		# data manipulation
 library(data.table)	# data manipulation
@@ -52,40 +27,30 @@ library(ggplot2)		# graphics
 library(snowfall)		# parallel
 ````
 
-```{r plotting-theme}
-theme_publish <- theme_set(theme_bw(12))
-theme_publish <- 
-  theme_update(legend.key=theme_blank(),
-        panel.grid.major=theme_blank(),panel.grid.minor=theme_blank(),
-        plot.background=theme_blank(), legend.title=theme_blank())
-```
-
-
 ### Conditional distribution
 
 Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that crash as we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
 
-
-``` {r simdatf eval=FALSE}
+``` {r sim_may}
+threshold <- 1.5
 select_crashes <- function(n){
-	T<- 5000
-	n_pts <- n
-	pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
-    i = 0, Da = 0, Dt = 0, p = 2)
-	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
-	d <- dim(sn$x1)
-	crashed <- which(sn$x1[d[1],]==0)
-	sn$x1[,crashed] 
+  n <- n/10 # doesn't need as long as the individual-based
+  sn <- 
+  sapply(1:1000, function(rep){
+    x <- vector(mode="double", length=n)
+    x[1] <- 8 # positive equilibrium
+    z <- rlnorm(n, 0, .1)
+    r = .75; k = 10; a=1.55; H=1; Q = 3
+    for(t in 1:n){
+      x[t+1] = z[t] *  x[t] * exp(r * (1 - x[t] / k) - a * x[t] ^ (Q - 1) / (x[t] ^ Q + H ^ Q)) 
+    }
+    x
+  })
+	crashed <- which(sn[n,] < threshold)
+	sn[,crashed] 
 }
-````
+```
 
-
-
-
-To take advantage of parallelization, we loop over this function a set number of times.  The `snowfall` library provides the parallelization
-of the `lapply` loop.  A few extra commands format the data into a table
-with columns of times, replicate id number, and population value at the
-given time.
 
 
 ``` {r simdat}
@@ -136,7 +101,6 @@ dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
 
 ``` {r simdatf_null, eval=FALSE}
-threshold <- 250
 select_crashes <- function(n){
 	T<- 5000
 	n_pts <- n
@@ -148,8 +112,28 @@ select_crashes <- function(n){
 }
 ````
 
+``` {r may_null}
+select_crashes <- function(n){
+  n <- n/10 # doesn't need as long as the individual-based
+  sn <- 
+  sapply(1:1000, function(rep){
+    x <- vector(mode="double", length=n)
+    x[1] <- 8 # positive equilibrium
+    z <- rlnorm(n, 0, .1)
+    r = .75; k = 10; a=1.55; H=1; Q = 3
+    for(t in 1:n){
+      x[t+1] = z[t] *  x[t] * exp(r * (1 - x[t] / k) - a * x[t] ^ (Q - 1) / (x[t] ^ Q + H ^ Q)) 
+    }
+    x
+  })
+	sn[1:201,] 
+}
+````
 
-``` {r simdat_null, dependson="simdatf_null"}
+
+
+
+``` {r simdat_null, dependson="may_null"}
 sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
 sfExportAll()
@@ -168,6 +152,8 @@ nullzoom <- ddply(nulldat, "reps", function(X){
     data.frame(time=X$time, value=X$value)
     })
 ````
+
+
 
 ``` {r nullmelt, dependson="nullzoom"}
 nulldt <- data.table(nullzoom)
