@@ -4,9 +4,9 @@ opts_knit$set(upload.fun = socialR::flickr.url)
 
 require(ggplot2)
 require(reshape2)
-theme_publish <- theme_set(theme_bw(14))
+theme_publish <- theme_set(theme_bw(12))
 theme_publish <- theme_update(axis.line = theme_blank(), axis.text.y = theme_blank(), 
-    legend.position = c(0.18, 0.9), panel.grid.major = theme_blank(), panel.grid.minor = theme_blank(), 
+    legend.position = c(0.18, 0.78), panel.grid.major = theme_blank(), panel.grid.minor = theme_blank(), 
     plot.background = theme_blank(), legend.title = theme_blank())
 ```
 
@@ -140,7 +140,21 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1](http://farm9.staticflickr.com/8311/7902158574_9d705bef3c_o.png) 
+![plot of chunk Figure1_upload](http://farm9.staticflickr.com/8032/7902364260_7ca928618c_o.png) 
+
+
+
+```r
+require(grid)
+pushViewport(viewport(layout = grid.layout(1, 3)))
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+print(p0, vp = vplayout(1, 1))
+print(p1, vp = vplayout(1, 2))
+print(p2, vp = vplayout(1, 3))
+```
+
+![plot of chunk Figure1](http://farm9.staticflickr.com/8313/7902364668_1fd8614a12_o.jpg) 
+
 
 
 
