@@ -66,7 +66,7 @@ theme_publish <-
 Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that crash as we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
 
 
-``` {r simdatf eval=FALSE}
+``` {r simdatf, eval=FALSE}
 select_crashes <- function(n){
 	T<- 5000
 	n_pts <- n
