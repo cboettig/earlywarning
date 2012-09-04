@@ -100,7 +100,7 @@ ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) +
   facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk testing](figure/testing.png) 
+![plot of chunk testing](http://farm9.staticflickr.com/8318/7932976900_c2e92af72d_o.png) 
 
 
 
@@ -125,7 +125,7 @@ ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) +
   facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](figure/example-trajectories.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8316/7932977148_180c72d8e2_o.png) 
 
 
 
@@ -215,10 +215,13 @@ Plot the final figure:
 ```r
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
- geom_density(data=nulldat, aes(value), bw=0.2)
+ geom_density(data=nulldat, aes(value))
 ```
 
-![plot of chunk figure2](figure/figure2.png) 
+![plot of chunk figure2](http://farm9.staticflickr.com/8444/7932977296_2cf70af8d0_o.png) 
+
+
+
 
 
 
