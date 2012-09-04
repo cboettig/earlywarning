@@ -5,7 +5,7 @@
 
 <div>
 \begin{equation}
-X_{t+1} =     X_t  \exp\left( r \left(1 - \frac{ X_t }{  K } \right) - \frac{ a * X_t ^ {Q - 1} }{s ^ Q + H ^ Q} \right) 
+X_{t+1} =     X_t  \exp\left( r \left(1 - \frac{ X_t }{  K } \right) - \frac{ a * X_t ^ {Q - 1} }{X_t ^ Q + H ^ Q} \right) 
 \end{equation}
 </div>
 
@@ -178,7 +178,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) 
 ``` {r S1, dev="Cairo_pdf", include=FALSE}
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
- geom_density(data=nulldat, aes(value), bw=0.2)
+ geom_density(data=nulldat, aes(value), bw=0.2) + xlab("Kendall's tau")
 ````
 
 
