@@ -138,12 +138,12 @@ select_crashes <- function(n){
 
 
 ``` {r simdat_null, dependson="may_null"}
-sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
 sfExportAll()
-examples <-  sfLapply(1:24, function(i) select_crashes(50000))
+examples <-  sfLapply(1:10, function(i) select_crashes(50000))
 nulldat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 nulldat <- melt(examples)
+
 names(nulldat) = c("time", "reps", "value")
 levels(nulldat$reps) <- 1:length(levels(dat$reps)) 
 ````
@@ -155,6 +155,7 @@ require(plyr)
 nullzoom <- ddply(nulldat, "reps", function(X){
     data.frame(time=X$time, value=X$value)
     })
+
 ````
 
 Compute the warning signals on the null distribution for comparison:
@@ -164,21 +165,27 @@ nulldt <- data.table(nullzoom)
 nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
+
 ````
 
 Plot the final figure:
 
 ``` {r figure2, dependson="nullmelt"}
-ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
- facet_wrap(~variable) + xlim(c(-1, 1)) + 
- geom_density(data=nulldat, aes(value))
+ggplot(dat) + 
+	geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
+	facet_wrap(~variable) + xlim(c(-1, 1)) + 
+	geom_density(data=nulldat, aes(value), adjust=3) + 
+	xlab("Kendall's tau") + theme_bw()
+
+
 ````
 
 
 ``` {r S1, dev="cairo_pdf", fig.width=6, fig.height=5, include=FALSE}
-ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
+ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
- geom_density(data=nulldat, aes(value)) + xlab("Kendall's tau") + theme_bw()
+ geom_density(data=nulldat, aes(value), adjust=3) + xlab("Kendall's tau") + theme_bw()
+
 ````
 
 

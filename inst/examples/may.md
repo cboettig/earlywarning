@@ -100,7 +100,7 @@ ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) +
   facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk testing](http://farm9.staticflickr.com/8318/7932976900_c2e92af72d_o.png) 
+![plot of chunk testing](http://farm9.staticflickr.com/8316/7939240546_bf7fe06278_o.png) 
 
 
 
@@ -125,7 +125,7 @@ ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) +
   facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8316/7932977148_180c72d8e2_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8304/7939240812_b9640474a6_o.png) 
 
 
 
@@ -169,19 +169,12 @@ select_crashes <- function(n){
 
 
 ```r
-sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
-```
-
-```
-Library populationdynamics loaded.
-```
-
-```r
 sfExportAll()
-examples <-  sfLapply(1:24, function(i) select_crashes(50000))
+examples <-  sfLapply(1:10, function(i) select_crashes(50000))
 nulldat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 nulldat <- melt(examples)
+
 names(nulldat) = c("time", "reps", "value")
 levels(nulldat$reps) <- 1:length(levels(dat$reps)) 
 ```
@@ -213,12 +206,18 @@ Plot the final figure:
 
 
 ```r
-ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
- facet_wrap(~variable) + xlim(c(-1, 1)) + 
- geom_density(data=nulldat, aes(value))
+ggplot(dat) + 
+	geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
+	facet_wrap(~variable) + xlim(c(-1, 1)) + 
+	geom_density(data=nulldat, aes(value), adjust=3) + 
+	xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk figure2](http://farm9.staticflickr.com/8444/7932977296_2cf70af8d0_o.png) 
+![plot of chunk figure2](http://farm9.staticflickr.com/8038/7939241062_f602c8647b_o.png) 
+
+```r
+
+```
 
 
 

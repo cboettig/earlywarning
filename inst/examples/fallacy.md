@@ -1,18 +1,6 @@
 
+
 # Code for Prosecutors Fallacy 
-
-This code is written in the `R` language for statistical computing.  
-Population dynamics are simulated using the `populationdynamics` package
- for exact simulations of discrete birth-death processes in continuous time using the Gillespie
-agorithm.  
-
-These packages can be installed from Github using the `devtools` R package
-
-```r
-library(devtools)
-install_github("populationdynamics", "cboettig")
-install_github("earlywarning", "cboettig")
-```
 
 For the individual-based simulation, the population dynamics are given by
 
@@ -31,7 +19,10 @@ we need to generate the distibution over all replicates
 and then over replicates which have been selected conditional 
 on having experienced a crash.  
 
+We begin by running the simulation of the process for all replicates.  
+
 Load the required libraries
+ 
 
 ```r
 library(populationdynamics)
@@ -43,9 +34,22 @@ library(snowfall)		# parallel
 ```
 
 
+
+```r
+theme_publish <- theme_set(theme_bw(12))
+theme_publish <- 
+  theme_update(legend.key=theme_blank(),
+        panel.grid.major=theme_blank(),panel.grid.minor=theme_blank(),
+        plot.background=theme_blank(), legend.title=theme_blank())
+```
+
+
+
 ### Conditional distribution
 
 Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that crash as we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
+
+
 
 ```r
 select_crashes <- function(n){
@@ -63,6 +67,7 @@ select_crashes <- function(n){
 
 
 
+
 To take advantage of parallelization, we loop over this function a set number of times.  The `snowfall` library provides the parallelization
 of the `lapply` loop.  A few extra commands format the data into a table
 with columns of times, replicate id number, and population value at the
@@ -70,10 +75,21 @@ given time.
 
 
 
+```r
+sfInit(parallel=TRUE, cpu=16)
+```
+
+```
+R Version:  R version 2.15.0 (2012-03-30) 
+
+```
 
 ```r
-sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
+```
+
+```
+Library populationdynamics loaded.
 ```
 
 ```r
@@ -91,22 +107,27 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk testing](http://farm9.staticflickr.com/8287/7846795140_d5d810125a_o.png) 
+![plot of chunk testing](http://farm9.staticflickr.com/8181/7938953020_61d7d58243_o.png) 
 
 
 
 Zoom in on the relevant area of data near the crash
 
 
-
 ```r
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value<threshold))
+print(tip)
     index <- max(tip-200,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
 ```
+
+```
+Error: object 'threshold' not found
+```
+
 
 
 
@@ -114,22 +135,46 @@ zoom <- ddply(dat, "reps", function(X){
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm8.staticflickr.com/7139/7846795368_6b701a7fe5_o.png) 
+```
+Error: object 'zoom' not found
+```
 
 
 
 Compute model-based warning signals on all each of these.  
 
 
-
 ```r
 dt <- data.table(subset(zoom, value>threshold))
+```
+
+```
+Error: object 'zoom' not found
+```
+
+```r
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+```
+
+```
+Error: object 'value' not found
+```
+
+```r
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+```
+
+```
+Error: object 'value' not found
+```
+
+```r
 dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 ```
 
-
+```
+Error: object 'acor' not found
+```
 
 
 ### Null distribution 
@@ -137,8 +182,8 @@ dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
 
 
-
 ```r
+threshold <- 250
 select_crashes <- function(n){
 	T<- 5000
 	n_pts <- n
@@ -151,8 +196,9 @@ select_crashes <- function(n){
 ```
 
 
+
+
 ```r
-sfInit(parallel=TRUE, cpu=12)
 sfLibrary(populationdynamics)
 ```
 
@@ -170,10 +216,7 @@ levels(nulldat$reps) <- 1:length(levels(dat$reps))
 ```
 
 
-
-
 Zoom in on the relevant area of data near the crash
-
 
 
 ```r
@@ -182,11 +225,6 @@ nullzoom <- ddply(nulldat, "reps", function(X){
     data.frame(time=X$time, value=X$value)
     })
 ```
-
-
-
-
-
 
 
 
@@ -199,16 +237,13 @@ nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
 
 
 
-
-
-
 ```r
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), bw=0.2)
 ```
 
-![plot of chunk figure2](http://farm9.staticflickr.com/8435/7846795570_87ac2e71fd_o.png) 
+![plot of chunk figure2](http://farm9.staticflickr.com/8031/7938953238_3578a8d4d5_o.png) 
 
 
 
