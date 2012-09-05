@@ -156,10 +156,19 @@ nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_aut
 nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
 ````
 
-``` {r figure2, dependson="nullmelt"}
-ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.2, alpha=.5) +
+``` {r fig2, dependson="nullmelt"}
+ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
- geom_density(data=nulldat, aes(value), bw=0.2)
+ geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
+
+````
+
+
+``` {r Figure2, dev="cairo_pdf", fig.width=6, fig.height=5, include=FALSE}
+ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
+ facet_wrap(~variable) + xlim(c(-1, 1)) + 
+ geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
+
 ````
 
 
