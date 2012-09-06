@@ -1,6 +1,5 @@
 
 
-
 ## Code for the May Model 
 
 <div>
@@ -93,17 +92,6 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 
 
 
-
-```r
-ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) + 
-  geom_line(aes(time, value)) +
-  facet_wrap(~reps, scales="free")
-```
-
-![plot of chunk testing](http://farm9.staticflickr.com/8176/7940300258_32810ec27f_o.png) 
-
-
-
 Zoom in on the relevant area of data near the crash
 
 
@@ -115,18 +103,6 @@ zoom <- ddply(dat, "reps", function(X){
     data.frame(time=X$time[index], value=X$value[index])
     })
 ```
-
-
-
-
-```r
-ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + 
-  geom_line(aes(time, value)) + 
-  facet_wrap(~reps, scales="free")
-```
-
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8305/7940300540_1151d9f530_o.png) 
-
 
 
 Compute model-based warning signals on all each of these.  
