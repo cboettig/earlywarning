@@ -170,7 +170,7 @@ nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
 
 Plot the final figure:
 
-``` {r figure2, dependson="nullmelt"}
+``` {r fig3, dependson="nullmelt"}
 ggplot(dat) + 
 	geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
 	facet_wrap(~variable) + xlim(c(-1, 1)) + 
@@ -181,11 +181,10 @@ ggplot(dat) +
 ````
 
 
-``` {r S1, dev="cairo_pdf", fig.width=6, fig.height=5, include=FALSE}
+``` {r Figure3, dev="CairoPS", fig.ext="eps", fig.width=6, fig.height=5, include=FALSE}
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=3) + xlab("Kendall's tau") + theme_bw()
 
 ````
-
 

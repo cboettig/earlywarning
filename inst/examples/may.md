@@ -100,7 +100,7 @@ ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) +
   facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk testing](http://farm9.staticflickr.com/8316/7939240546_bf7fe06278_o.png) 
+![plot of chunk testing](figure/testing.png) 
 
 
 
@@ -125,7 +125,7 @@ ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) +
   facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8304/7939240812_b9640474a6_o.png) 
+![plot of chunk example-trajectories](figure/example-trajectories.png) 
 
 
 
@@ -213,15 +213,7 @@ ggplot(dat) +
 	xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk figure2](http://farm9.staticflickr.com/8038/7939241062_f602c8647b_o.png) 
-
-```r
-
-```
-
-
-
-
+![plot of chunk fig3](figure/fig3.png) 
 
 
 

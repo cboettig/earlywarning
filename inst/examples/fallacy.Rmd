@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="fallacy/" or`
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="fallacy-final/" or`
 
 # Code for Prosecutors Fallacy 
 
@@ -131,6 +131,7 @@ select_crashes <- function(n){
 
 
 ``` {r simdat_null, dependson="simdatf_null"}
+sfInit(parallel=TRUE, cpu=16)
 sfLibrary(populationdynamics)
 sfExportAll()
 examples <-  sfLapply(1:10, function(i) select_crashes(50000))
@@ -164,11 +165,10 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
 ````
 
 
-``` {r Figure2, dev="cairo_pdf", fig.width=6, fig.height=5, include=FALSE}
+``` {r figure2, dev="CairoPS", fig.ext="eps", fig.width=6, fig.height=5, include=FALSE}
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 
 ````
-
 
