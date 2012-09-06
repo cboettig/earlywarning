@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="fallacy-final/" or`
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="fallacy/" or`
 
 # Code for Prosecutors Fallacy 
 
@@ -69,9 +69,13 @@ with columns of times, replicate id number, and population value at the
 given time.
 
 
-``` {r simdat, dependson="simdatf"}
-sfInit(parallel=TRUE, cpu=16)
+``` {r parallel}
+sfInit(parallel=FALSE)
 sfLibrary(populationdynamics)
+```
+
+
+``` {r simdat, dependson="simdatf"}
 sfExportAll()
 examples <- sfLapply(1:20, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
@@ -91,7 +95,6 @@ Zoom in on the relevant area of data near the crash
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value<threshold))
-print(tip)
     index <- max(tip-200,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
@@ -131,8 +134,6 @@ select_crashes <- function(n){
 
 
 ``` {r simdat_null, dependson="simdatf_null"}
-sfInit(parallel=TRUE, cpu=16)
-sfLibrary(populationdynamics)
 sfExportAll()
 examples <-  sfLapply(1:10, function(i) select_crashes(50000))
 nulldat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
