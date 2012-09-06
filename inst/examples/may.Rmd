@@ -65,10 +65,15 @@ select_crashes <- function(n){
 ```
 
 
-Initialize the parallel enviromment and run the simulations:
+Initialize the parallel enviromment 
+
+``` {r parallel, cache=FALSE}
+sfInit(parallel=FALSE)
+```
+
+and run the simulations:
 
 ``` {r simdat}
-sfInit(parallel=TRUE, cpu=12)
 sfExportAll()
 examples <- sfLapply(1:20, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))

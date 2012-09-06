@@ -71,17 +71,16 @@ select_crashes <- function(n){
 
 
 
-Initialize the parallel enviromment and run the simulations:
+Initialize the parallel enviromment 
 
 
 ```r
-sfInit(parallel=TRUE, cpu=12)
+sfInit(parallel=FALSE)
 ```
 
-```
-R Version:  R version 2.15.0 (2012-03-30) 
 
-```
+and run the simulations:
+
 
 ```r
 sfExportAll()
@@ -100,7 +99,7 @@ ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) +
   facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk testing](http://farm9.staticflickr.com/8176/7940300258_32810ec27f_o.png) 
+![plot of chunk testing](http://farm9.staticflickr.com/8296/7940591844_ee90533fe4_o.png) 
 
 
 
@@ -125,7 +124,7 @@ ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) +
   facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8305/7940300540_1151d9f530_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8309/7940592044_0cf24971a4_o.png) 
 
 
 
@@ -213,7 +212,14 @@ ggplot(dat) +
 	xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig3](http://farm9.staticflickr.com/8032/7940300880_d5353b0604_o.png) 
+![plot of chunk fig3](http://farm9.staticflickr.com/8311/7940592210_be8a43106a_o.png) 
+
+```r
+
+```
+
+
+
 
 
 
