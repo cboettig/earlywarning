@@ -34,6 +34,7 @@ d0 <- melt(data.frame(State=x, birth=bx, death=dx), id="State")
 p0 <- ggplot(d0) + 
   geom_line(aes(State, value, lty=variable)) + 
   ylab("growth rate") + opts(title = "(a) Birth rate and death rate functions \n used in the model")
+write.csv(d0, "Figure1_panela.csv")
 ```
 
 ```{r }
@@ -72,6 +73,7 @@ p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   xlab("State") + ylab("arbitrary units") +
   opts(title = "(b) Trajectory of a chance \n transition from a stable system")
 
+write.csv(d, "Figure1_panelb.csv")
 ```
 
 
@@ -111,6 +113,7 @@ p2 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
   geom_vline(aes(xintercept=250), lty=4) +
   coord_cartesian(ylim=c(18000, 35000)) + xlab("State") + ylab("arbitrary units") +
   opts(title="(c) Trajectory during an \n underlying parameter shift")
+write.csv(d, "Figure1_panelc.csv")
 ```
 
 ```{r Figure1_upload, fig.width=15}
@@ -130,8 +133,4 @@ print(p0, vp = vplayout(1, 1))
 print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
-
-
-
-
 

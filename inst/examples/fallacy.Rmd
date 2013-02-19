@@ -173,3 +173,8 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
 
 ````
 
+
+``` {r save_final_data}
+write.csv(dat, file="Figure2_dat.csv")
+write.csv(nulldat, file="Figure2_nulldat.csv")
+```
