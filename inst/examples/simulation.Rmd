@@ -40,3 +40,19 @@ ggplot(roc) + geom_line(aes(False.positives, True.positives))
 ````
 
 
+
+Plot of the raw data
+
+```{r rawdata}
+rawdata <- data.frame(time=as.numeric(time(X)), state=X@.Data)
+p_raw <- ggplot(rawdata, aes(time, state)) + geom_line() + 
+	opts(title=paste(pow$label, "timeseries data"))
+p_raw
+````
+
+```{r }
+write.csv(rawdata, file="Figure2_PanelA.csv")
+write.csv(lr, file="Figure2_PanelB.csv")
+write.csv(roc, file="Figure2_PanelC.csv")
+```
+

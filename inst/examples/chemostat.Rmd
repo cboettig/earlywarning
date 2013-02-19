@@ -59,3 +59,10 @@ p_raw
 ```{r save}
 save(list=ls(), file="chemostat.rda")
 ````
+
+```{r }
+write.csv(rawdata, file="Figure3_PanelA.csv")
+write.csv(lr, file="Figure3_PanelB.csv")
+write.csv(roc, file="Figure3_PanelC.csv")
+```
+
