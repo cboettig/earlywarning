@@ -51,8 +51,9 @@ p_raw
 ````
 
 ```{r }
-write.csv(rawdata, file="Figure2_PanelA.csv")
-write.csv(lr, file="Figure2_PanelB.csv")
-write.csv(roc, file="Figure2_PanelC.csv")
+write.csv(ibm_critical, file="Figure2_PanelA.csv")
+write.csv(rawdata, file="Figure2_PanelB.csv")
+write.csv(lr, file="Figure2_PanelC.csv")
+write.csv(roc, file="Figure5_simulation.csv")
 ```
 
