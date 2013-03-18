@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="figure2/" or`
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="comment/" or`
 
 # Code for Prosecutors Fallacy 
 
@@ -43,7 +43,7 @@ theme_publish <-
 
 ### Conditional distribution
 
-Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that crash as we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
+Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that cross a threshold we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
 
 
 ``` {r simdatf}
@@ -55,16 +55,15 @@ select_crashes <- function(n){
     i = 0, Da = 0, Dt = 0, p = 2)
 	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
 	d <- dim(sn$x1)
-	crashed <- which(sn$x1[d[1],]==0)
+	crashed <- which(sn$x1[d[1],] <= threshold)
+#	crashed <- which(sn$x1[d[1],]==0)
 	sn$x1[,crashed] 
 }
 ````
 
 
 
-
-To take advantage of parallelization, we loop over this function a set number of times.  The `snowfall` library provides the parallelization
-of the `lapply` loop.  A few extra commands format the data into a table
+ A few extra commands format the data into a table
 with columns of times, replicate id number, and population value at the
 given time.
 
@@ -158,7 +157,7 @@ nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_aut
 nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
 ````
 
-``` {r fig2, dependson="nullmelt"}
+``` {r fig, dependson="nullmelt"}
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
@@ -166,7 +165,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
 ````
 
 
-``` {r figure2, dev="CairoPS", fig.ext="eps", fig.width=6, fig.height=5, include=FALSE}
+``` {r comment, dev="CairoPS", fig.ext="eps", fig.width=6, fig.height=5, include=FALSE}
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
@@ -175,6 +174,6 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
 
 
 ``` {r save_final_data}
-write.csv(dat, file="Figure2_dat.csv")
-write.csv(nulldat, file="Figure2_nulldat.csv")
+write.csv(dat, file="Comment_dat.csv")
+write.csv(nulldat, file="Comment_nulldat.csv")
 ```
