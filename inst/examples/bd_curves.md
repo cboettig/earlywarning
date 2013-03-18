@@ -1,6 +1,6 @@
 
 ```r
-opts_knit$set(upload.fun = socialR::flickr.url)
+# opts_knit$set(upload.fun = socialR::flickr.url)
 
 require(ggplot2)
 ```
@@ -237,7 +237,7 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1_upload](http://farm9.staticflickr.com/8365/8489755913_c166b88309_o.png) 
+![plot of chunk Figure1_upload](figure/Figure1_upload.png) 
 
 
 
@@ -250,6 +250,6 @@ print(p1, vp = vplayout(1, 2))
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1_orig](http://farm9.staticflickr.com/8109/8490855472_a831632c6e_o.jpg) 
+![plot of chunk Figure1_orig](figure/Figure1_orig.pdf) 
 
 
