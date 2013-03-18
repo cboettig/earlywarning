@@ -112,41 +112,11 @@ u3 <- -1 * sapply(x, function(x) integrate(f, lower, x)$value)
 
 ```r
 load("data/zoom.rda")
-```
-
-```
-## Warning: cannot open compressed file 'data/zoom.rda', probable reason 'No
-## such file or directory'
-```
-
-```
-## Error: cannot open the connection
-```
-
-```r
 dat <- subset(zoom, reps == 2)
-```
-
-```
-## Error: object 'zoom' not found
-```
-
-```r
 # dat <- subset(dat, value > 250)
 a <- dat$time - min(dat$time)
-```
-
-```
-## Error: object 'dat' not found
-```
-
-```r
 a <- a/max(a) * (34000 - 19000) + 19000
 d2 <- data.frame(x = dat$value, value = a)
-```
-
-```
-## Error: object 'dat' not found
 ```
 
 
@@ -155,30 +125,9 @@ d2 <- data.frame(x = dat$value, value = a)
 df <- data.frame(x=x, value=u1)
 df$variable = "stable potential"
 d2$variable = "stable potential"
-```
-
-```
-## Error: object 'd2' not found
-```
-
-```r
 df$panel <- "Potential Energy"
 d2$panel <- "Time of Sample Trajectory"
-```
-
-```
-## Error: object 'd2' not found
-```
-
-```r
 d <- rbind(df, d2)
-```
-
-```
-## Error: object 'd2' not found
-```
-
-```r
 p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) + 
   facet_grid(panel ~ ., scale = "free") +
   layer(data = d2, geom = "point", size=1) +
@@ -190,7 +139,14 @@ p1 <- ggplot(data = d, mapping = aes(x = x, y = value)) +
 ```
 
 ```
-## Error: ggplot2 doesn't know how to deal with data of class function
+## 'opts' is deprecated. Use 'theme' instead. (Deprecated; last used in
+## version 0.9.1)
+```
+
+```
+## Setting the plot title with opts(title="...") is deprecated.  Use
+## labs(title="...") or ggtitle("...") instead. (Deprecated; last used in
+## version 0.9.1)
 ```
 
 ```r
@@ -278,17 +234,10 @@ pushViewport(viewport(layout = grid.layout(1, 3)))
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 print(p0, vp = vplayout(1, 1))
 print(p1, vp = vplayout(1, 2))
-```
-
-```
-## Error: object 'p1' not found
-```
-
-```r
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1_upload](http://farm9.staticflickr.com/8384/8569071131_337127ba4e_o.png) 
+![plot of chunk Figure1_upload](http://farm9.staticflickr.com/8091/8570263856_ff8704202b_o.png) 
 
 
 
@@ -298,16 +247,9 @@ pushViewport(viewport(layout = grid.layout(1, 3)))
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 print(p0, vp = vplayout(1, 1))
 print(p1, vp = vplayout(1, 2))
-```
-
-```
-## Error: object 'p1' not found
-```
-
-```r
 print(p2, vp = vplayout(1, 3))
 ```
 
-![plot of chunk Figure1_orig](http://farm9.staticflickr.com/8239/8570169294_9c2db10399_o.png) 
+![plot of chunk Figure1_orig](http://farm9.staticflickr.com/8381/8570264436_4bf77008f2_o.png) 
 
 

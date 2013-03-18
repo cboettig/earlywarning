@@ -98,6 +98,7 @@ zoom <- ddply(dat, "reps", function(X){
     index <- max(tip-200,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
+save(zoom, "zoom.rda")
 ````
 
 
