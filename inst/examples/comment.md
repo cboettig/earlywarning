@@ -98,7 +98,7 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk testing](figure/testing.png) 
+![plot of chunk testing](http://farm9.staticflickr.com/8374/8573472240_0f73bb4268_o.png) 
 
 
 
@@ -121,7 +121,7 @@ zoom <- ddply(dat, "reps", function(X){
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](figure/example-trajectories.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8108/8573472340_f3d46f7b46_o.png) 
 
 
 
@@ -194,7 +194,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](figure/fig.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8376/8572379583_b59ac90bb2_o.png) 
 
 
 
