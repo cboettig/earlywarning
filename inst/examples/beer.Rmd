@@ -62,10 +62,11 @@ select_crashes <- function(n){
   W <- timeseries[w]
   # Get the range of points 200 samples before the smallest deviation
   dev <- sapply(timeseries[w], which.min)
-  D <- rbind(dev, dev - 200)
+  D <- rbind(dev - 200, dev)
   # extract just that range
-  dat <- sapply(1:length(dev), function(i) W[i,D[1,i]:D[2,i]])
-  dat
+  M <- as.matrix(W)
+  dat <- sapply(1:length(dev), function(i) M[D[1,i]:D[2,i], i])
+  as.data.frame(dat)
 }
 ````
 
@@ -77,6 +78,7 @@ examples <- sfLapply(1:20, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
 levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
+zoom <- dat
 ````
 
 
