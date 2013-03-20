@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="beer/" or`
+
 
 # Code for Prosecutors Fallacy 
 
@@ -23,7 +23,8 @@ We begin by running the simulation of the process for all replicates.
 
 Load the required libraries
  
-``` {r libraries}
+
+```r
 rm(list=ls())
 library(populationdynamics)
 library(earlywarning)
@@ -31,9 +32,11 @@ library(reshape2)		# data manipulation
 library(data.table)	# data manipulation
 library(ggplot2)		# graphics
 library(snowfall)		# parallel
-````
+```
 
-```{r plotting-theme}
+
+
+```r
 theme_publish <- theme_set(theme_bw(12))
 theme_publish <- 
   theme_update(legend.key=theme_blank(),
@@ -42,15 +45,17 @@ theme_publish <-
 ```
 
 
+
 ### Conditional distribution
 
 Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that cross a threshold we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
 
 
-``` {r simdatf}
+
+```r
 threshold <- 220
 pars = c(Xo = 500, e = 0.5, a = 0, K = 500, h = 200, i = 0, Da = 0, Dt = 0, p = 1)
-sn <- saddle_node_ibm(pars, times=seq(0,5000, length=50000), reps=20000)
+sn <- saddle_node_ibm(pars, times=seq(0,5000, length=50000), reps=1000)
 timeseries <- data.table(sn$x1)
 # Get the ids of samples that have a point less than the theshold
 w <- sapply(timeseries, function(x) any(x < threshold))
@@ -74,54 +79,86 @@ df <- melt(dat, id="time")
 names(df) = c("time", "reps", "value")
 levels(df$reps) <- 1:length(levels(df$reps)) # use numbers for reps instead of V1, V2, etc
 zoom <- df
-````
+```
 
 
-``` {r example-trajectories, dependson="subsetdata"}
+
+
+```r
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
-````
+```
+
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8108/8575308711_f7bc46d3dd_o.png) 
+
 
 Compute model-based warning signals on all each of these.  
 
-``` {r plots_fallacy, dependson="subsetdata"}
+
+```r
 dt <- data.table(subset(zoom, value>threshold))
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
-````
+```
+
 
 ### Null distribution 
 
 To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
 
-``` {r simdatf_null}
-null <- timeseries[1:201,]
-null <- cbind(time = 1:dim(null)[1], null)
-ndf <- melt(null, id="time")
+
+```r
+T<- 5000
+n_pts <- n
+```
+
+```
+Error: object 'n' not found
+```
+
+```r
+pars = c(Xo = 500, e = 0.5, a = 0, K = 500, h = 200,
+i = 0, Da = 0, Dt = 0, p = 1)
+sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
+```
+
+```
+Error: object 'n_pts' not found
+```
+
+```r
+timeseries <- data.table(sn$x1)
+nulldat <- timeseries[1:201,]
+nulldat <- cbind(time = 1:dim(nulldat)[1], nulldat)
+ndf <- melt(nulldat, id="time")
 names(ndf) = c("time", "reps", "value")
 levels(ndf$reps) <- 1:length(levels(ndf$reps)) # use numbers for reps instead of V1, V2, etc
-nulldt <- data.table(ndf)
+nulldat <- ndf
+nulldt <- data.table(nulldat)
 nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
-````
+```
 
-``` {r fig, dependson="nullmelt"}
+
+
+```r
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
-````
+```
+
+![plot of chunk fig](http://farm9.staticflickr.com/8231/8576404852_80e840b213_o.png) 
 
 
-``` {r beer, dev="CairoPS", fig.ext="eps", fig.width=6, fig.height=5, include=FALSE}
-ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
- facet_wrap(~variable) + xlim(c(-1, 1)) + 
- geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
-
-````
 
 
-``` {r save_final_data}
+
+
+
+
+```r
 write.csv(dat, file="beer_dat.csv")
 write.csv(nulldat, file="beer_nulldat.csv")
 ```
+
