@@ -24,6 +24,7 @@ We begin by running the simulation of the process for all replicates.
 Load the required libraries
  
 ``` {r libraries}
+rm(list=ls())
 library(populationdynamics)
 library(earlywarning)
 library(reshape2)		# data manipulation
