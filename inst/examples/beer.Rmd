@@ -62,7 +62,7 @@ select_crashes <- function(n){
   W <- timeseries[w]
   # Get the range of points 200 samples before the smallest deviation
   dev <- sapply(timeseries[w], which.min)
-  D <- rbind(min(1, dev - 200), dev)
+  D <- rbind(pmax(rep(1, length(dev)), dev - 200), dev)
   # extract just that range
   M <- as.matrix(W)
   dat <- sapply(1:length(dev), function(i) M[D[1,i]:D[2,i], i])
@@ -107,7 +107,7 @@ select_crashes <- function(n){
     i = 0, Da = 0, Dt = 0, p = 1)
 	sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
   timeseries <- data.table(sn$x1)
-  timeseries[1:200,]
+  timeseries[1:201,]
 }
 
 ````
