@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="fallacy/" or`
+
 
 # Code for Prosecutors Fallacy 
 
@@ -23,16 +23,19 @@ We begin by running the simulation of the process for all replicates.
 
 Load the required libraries
  
-``` {r libraries}
+
+```r
 library(populationdynamics)
 library(earlywarning)
 library(reshape2)		# data manipulation
 library(data.table)	# data manipulation
 library(ggplot2)		# graphics
 library(snowfall)		# parallel
-````
+```
 
-```{r plotting-theme}
+
+
+```r
 theme_publish <- theme_set(theme_bw(12))
 theme_publish <- 
   theme_update(legend.key=theme_blank(),
@@ -41,12 +44,14 @@ theme_publish <-
 ```
 
 
+
 ### Conditional distribution
 
 Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that crash as we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
 
 
-``` {r simdatf}
+
+```r
 threshold <- 250
 select_crashes <- function(n){
 	T<- 5000
@@ -58,7 +63,8 @@ select_crashes <- function(n){
 	crashed <- which(sn$x1[d[1],]==0)
 	sn$x1[,crashed] 
 }
-````
+```
+
 
 
 
@@ -69,57 +75,79 @@ with columns of times, replicate id number, and population value at the
 given time.
 
 
-``` {r parallel}
+
+```r
 sfInit(parallel=FALSE)
 sfLibrary(populationdynamics)
 ```
 
 
-``` {r simdat, dependson="simdatf"}
+
+
+```r
 sfExportAll()
 examples <- sfLapply(1:20, function(i) select_crashes(50000))
 dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 names(dat) = c("time", "reps", "value")
 levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
-````
+```
 
 
-``` {r testing, dependson="simdat"}
+
+
+```r
 ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
-````
+```
+
+![plot of chunk testing](figure/testing.png) 
+
 
 
 Zoom in on the relevant area of data near the crash
 
-``` {r subsetdata, dependson="simdat" }
+
+```r
 require(plyr)
 zoom <- ddply(dat, "reps", function(X){
     tip <- min(which(X$value<threshold))
     index <- max(tip-200,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
-````
+save(zoom, "zoom.rda")
+```
+
+```
+Error: object 'zoom.rda' not found
+```
 
 
-``` {r example-trajectories, dependson="subsetdata"}
+
+
+```r
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
-````
+```
+
+![plot of chunk example-trajectories](figure/example-trajectories.png) 
+
 
 
 Compute model-based warning signals on all each of these.  
 
-``` {r plots_fallacy, dependson="subsetdata"}
+
+```r
 dt <- data.table(subset(zoom, value>threshold))
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
-````
+```
+
 
 ### Null distribution 
 
 To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
 
-``` {r simdatf_null}
+
+```r
 threshold <- 250
 select_crashes <- function(n){
 	T<- 5000
@@ -130,51 +158,59 @@ select_crashes <- function(n){
 	d <- dim(sn$x1)
 	sn$x1[1:501,]
 }
-````
+```
 
 
-``` {r simdat_null, dependson="simdatf_null"}
+
+
+```r
 sfExportAll()
 examples <-  sfLapply(1:10, function(i) select_crashes(50000))
 nulldat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
 nulldat <- melt(examples)
 names(nulldat) = c("time", "reps", "value")
 levels(nulldat$reps) <- 1:length(levels(dat$reps)) 
-````
+```
+
 
 Zoom in on the relevant area of data near the crash
 
-``` {r nullzoom, dependson="simdat_null"}
+
+```r
 require(plyr)
 nullzoom <- ddply(nulldat, "reps", function(X){
     data.frame(time=X$time, value=X$value)
     })
-````
+```
 
-``` {r nullmelt, dependson="nullzoom"}
+
+
+```r
 nulldt <- data.table(nullzoom)
 nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
 nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
-````
+```
 
-``` {r fig2, dependson="nullmelt"}
+
+
+```r
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
+```
 
-````
-
-
-``` {r figure2, dev="CairoPS", fig.ext="eps", fig.width=6, fig.height=5, include=FALSE}
-ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
- facet_wrap(~variable) + xlim(c(-1, 1)) + 
- geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
-
-````
+![plot of chunk fig2](figure/fig2.png) 
 
 
-``` {r save_final_data}
+
+
+
+
+
+
+```r
 write.csv(dat, file="Figure2_dat.csv")
 write.csv(nulldat, file="Figure2_nulldat.csv")
 ```
+

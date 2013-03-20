@@ -62,7 +62,7 @@ select_crashes <- function(n){
   W <- timeseries[w]
   # Get the range of points 200 samples before the smallest deviation
   dev <- sapply(timeseries[w], which.min)
-  D <- rbind(dev - 200, dev)
+  D <- rbind(min(1, dev - 200), dev)
   # extract just that range
   M <- as.matrix(W)
   dat <- sapply(1:length(dev), function(i) M[D[1,i]:D[2,i], i])
