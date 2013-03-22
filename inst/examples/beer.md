@@ -53,7 +53,7 @@ Then we fix a set of paramaters we will use for the simulation function.  Since 
 
 
 ```r
-threshold <- 220
+threshold <- 200
 pars = c(Xo = 500, e = 0.5, a = 0, K = 500, h = 200, i = 0, Da = 0, Dt = 0, p = 1)
 sn <- saddle_node_ibm(pars, times=seq(0,5000, length=50000), reps=2000)
 timeseries <- sn$x1
@@ -74,7 +74,7 @@ D <- rbind((dev - 200), dev)
 M <- as.matrix(W)
 dat <- sapply(1:length(dev), function(i) M[D[1,i]:D[2,i], i])
 dat <- as.data.frame(dat)
-dat <- cbind(time = 1:dim(dat)[1], dat)
+dat <- as.data.frame(cbind(time = 1:dim(dat)[1], dat))
 df <- melt(dat, id="time")
 names(df) = c("time", "reps", "value")
 levels(df$reps) <- 1:length(levels(df$reps)) # use numbers for reps instead of V1, V2, etc
@@ -88,7 +88,7 @@ zoom <- df
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8237/8581007416_91e4cc5359_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8097/8581123596_ba54d00ffe_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -109,7 +109,7 @@ To compare against the expected distribution of these statistics, we create anot
 
 ```r
 null <- timeseries[1000:1501,]
-null <- cbind(time = 1:dim(null)[1], null)
+null <- as.data.frame(cbind(time = 1:dim(null)[1], null))
 ndf <- melt(null, id="time")
 names(ndf) = c("time", "reps", "value")
 levels(ndf$reps) <- 1:length(levels(ndf$reps)) # use numbers for reps instead of V1, V2, etc
@@ -127,7 +127,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8507/8579908217_88fae4cf87_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8228/8581123666_44eb6a4820_o.png) 
 
 
 
