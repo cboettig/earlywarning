@@ -99,7 +99,7 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk testing](figure/testing.png) 
+![plot of chunk testing](http://farm9.staticflickr.com/8514/8580516035_2b9855e1c1_o.png) 
 
 
 
@@ -113,11 +113,7 @@ zoom <- ddply(dat, "reps", function(X){
     index <- max(tip-200,1):tip
     data.frame(time=X$time[index], value=X$value[index])
     })
-save(zoom, "zoom.rda")
-```
-
-```
-Error: object 'zoom.rda' not found
+save(zoom, file="zoom.rda")
 ```
 
 
@@ -127,7 +123,7 @@ Error: object 'zoom.rda' not found
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](figure/example-trajectories.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8526/8581618238_83c46173ab_o.png) 
 
 
 
@@ -200,7 +196,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig2](figure/fig2.png) 
+![plot of chunk fig2](http://farm9.staticflickr.com/8234/8581618368_794e45744b_o.png) 
 
 
 
