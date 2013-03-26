@@ -1,45 +1,14 @@
 `ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="beer/" or`
 
-# Code for Prosecutors Fallacy 
-
-For the individual-based simulation, the population dynamics are given by
-
-<div>
-\begin{align}
-  \frac{dP(n,t)}{dt} &= b_{n-1} P(n-1,t) + d_{n+1}P(n+1,t) - (b_n+d_n) P(n,t)  \label{master}, \\
-    b_n &= \frac{e K n^2}{n^2 + h^2}, \\
-    d_n &= e n + a,
-\end{align}
-</div>
-
-which is provided by the `saddle_node_ibm` model in `populationdynamics`. 
-
-For each of the warning signal statistics in question, 
-we need to generate the distibution over all replicates
-and then over replicates which have been selected conditional 
-on having experienced a crash.  
-
-We begin by running the simulation of the process for all replicates.  
-
-Load the required libraries
  
 ``` {r libraries}
 rm(list=ls())
-library(populationdynamics)
 library(earlywarning)
 library(reshape2)		# data manipulation
 library(data.table)	# data manipulation
 library(ggplot2)		# graphics
-library(snowfall)		# parallel
 ````
 
-```{r plotting-theme}
-theme_publish <- theme_set(theme_bw(12))
-theme_publish <- 
-  theme_update(legend.key=theme_blank(),
-        panel.grid.major=theme_blank(),panel.grid.minor=theme_blank(),
-        plot.background=theme_blank(), legend.title=theme_blank())
-```
 
 
 ### Conditional distribution
@@ -48,10 +17,14 @@ Then we fix a set of paramaters we will use for the simulation function.  Since 
 
 
 ``` {r simdatf}
-threshold <- 200
-pars = c(Xo = 500, e = 0.5, a = 0, K = 500, h = 200, i = 0, Da = 0, Dt = 0, p = 1)
-sn <- saddle_node_ibm(pars, times=seq(0,5000, length=50000), reps=2000)
-timeseries <- sn$x1
+threshold <- -3
+require(sde)
+M <- 2000   # replicates
+N <- 20000 # sample points
+d <- expression(-5 * x)
+s <- expression(3.5)
+X <- sde.sim(X0=0, drift=d, sigma=s, N = 20000, M=2000)
+timeseries <- matrix(X@.Data, ncol=M)
 # Get the ids of samples that have a point less than the theshold
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
 # extract that subset by id 
