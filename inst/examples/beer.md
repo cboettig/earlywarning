@@ -46,15 +46,14 @@ timeseries <- matrix(X@.Data, ncol=M)
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
 # extract that subset by id 
 W <- timeseries[,w]
-# Get the range of points 200 samples before the smallest deviation
+sample <- 500 # sample length
 dev <- sapply(as.data.frame(W), which.min)
-# Drop transitions with less than 200 observations
-drop <- which(dev - 200 < 1)
+drop <- which(dev - sample < 1)
 if(length(drop) > 0){
 W <- W[,-drop]
 dev <- dev[-drop]
 }
-D <- rbind((dev - 200), dev)
+D <- rbind((dev - sample), dev)
 # extract just that range
 M <- as.matrix(W)
 dat <- sapply(1:length(dev), function(i) M[D[1,i]:D[2,i], i])
@@ -73,7 +72,7 @@ zoom <- df
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8111/8593742516_f8d0f20e6b_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8516/8592953281_bb7ec80511_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -112,7 +111,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8369/8592641963_003fe3a648_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8518/8592953433_2e184d3044_o.png) 
 
 
 
