@@ -1,48 +1,15 @@
 
 
-# Code for Prosecutors Fallacy 
-
-For the individual-based simulation, the population dynamics are given by
-
-<div>
-\begin{align}
-  \frac{dP(n,t)}{dt} &= b_{n-1} P(n-1,t) + d_{n+1}P(n+1,t) - (b_n+d_n) P(n,t)  \label{master}, \\
-    b_n &= \frac{e K n^2}{n^2 + h^2}, \\
-    d_n &= e n + a,
-\end{align}
-</div>
-
-which is provided by the `saddle_node_ibm` model in `populationdynamics`. 
-
-For each of the warning signal statistics in question, 
-we need to generate the distibution over all replicates
-and then over replicates which have been selected conditional 
-on having experienced a crash.  
-
-We begin by running the simulation of the process for all replicates.  
-
-Load the required libraries
  
 
 ```r
 rm(list=ls())
-library(populationdynamics)
 library(earlywarning)
 library(reshape2)		# data manipulation
 library(data.table)	# data manipulation
 library(ggplot2)		# graphics
-library(snowfall)		# parallel
 ```
 
-
-
-```r
-theme_publish <- theme_set(theme_bw(12))
-theme_publish <- 
-  theme_update(legend.key=theme_blank(),
-        panel.grid.major=theme_blank(),panel.grid.minor=theme_blank(),
-        plot.background=theme_blank(), legend.title=theme_blank())
-```
 
 
 
@@ -53,10 +20,29 @@ Then we fix a set of paramaters we will use for the simulation function.  Since 
 
 
 ```r
-threshold <- 200
-pars = c(Xo = 500, e = 0.5, a = 0, K = 500, h = 200, i = 0, Da = 0, Dt = 0, p = 1)
-sn <- saddle_node_ibm(pars, times=seq(0,5000, length=50000), reps=2000)
-timeseries <- sn$x1
+threshold <- -3
+require(sde)
+```
+
+```
+
+To check the errata corrige of the book, type vignette("sde.errata")
+```
+
+```r
+M <- 2000   # replicates
+N <- 20000 # sample points
+d <- expression(-5 * x)
+s <- expression(3.5)
+X <- sde.sim(X0=0, drift=d, sigma=s, N = 20000, M=2000)
+```
+
+```
+sigma.x not provided, attempting symbolic derivation.
+```
+
+```r
+timeseries <- matrix(X@.Data, ncol=M)
 # Get the ids of samples that have a point less than the theshold
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
 # extract that subset by id 
@@ -88,7 +74,7 @@ zoom <- df
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8097/8581123596_ba54d00ffe_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8529/8593591176_3b6973b164_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -97,7 +83,21 @@ Compute model-based warning signals on all each of these.
 ```r
 dt <- data.table(subset(zoom, value>threshold))
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+```
+
+```
+Error: not enough finite observations
+```
+
+```r
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+```
+
+```
+Error: not enough finite observations
+```
+
+```r
 dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 ```
 
@@ -127,7 +127,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8228/8581123666_44eb6a4820_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8507/8592490367_9a29839bd4_o.png) 
 
 
 
