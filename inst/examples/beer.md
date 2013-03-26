@@ -15,12 +15,11 @@ library(ggplot2)		# graphics
 
 ### Conditional distribution
 
-Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that cross a threshold we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
 
 
 
 ```r
-threshold <- -3
+threshold <- -4
 require(sde)
 ```
 
@@ -34,7 +33,7 @@ M <- 2000   # replicates
 N <- 20000 # sample points
 d <- expression(-5 * x)
 s <- expression(3.5)
-X <- sde.sim(X0=0, drift=d, sigma=s, N = 20000, M=2000)
+X <- sde.sim(X0=0, drift=d, sigma=s, N = N, M = M)
 ```
 
 ```
@@ -74,30 +73,16 @@ zoom <- df
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8529/8593591176_3b6973b164_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8111/8593742516_f8d0f20e6b_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
 
 
 ```r
-dt <- data.table(subset(zoom, value>threshold))
+dt <- data.table(zoom)
 var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
-```
-
-```
-Error: not enough finite observations
-```
-
-```r
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
-```
-
-```
-Error: not enough finite observations
-```
-
-```r
 dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 ```
 
@@ -127,7 +112,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8507/8592490367_9a29839bd4_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8369/8592641963_003fe3a648_o.png) 
 
 
 

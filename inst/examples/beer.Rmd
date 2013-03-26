@@ -13,17 +13,16 @@ library(ggplot2)		# graphics
 
 ### Conditional distribution
 
-Then we fix a set of paramaters we will use for the simulation function.  Since we will simulate 20,000 replicates with 50,000 pts a piece, we can save memory by performing the conditional selection on the ones that cross a threshold we go along and disgard the others.  (We will create a null distribution in which we ignore this conditional selection later).  
 
 
 ``` {r simdatf}
-threshold <- -3
+threshold <- -4
 require(sde)
 M <- 2000   # replicates
 N <- 20000 # sample points
 d <- expression(-5 * x)
 s <- expression(3.5)
-X <- sde.sim(X0=0, drift=d, sigma=s, N = 20000, M=2000)
+X <- sde.sim(X0=0, drift=d, sigma=s, N = N, M = M)
 timeseries <- matrix(X@.Data, ncol=M)
 # Get the ids of samples that have a point less than the theshold
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
