@@ -46,7 +46,7 @@ timeseries <- matrix(X@.Data, ncol=M)
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
 # extract that subset by id 
 W <- timeseries[,w]
-sample <- 500 # sample length
+sample <- 1500 # sample length
 dev <- sapply(as.data.frame(W), which.min)
 drop <- which(dev - sample < 1)
 if(length(drop) > 0){
@@ -72,7 +72,7 @@ zoom <- df
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8516/8592953281_bb7ec80511_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8369/8593100341_4e2af5fec3_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -92,7 +92,7 @@ To compare against the expected distribution of these statistics, we create anot
 
 
 ```r
-null <- timeseries[1000:1501,]
+null <- timeseries[1000:2501,]
 null <- as.data.frame(cbind(time = 1:dim(null)[1], null))
 ndf <- melt(null, id="time")
 names(ndf) = c("time", "reps", "value")
@@ -111,7 +111,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8518/8592953433_2e184d3044_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8108/8593100533_533e2d0c46_o.png) 
 
 
 

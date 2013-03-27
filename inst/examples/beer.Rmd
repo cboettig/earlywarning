@@ -28,7 +28,7 @@ timeseries <- matrix(X@.Data, ncol=M)
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
 # extract that subset by id 
 W <- timeseries[,w]
-sample <- 500 # sample length
+sample <- 1500 # sample length
 dev <- sapply(as.data.frame(W), which.min)
 drop <- which(dev - sample < 1)
 if(length(drop) > 0){
@@ -66,7 +66,7 @@ dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
 
 ``` {r simdatf_null}
-null <- timeseries[1000:1501,]
+null <- timeseries[1000:2501,]
 null <- as.data.frame(cbind(time = 1:dim(null)[1], null))
 ndf <- melt(null, id="time")
 names(ndf) = c("time", "reps", "value")
