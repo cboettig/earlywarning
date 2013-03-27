@@ -33,7 +33,7 @@ M <- 2000   # replicates
 N <- 20000 # sample points
 d <- expression(-5 * x)
 s <- expression(3.5)
-X <- sde.sim(X0=0, drift=d, sigma=s, N = N, M = M)
+X <- sde.sim(X0=0, drift=d, T=10, sigma=s, N = N, M = M)
 ```
 
 ```
@@ -72,7 +72,7 @@ zoom <- df
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8369/8593100341_4e2af5fec3_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8392/8594745359_c177447ab6_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -111,7 +111,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8108/8593100533_533e2d0c46_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8112/8594745411_b3f97ffb2a_o.png) 
 
 
 
