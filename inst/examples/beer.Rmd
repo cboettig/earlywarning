@@ -66,6 +66,17 @@ dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 ````
 
 
+```{r marc_ratio}
+marc <- function(x){
+  y <- x[-1]
+  v <- y - x[-length(x)] # step differences
+  ratio <- sum(v > 0) / sum(v < 0)
+  ratio
+}
+ratio <- dt[, marc(value), by=reps]
+ggplot(ratio) + geom_histogram(aes(x=V1))
+```
+
 ```{r kendall_data}
 cr <- function(df) unname(cor.test(df[[1]], df[[2]], method="kendall")$estimate)
 taus <- dt[, cr(data.frame(time, value)), by=reps]
