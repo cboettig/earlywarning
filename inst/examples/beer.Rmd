@@ -48,6 +48,10 @@ zoom <- df
 ````
 
 
+```{r save_trajectories}
+write.csv(zoom, file="trajectories.csv")
+```
+
 ``` {r example-trajectories}
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ````
@@ -60,6 +64,14 @@ var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=rep
 acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
 dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 ````
+
+
+```{r kendall_data}
+cr <- function(df) unname(cor.test(df[[1]], df[[2]], method="kendall")$estimate)
+taus <- dt[, cr(data.frame(time, value)), by=reps]
+ggplot(taus) + geom_histogram(aes(x=V1))
+```
+
 
 ### Null distribution 
 
