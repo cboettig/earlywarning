@@ -3,7 +3,7 @@ We will need the following libraries to run this example.  If you don't have the
 
 ```{r setup, echo=FALSE}
 # options for the vignette 
-opts_chunk$set(cache = TRUE, cache.path = "example/", warning=FALSE, message=FALSE, tidy=FALSE)
+opts_chunk$set(cache = TRUE, cache.path = "cache-example/", warning=FALSE, message=FALSE, tidy=FALSE)
 library(knitcitations)
 opts_knit$set(upload.fun = socialR::flickr.url)
 library(ggplot2)
@@ -59,11 +59,17 @@ observed <- -2 * (logLik(A) - logLik(B))
 
 Perform the bootstrapped model comparison using 500 replicates on the parallel cluster.  
 
-```{r comparison, results="hide", echo=TRUE}
+```{r comparison, results="hide", echo=TRUE, eval=FALSE}
 sfExportAll()
 runtime <- system.time(
 reps <- sfLapply(1:500, function(i) compare(A, B)))
 ```
+
+```{r load, echo=FALSE}
+runtime <- 1
+load("reps.rda")
+```
+
 
 Which took `r unname(runtime[3])` seconds to run for the example shown here.  
 
