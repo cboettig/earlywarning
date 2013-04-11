@@ -52,7 +52,7 @@ Then we fix a set of paramaters we will use for the simulation function.  Since 
 
 
 ```r
-threshold <- 250
+threshold <- 400
 select_crashes <- function(n){
 	T<- 5000
 	n_pts <- n
@@ -98,7 +98,7 @@ levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
 ggplot(subset(dat, reps %in% levels(dat$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk testing](http://farm9.staticflickr.com/8100/8572282877_815dc4341d_o.png) 
+![plot of chunk testing](figure/testing.png) 
 
 
 
@@ -121,7 +121,7 @@ zoom <- ddply(dat, "reps", function(X){
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8243/8573375714_956b2721cf_o.png) 
+![plot of chunk example-trajectories](figure/example-trajectories.png) 
 
 
 
@@ -194,10 +194,14 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8093/8572283195_496404332d_o.png) 
+![plot of chunk fig](figure/fig.png) 
 
 
 
+```r
+write.csv(dat, file="Comment_dat.csv")
+write.csv(nulldat, file="Comment_nulldat.csv")
+```
 
 
 

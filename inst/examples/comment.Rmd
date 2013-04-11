@@ -1,4 +1,4 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="comment/" or`
+`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="comment_400/" or`
 
 # Code for Prosecutors Fallacy 
 
@@ -47,7 +47,7 @@ Then we fix a set of paramaters we will use for the simulation function.  Since 
 
 
 ``` {r simdatf}
-threshold <- 250
+threshold <- 400
 select_crashes <- function(n){
 	T<- 5000
 	n_pts <- n
