@@ -1,0 +1,112 @@
+
+We will need the following libraries to run this example.  If you don't have them, they can be installed from CRAN using the `install.packages` function.  
+
+```{r setup, echo=FALSE}
+# options for the vignette 
+opts_chunk$set(cache = TRUE, cache.path = "tutorial/", warning=FALSE, message=FALSE, tidy=FALSE)
+library(knitcitations)
+opts_knit$set(upload.fun = socialR::flickr.url)
+library(ggplot2)
+theme_transparent <- theme_set(theme_bw(14))
+theme_transparent <- theme_update(
+        panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
+        legend.title=element_blank(), 
+        panel.background = element_rect(fill = "transparent", colour = NA), 
+        plot.background = element_rect(fill = "transparent", colour = NA))
+library(earlywarning)
+```
+
+
+```{r library}
+library(ggplot2)
+library(reshape2)
+library(multicore)
+library(devtools)
+```
+
+We will be using custom functions provided in the R package `r citet(citation("earlywarning"))` that accompanies `r citet("10.1098/rsif.2012.0125")`, which can be installed directly from the development repository on GitHub:
+
+```{r custom-install, eval=FALSE}
+install_github("earlywarning", "cboettig")
+library(earlywarning)
+```
+
+
+
+We begin by loading the chemostat data provided by `r citet("10.1038/nature09389")`. We plot the raw data to take a look at it. 
+
+
+```{r }
+data("chemostat")
+plot(chemostat, type="b")
+```
+
+
+Fit both models to the original data, record the observed likelihood ratio of the original data
+
+```{r models}
+A <- stability_model(chemostat, "OU")
+B <- stability_model(chemostat, "LSN")
+observed <- -2 * (logLik(A) - logLik(B))
+````
+
+
+Perform the bootstrapped model comparison on the parallel cluster.  
+
+```{r comparison, results="hide", echo=TRUE}
+runtime <- system.time(
+reps <- mclapply(1:2000, function(i) compare(A, B)))
+```
+
+Which took `r unname(runtime[3])` seconds to run for the example shown here.  
+
+A helper function extracts the likelihood ratios under each of the pairwise comparisons (The null distribution: -2 times the log likelihood of data fit under A that had been simulated under A, minus the log likelihood of fits under A  simulated under B; and the test distribution: fit under B when simulated under A, minus the loglikehood of being fit under B, simulated under B) as a data frame.  we show the top of the data frame as output below.  
+
+
+```{r extract_data}
+lr <- lik_ratios(reps)
+head(lr)
+````
+
+We use this data to generate the overlapping distributions shown in `r citet("10.1098/rsif.2012.0125")`, 
+
+```{r lr_ratio_plot} 
+ggplot(lr) + geom_density(aes(value, fill=simulation), alpha=0.6) + geom_vline(aes(xintercept=observed))
+```
+
+
+A second helper function generates the ROC curve from the likelihood ratio data, providing an alternative way to visualize this overlap:
+
+```{r roc}
+roc <- roc_data(lr)
+ggplot(roc) + geom_line(aes(False.positives, True.positives))
+````
+
+
+
+
+
+ROC curves are particularly useful in comparing the power of a variety of approaches.  For instance, we can compare the performance of the likelihood-based signal shown above to the traditional approach of using a correlation coefficient to detect the increase in some summary statistic such as variance or autocorrelation.  To obtain replicates, we will still simulate under the null (OU) and test (LSN) models estimated above, but instead of computing the likelihood of these data, we will estimate the commonly used rank correlation coefficient, Kendall's tau, to quantify the increase in variance, autcorrelation, and skew observed in a moving window over the data.
+
+
+```{r}
+var <- bootstrap_trend(chemostat, window_var, method="kendall", rep=2000)
+acor <- bootstrap_trend(chemostat, window_autocorr, method="kendall", rep=2000)
+skew <- bootstrap_trend(chemostat, window_skew, method="kendall", rep=2000)
+```
+
+These data are formatted like the likeihood ratio data above, only that the statistic is now Kendall's tau.  
+
+
+```{r var_ratio} 
+ggplot(var) + geom_density(aes(value, fill=simulation), alpha=0.6) + geom_vline(aes(xintercept=observed))
+```
+
+
+We can combine the data for the ROC curves of each indicator to compare:
+
+```{r}
+indicators <- melt(list(var = roc_data(var), acor = roc_data(acor), skew = roc_data(skew), lr = roc), id = c("Threshold", "False.positives", "True.positives"))
+ggplot(indicators) + geom_line(aes(False.positives, True.positives, color=L1)) 
+```
+
