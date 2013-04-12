@@ -3,7 +3,7 @@ We will need the following libraries to run this example.  If you don't have the
 
 ```{r setup, echo=FALSE}
 # options for the vignette 
-opts_chunk$set(cache = TRUE, cache.path = "tutorial/", warning=FALSE, message=FALSE, tidy=FALSE)
+opts_chunk$set(cache = TRUE, cache.path = "tutorial-ibm/", warning=FALSE, message=FALSE, tidy=FALSE)
 library(knitcitations)
 opts_knit$set(upload.fun = socialR::flickr.url)
 library(ggplot2)
@@ -33,20 +33,20 @@ library(earlywarning)
 
 
 
-We begin by loading the chemostat data provided by `r citet("10.1038/nature09389")`. We plot the raw data to take a look at it. 
+We begin by loading the ibm_critical data provided by `r citet("10.1038/nature09389")`. We plot the raw data to take a look at it. 
 
 
 ```{r }
-data("chemostat")
-plot(chemostat, type="b")
+data("ibms")
+plot(ibm_critical, type="b")
 ```
 
 
 Fit both models to the original data, record the observed likelihood ratio of the original data
 
 ```{r models}
-A <- stability_model(chemostat, "OU")
-B <- stability_model(chemostat, "LSN")
+A <- stability_model(ibm_critical, "OU")
+B <- stability_model(ibm_critical, "LSN")
 observed <- -2 * (logLik(A) - logLik(B))
 ````
 
@@ -55,7 +55,7 @@ Perform the bootstrapped model comparison on the parallel cluster.
 
 ```{r comparison, results="hide", echo=TRUE}
 runtime <- system.time(
-reps <- mclapply(1:2000, function(i) compare(A, B)))
+reps <- mclapply(1:200, function(i) compare(A, B)))
 ```
 
 Which took `r unname(runtime[3])` seconds to run for the example shown here.  
@@ -90,9 +90,9 @@ ROC curves are particularly useful in comparing the power of a variety of approa
 
 
 ```{r}
-var <- bootstrap_trend(chemostat, window_var, method="kendall", rep=2000)
-acor <- bootstrap_trend(chemostat, window_autocorr, method="kendall", rep=2000)
-skew <- bootstrap_trend(chemostat, window_skew, method="kendall", rep=2000)
+var <- bootstrap_trend(ibm_critical, window_var, method="kendall", rep=200)
+acor <- bootstrap_trend(ibm_critical, window_autocorr, method="kendall", rep=200)
+skew <- bootstrap_trend(ibm_critical, window_skew, method="kendall", rep=200)
 ```
 
 These data are formatted like the likeihood ratio data above, only that the statistic is now Kendall's tau.  

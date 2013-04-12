@@ -28,16 +28,16 @@ library(earlywarning)
 
 
 
-We begin by loading the chemostat data provided by Drake & Griffen, (2010). We plot the raw data to take a look at it. 
+We begin by loading the ibm_critical data provided by Drake & Griffen, (2010). We plot the raw data to take a look at it. 
 
 
 
 ```r
-data("chemostat")
-plot(chemostat, type="b")
+data("ibms")
+plot(ibm_critical, type="b")
 ```
 
-![plot of chunk unnamed-chunk-1](http://farm9.staticflickr.com/8241/8641760994_bc3d59ee14_o.png) 
+![plot of chunk unnamed-chunk-1](http://farm9.staticflickr.com/8261/8641108753_956f179a1d_o.png) 
 
 
 
@@ -45,8 +45,8 @@ Fit both models to the original data, record the observed likelihood ratio of th
 
 
 ```r
-A <- stability_model(chemostat, "OU")
-B <- stability_model(chemostat, "LSN")
+A <- stability_model(ibm_critical, "OU")
+B <- stability_model(ibm_critical, "LSN")
 observed <- -2 * (logLik(A) - logLik(B))
 ```
 
@@ -57,11 +57,11 @@ Perform the bootstrapped model comparison on the parallel cluster.
 
 ```r
 runtime <- system.time(
-reps <- mclapply(1:2000, function(i) compare(A, B)))
+reps <- mclapply(1:200, function(i) compare(A, B)))
 ```
 
 
-Which took 1.2369 &times; 10<sup>4</sup> seconds to run for the example shown here.  
+Which took 4176.78 seconds to run for the example shown here.  
 
 A helper function extracts the likelihood ratios under each of the pairwise comparisons (The null distribution: -2 times the log likelihood of data fit under A that had been simulated under A, minus the log likelihood of fits under A  simulated under B; and the test distribution: fit under B when simulated under A, minus the loglikehood of being fit under B, simulated under B) as a data frame.  we show the top of the data frame as output below.  
 
@@ -74,12 +74,12 @@ head(lr)
 
 ```
 ##   simulation rep     value
-## 1       null   1  0.004580
-## 2       test   1  0.002791
-## 3       null   2  0.031427
-## 4       test   2  1.006297
-## 5       null   3  0.003951
-## 6       test   3 -0.055753
+## 1       null   1  0.001659
+## 2       test   1  2.255139
+## 3       null   2  1.892615
+## 4       test   2  9.804084
+## 5       null   3  4.795269
+## 6       test   3 22.696982
 ```
 
 
@@ -90,7 +90,7 @@ We use this data to generate the overlapping distributions shown in Boettiger & 
 ggplot(lr) + geom_density(aes(value, fill=simulation), alpha=0.6) + geom_vline(aes(xintercept=observed))
 ```
 
-![plot of chunk lr_ratio_plot](http://farm9.staticflickr.com/8384/8641016997_75a7d46e80_o.png) 
+![plot of chunk lr_ratio_plot](http://farm9.staticflickr.com/8245/8642325058_d70eaee962_o.png) 
 
 
 
@@ -102,7 +102,7 @@ roc <- roc_data(lr)
 ggplot(roc) + geom_line(aes(False.positives, True.positives))
 ```
 
-![plot of chunk roc](http://farm9.staticflickr.com/8543/8641017081_313e85c6a4_o.png) 
+![plot of chunk roc](http://farm9.staticflickr.com/8402/8641224925_83a045afbb_o.png) 
 
 
 
@@ -114,9 +114,9 @@ ROC curves are particularly useful in comparing the power of a variety of approa
 
 
 ```r
-var <- bootstrap_trend(chemostat, window_var, method="kendall", rep=2000)
-acor <- bootstrap_trend(chemostat, window_autocorr, method="kendall", rep=2000)
-skew <- bootstrap_trend(chemostat, window_skew, method="kendall", rep=2000)
+var <- bootstrap_trend(ibm_critical, window_var, method="kendall", rep=200)
+acor <- bootstrap_trend(ibm_critical, window_autocorr, method="kendall", rep=200)
+skew <- bootstrap_trend(ibm_critical, window_skew, method="kendall", rep=200)
 ```
 
 
@@ -128,7 +128,7 @@ These data are formatted like the likeihood ratio data above, only that the stat
 ggplot(var) + geom_density(aes(value, fill=simulation), alpha=0.6) + geom_vline(aes(xintercept=observed))
 ```
 
-![plot of chunk var_ratio](http://farm9.staticflickr.com/8248/8641020179_b81e148185_o.png) 
+![plot of chunk var_ratio](http://farm9.staticflickr.com/8265/8642341382_1d87080d5c_o.png) 
 
 
 
@@ -140,6 +140,6 @@ indicators <- melt(list(var = roc_data(var), acor = roc_data(acor), skew = roc_d
 ggplot(indicators) + geom_line(aes(False.positives, True.positives, color=L1)) 
 ```
 
-![plot of chunk unnamed-chunk-3](http://farm9.staticflickr.com/8257/8641020295_4e6889d809_o.png) 
+![plot of chunk unnamed-chunk-3](http://farm9.staticflickr.com/8122/8641241253_4c3704523e_o.png) 
 
 
