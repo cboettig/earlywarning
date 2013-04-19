@@ -33,7 +33,7 @@ M <- 2000   # replicates
 N <- 20000 # sample points
 d <- expression(-1 * x)
 s <- expression(1)
-X <- sde.sim(X0=0, drift=d, T=10, sigma=s, N = N, M = M)
+X <- sde.sim(X0=0, drift=d, T=1, sigma=s, N = N, M = M)
 ```
 
 ```
@@ -78,7 +78,7 @@ write.csv(zoom, file="trajectories.csv")
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8243/8662478331_a84d1cf262_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8257/8663736710_b8da3c6f49_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -105,7 +105,7 @@ ratio <- dt[, marc(value), by=reps]
 ggplot(ratio) + geom_histogram(aes(x=V1))
 ```
 
-![plot of chunk marc_ratio](http://farm9.staticflickr.com/8244/8663575424_0ba51b9eef_o.png) 
+![plot of chunk marc_ratio](http://farm9.staticflickr.com/8265/8663736798_982815d446_o.png) 
 
 
 
@@ -115,7 +115,7 @@ taus <- dt[, cr(data.frame(time, value)), by=reps]
 ggplot(taus) + geom_histogram(aes(x=V1))
 ```
 
-![plot of chunk kendall_data](http://farm9.staticflickr.com/8260/8662478579_ce9bd02799_o.png) 
+![plot of chunk kendall_data](http://farm9.staticflickr.com/8260/8662638039_b576c747b6_o.png) 
 
 
 
@@ -144,7 +144,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8244/8662478641_5da8c9965d_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8255/8662638113_78e9d5f9cb_o.png) 
 
 
 
