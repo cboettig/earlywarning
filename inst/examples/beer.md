@@ -19,7 +19,7 @@ library(ggplot2)		# graphics
 
 
 ```r
-threshold <- -4
+threshold <- -3
 require(sde)
 ```
 
@@ -49,48 +49,14 @@ W <- timeseries[,w]
 sample <- 1500 # sample length
 dev <- sapply(as.data.frame(W), which.min)
 drop <- which(dev - sample < 1)
-```
-
-```
-recover called non-interactively; frames dumped, use debugger() to view
-```
-
-```
-Error: error in evaluating the argument 'x' in selecting a method for
-function 'which': Error in dev - sample : non-numeric argument to binary
-operator
-```
-
-```r
 if(length(drop) > 0){
 W <- W[,-drop]
 dev <- dev[-drop]
 }
-```
-
-```
-Error: invalid argument to unary operator
-```
-
-```r
 D <- rbind((dev - sample), dev)
-```
-
-```
-Error: non-numeric argument to binary operator
-```
-
-```r
 # extract just that range
 M <- as.matrix(W)
 dat <- sapply(1:length(dev), function(i) M[D[1,i]:D[2,i], i])
-```
-
-```
-Error: object of type 'closure' is not subsettable
-```
-
-```r
 dat <- as.data.frame(dat)
 dat <- as.data.frame(cbind(time = 1:dim(dat)[1], dat))
 df <- melt(dat, id="time")
@@ -112,7 +78,7 @@ write.csv(zoom, file="trajectories.csv")
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8254/8661129777_f093735b9b_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8256/8662562016_9e0f5dde29_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -136,45 +102,20 @@ marc <- function(x){
   ratio
 }
 ratio <- dt[, marc(value), by=reps]
-```
-
-```
-Error: non-numeric argument to binary operator
-```
-
-```r
 ggplot(ratio) + geom_histogram(aes(x=V1))
 ```
 
-```
-Error: object 'ratio' not found
-```
+![plot of chunk marc_ratio](http://farm9.staticflickr.com/8258/8662562066_f3cbac1daf_o.png) 
 
 
 
 ```r
 cr <- function(df) unname(cor.test(df[[1]], df[[2]], method="kendall")$estimate)
 taus <- dt[, cr(data.frame(time, value)), by=reps]
-```
-
-```
-recover called non-interactively; frames dumped, use debugger() to view
-```
-
-```
-Error: error in evaluating the argument 'obj' in selecting a method for
-function 'unname': Error in cor.test.default(df[[1]], df[[2]], method =
-"kendall") : 'y' must be a numeric vector Calls: cor.test ->
-cor.test.default
-```
-
-```r
 ggplot(taus) + geom_histogram(aes(x=V1))
 ```
 
-```
-Error: object 'taus' not found
-```
+![plot of chunk kendall_data](http://farm9.staticflickr.com/8253/8661463687_fa2a7270fe_o.png) 
 
 
 
@@ -203,7 +144,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8250/8662228872_088be3f52b_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8255/8661463735_822d795743_o.png) 
 
 
 

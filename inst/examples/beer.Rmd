@@ -16,7 +16,7 @@ library(ggplot2)		# graphics
 
 
 ``` {r simdatf}
-threshold <- -4
+threshold <- -3
 require(sde)
 M <- 2000   # replicates
 N <- 20000 # sample points
