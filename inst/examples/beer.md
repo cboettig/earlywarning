@@ -19,7 +19,7 @@ library(ggplot2)		# graphics
 
 
 ```r
-threshold <- -2.5
+threshold <- -2.4
 require(sde)
 ```
 
@@ -46,7 +46,7 @@ timeseries <- matrix(X@.Data, ncol=M)
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
 # extract that subset by id 
 W <- timeseries[,w]
-sample <- 1500 # sample length
+sample <- 2000 # sample length
 dev <- sapply(as.data.frame(W), which.min)
 drop <- which(dev - sample < 1)
 if(length(drop) > 0){
@@ -78,7 +78,7 @@ write.csv(zoom, file="trajectories.csv")
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8533/8673040130_00d027678f_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8542/8673417704_cf6cefddb6_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -105,7 +105,7 @@ ratio <- dt[, marc(value), by=reps]
 ggplot(ratio) + geom_histogram(aes(x=V1))
 ```
 
-![plot of chunk marc_ratio](http://farm9.staticflickr.com/8521/8671938917_e790df65b2_o.png) 
+![plot of chunk marc_ratio](http://farm9.staticflickr.com/8260/8672316877_9bce3be933_o.png) 
 
 
 
@@ -115,7 +115,7 @@ taus <- dt[, cr(data.frame(time, value)), by=reps]
 ggplot(taus) + geom_histogram(aes(x=V1))
 ```
 
-![plot of chunk kendall_data](http://farm9.staticflickr.com/8542/8673040310_01930e5744_o.png) 
+![plot of chunk kendall_data](http://farm9.staticflickr.com/8528/8672316973_328b1a773f_o.png) 
 
 
 
@@ -144,7 +144,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8113/8673040378_25f25e3dcc_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8545/8673418276_bcb6848cce_o.png) 
 
 
 

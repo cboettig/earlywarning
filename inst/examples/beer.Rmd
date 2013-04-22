@@ -16,7 +16,7 @@ library(ggplot2)		# graphics
 
 
 ``` {r simdatf}
-threshold <- -2.5
+threshold <- -2.4
 require(sde)
 M <- 2000   # replicates
 N <- 20000 # sample points
@@ -28,7 +28,7 @@ timeseries <- matrix(X@.Data, ncol=M)
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
 # extract that subset by id 
 W <- timeseries[,w]
-sample <- 1500 # sample length
+sample <- 2000 # sample length
 dev <- sapply(as.data.frame(W), which.min)
 drop <- which(dev - sample < 1)
 if(length(drop) > 0){
