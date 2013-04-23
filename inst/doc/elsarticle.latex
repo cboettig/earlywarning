@@ -2,7 +2,7 @@
 %%% Begin My package additions %%%%%%%%%%%%%%%%%%%
 \usepackage[hyphens]{url}
 \usepackage{lineno} % add 
-%\linenumbers % turns line numbering on 
+\linenumbers % turns line numbering on 
 \bibliographystyle{elsarticle-harv}
 \biboptions{sort&compress} % For natbib
 \usepackage{graphicx}
@@ -166,6 +166,8 @@ $endfor$
   \cortext[cor1]{Corresponding author}
   \ead{cboettig@ucsc.edu}
   \address[cstar]{Center for Stock Assessment Research, Department of Applied Math and Statistics, University of California, Mail Stop SOE-2, Santa Cruz, CA 95064, USA}
+  \author[esp]{Alan Hastings}
+  \address[esp]{Department of Environmental Science and Policy, University of California, Davis, CA, 95616 United States}
  \end{frontmatter}
 
 
