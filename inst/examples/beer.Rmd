@@ -1,5 +1,3 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="beer/" or`
-
  
 ``` {r libraries}
 rm(list=ls())
@@ -7,6 +5,7 @@ library(earlywarning)
 library(reshape2)		# data manipulation
 library(data.table)	# data manipulation
 library(ggplot2)		# graphics
+opts_chunk$set(warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, verbose=TRUE, cache=FALSE)
 ````
 
 
@@ -22,7 +21,7 @@ M <- 2000   # replicates
 N <- 20000 # sample points
 d <- expression(-1 * x)
 s <- expression(1)
-X <- sde.sim(X0=0, drift=d, T=5, sigma=s, N = N, M = M)
+X <- sde.sim(X0=0, drift=d, T=10, sigma=s, N = N, M = M)
 timeseries <- matrix(X@.Data, ncol=M)
 # Get the ids of samples that have a point less than the theshold
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))

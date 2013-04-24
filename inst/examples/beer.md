@@ -1,13 +1,13 @@
-
-
  
 
 ```r
-rm(list=ls())
+rm(list = ls())
 library(earlywarning)
-library(reshape2)		# data manipulation
-library(data.table)	# data manipulation
-library(ggplot2)		# graphics
+library(reshape2)  # data manipulation
+library(data.table)  # data manipulation
+library(ggplot2)  # graphics
+opts_chunk$set(warning = FALSE, message = FALSE, comment = NA, tidy = FALSE, 
+    verbose = TRUE, cache = FALSE)
 ```
 
 
@@ -33,7 +33,7 @@ M <- 2000   # replicates
 N <- 20000 # sample points
 d <- expression(-1 * x)
 s <- expression(1)
-X <- sde.sim(X0=0, drift=d, T=5, sigma=s, N = N, M = M)
+X <- sde.sim(X0=0, drift=d, T=10, sigma=s, N = N, M = M)
 ```
 
 ```
@@ -78,7 +78,7 @@ write.csv(zoom, file="trajectories.csv")
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](http://farm9.staticflickr.com/8542/8673417704_cf6cefddb6_o.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8537/8673963386_7a44469a1c_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -105,7 +105,7 @@ ratio <- dt[, marc(value), by=reps]
 ggplot(ratio) + geom_histogram(aes(x=V1))
 ```
 
-![plot of chunk marc_ratio](http://farm9.staticflickr.com/8260/8672316877_9bce3be933_o.png) 
+![plot of chunk marc_ratio](http://farm9.staticflickr.com/8258/8672861785_3c9e21d8c5_o.png) 
 
 
 
@@ -115,7 +115,7 @@ taus <- dt[, cr(data.frame(time, value)), by=reps]
 ggplot(taus) + geom_histogram(aes(x=V1))
 ```
 
-![plot of chunk kendall_data](http://farm9.staticflickr.com/8528/8672316973_328b1a773f_o.png) 
+![plot of chunk kendall_data](http://farm9.staticflickr.com/8399/8673963534_742ab809bb_o.png) 
 
 
 
@@ -144,7 +144,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](http://farm9.staticflickr.com/8545/8673418276_bcb6848cce_o.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8395/8672861935_9f5e7766b3_o.png) 
 
 
 
