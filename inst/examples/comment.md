@@ -1,4 +1,6 @@
 
+ 
+
 ```r
 rm(list = ls())
 library(earlywarning)
@@ -110,17 +112,20 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](figure/fig.png) 
+![plot of chunk comment_fig](figure/comment_fig.png) 
+
+
+![plot of chunk comment_figure1](figure/comment_figure1.pdf) 
 
 
 
-
+![plot of chunk comment_fig1](figure/comment_fig1.eps) 
 
 
 
 
 ```r
-write.csv(dat, file="beer_dat.csv")
-write.csv(nulldat, file="beer_nulldat.csv")
+write.csv(dat, file="comment_dat.csv")
+write.csv(nulldat, file="comment_nulldat.csv")
 ```
 

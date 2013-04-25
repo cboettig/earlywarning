@@ -77,13 +77,13 @@ nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_aut
 nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
 ````
 
-``` {r fig}
+``` {r comment_fig}
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ````
 
-``` {r figure1, dev="CairoPDF", fig.width=6, fig.height=5, include=FALSE}
+``` {r comment_figure1, dev="CairoPDF", fig.width=6, fig.height=5, echo=FALSE}
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
@@ -91,7 +91,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
 ````
 
 
-``` {r fig1, dev="CairoPS", fig.ext="eps", fig.width=6, fig.height=5, include=FALSE}
+``` {r comment_fig1, dev="CairoPS", fig.ext="eps", fig.width=6, fig.height=5, echo=FALSE}
 ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) +
  facet_wrap(~variable) + xlim(c(-1, 1)) + 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
