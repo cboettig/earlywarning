@@ -48,7 +48,7 @@ zoom <- df
 ````
 
 
-``` {r example-trajectories}
+``` {r comment-example-trajectories}
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ````
 

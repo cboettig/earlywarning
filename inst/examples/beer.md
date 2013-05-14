@@ -71,7 +71,7 @@ zoom <- df
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ```
 
-![plot of chunk example-trajectories](figure/example-trajectories.png) 
+![plot of chunk example-trajectories](http://farm9.staticflickr.com/8397/8681985886_7f6719b399_o.png) 
 
 
 Compute model-based warning signals on all each of these.  
@@ -110,7 +110,7 @@ ggplot(dat) + geom_histogram(aes(value, y=..density..), binwidth=0.3, alpha=.5) 
  geom_density(data=nulldat, aes(value), adjust=2) + xlab("Kendall's tau") + theme_bw()
 ```
 
-![plot of chunk fig](figure/fig.png) 
+![plot of chunk fig](http://farm9.staticflickr.com/8532/8681985986_24876c3285_o.png) 
 
 
 
