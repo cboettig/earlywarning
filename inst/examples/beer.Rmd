@@ -5,7 +5,8 @@ library(reshape2)		# data manipulation
 library(data.table)	# data manipulation
 library(ggplot2)		# graphics
 opts_chunk$set(warning = FALSE, message = FALSE, comment = NA, tidy = FALSE, 
-    verbose = TRUE, cache = FALSE)
+    verbose = TRUE, cache = FALSE, fig.path="beer_")
+
 ````
 
 
@@ -65,7 +66,7 @@ dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
 
 ``` {r simdatf_null}
-null <- timeseries[1000:2501,]
+null <- timeseries[1000:1201,]
 null <- as.data.frame(cbind(time = 1:dim(null)[1], null))
 ndf <- melt(null, id="time")
 names(ndf) = c("time", "reps", "value")
