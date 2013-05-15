@@ -1,0 +1,56 @@
+
+
+```r
+opts_chunk$set(tidy = FALSE, warning = FALSE, message = FALSE, cache = FALSE, 
+    comment = NA, fig.width = 6, fig.height = 4)
+library(ggplot2)  # plotting
+opts_knit$set(upload.fun = socialR::flickr.url)
+theme_set(theme_bw(base_size = 12))
+theme_update(panel.background = element_rect(fill = "transparent", colour = NA), 
+    plot.background = element_rect(fill = "transparent", colour = NA))
+```
+
+
+
+
+
+
+
+```r
+dat <- read.csv("beer_dat.csv")
+nulldat <- read.csv("beer_nulldat.csv")
+```
+
+
+
+```r
+require(earlywarning)
+require(ggplot2)
+require(reshape2)
+```
+
+
+
+Some reorganization of the data...
+
+
+```r
+test_variance = subset(dat, variable=="Variance")
+null_variance = subset(nulldat, variable=="Variance")
+test_autocorrelation = subset(dat, variable=="Autocorrelation")
+null_autocorrelation = subset(nulldat, variable=="Autocorrelation")
+
+
+roc_var <- roc_data(NULL, null=null_variance$value, test=test_variance$value)
+roc_acor <- roc_data(NULL, null=null_autocorrelation$value, test=test_autocorrelation$value)
+rocs <- melt(list(variance = roc_var, autocorrelation = roc_acor), id = c("Threshold", "True.positives","False.positives"))
+names(rocs)[4] = "Indicator"
+ggplot(rocs) + geom_line(aes(False.positives, True.positives, col=Indicator))
+```
+
+![plot of chunk unnamed-chunk-3](http://farm8.staticflickr.com/7288/8742030454_f878847ac7_o.png) 
+
+
+
+
+
