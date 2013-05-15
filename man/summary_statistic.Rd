@@ -2,19 +2,17 @@
 \alias{summary_statistic}
 \title{apply a summary statistic over a set of replicate data}
 \usage{
-  summary_statistic(dat, indicator, windowsize, ...)
+  summary_statistic(dat, indicator, ...)
 }
 \arguments{
   \item{dat}{a data frame with columns "time", "reps", and
   "value" observed in a timeseries of replicates.}
 
-  \item{indicator}{a function taking X and windowsize, such
-  as \link{window_var}}
-
-  \item{windowsize,}{passed to indicator function}
+  \item{indicator}{a function taking X, such as
+  \link{window_var}}
 
   \item{...}{additional optional arguments to the indicator
-  function}
+  function, such as windowsize}
 }
 \value{
   a data frame with columns "time", "reps", and "value",
