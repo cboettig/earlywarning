@@ -1,12 +1,12 @@
-`ro warning=FALSE, message=FALSE, comment=NA, tidy=FALSE, cache=TRUE, verbose=TRUE, cache.path="beer/" or`
-
- 
 ``` {r libraries}
 rm(list=ls())
 library(earlywarning)
 library(reshape2)		# data manipulation
 library(data.table)	# data manipulation
 library(ggplot2)		# graphics
+opts_chunk$set(warning = FALSE, message = FALSE, comment = NA, tidy = FALSE, 
+    verbose = TRUE, cache = FALSE, fig.path="beer_")
+
 ````
 
 
@@ -16,13 +16,13 @@ library(ggplot2)		# graphics
 
 
 ``` {r simdatf}
-threshold <- -2.5
+threshold <- -4
 require(sde)
 M <- 2000   # replicates
 N <- 20000 # sample points
-d <- expression(-1 * x)
-s <- expression(1)
-X <- sde.sim(X0=0, drift=d, T=1, sigma=s, N = N, M = M)
+d <- expression(-5 * x)
+s <- expression(3.5)
+X <- sde.sim(X0=0, drift=d, T=10, sigma=s, N = N, M = M)
 timeseries <- matrix(X@.Data, ncol=M)
 # Get the ids of samples that have a point less than the theshold
 w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
@@ -48,10 +48,6 @@ zoom <- df
 ````
 
 
-```{r save_trajectories}
-write.csv(zoom, file="trajectories.csv")
-```
-
 ``` {r example-trajectories}
 ggplot(subset(zoom, reps %in% levels(zoom$reps)[1:9])) + geom_line(aes(time, value)) + facet_wrap(~reps, scales="free")
 ````
@@ -65,31 +61,12 @@ acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), 
 dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
 ````
 
-
-```{r marc_ratio}
-marc <- function(x){
-  y <- x[-1]
-  v <- y - x[-length(x)] # step differences
-  ratio <- sum(v > 0) / sum(v < 0)
-  ratio
-}
-ratio <- dt[, marc(value), by=reps]
-ggplot(ratio) + geom_histogram(aes(x=V1))
-```
-
-```{r kendall_data}
-cr <- function(df) unname(cor.test(df[[1]], df[[2]], method="kendall")$estimate)
-taus <- dt[, cr(data.frame(time, value)), by=reps]
-ggplot(taus) + geom_histogram(aes(x=V1))
-```
-
-
 ### Null distribution 
 
 To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
 
 ``` {r simdatf_null}
-null <- timeseries[1000:2501,]
+null <- timeseries[1000:1201,]
 null <- as.data.frame(cbind(time = 1:dim(null)[1], null))
 ndf <- melt(null, id="time")
 names(ndf) = c("time", "reps", "value")
