@@ -11,8 +11,6 @@ theme_update(panel.background = element_rect(fill = "transparent", colour = NA),
 
 
 
-
-
 ```{r }
 dat <- read.csv("beer_dat.csv")
 nulldat <- read.csv("beer_nulldat.csv")
