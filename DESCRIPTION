@@ -9,7 +9,7 @@ Maintainer: Carl Boettiger <cboettig@gmail.com>
 Description: Tools for the detection of early warning signals of critical
     transitions.  Package is a completely updated and revised version of the
     original warningsignals package.
-License: BSD
+License: CC0
 URL: https://github.com/cboettig/earlywarning
 Imports:
     odesolve,
