@@ -65,7 +65,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={No indicators for stochastic transitions but establishing baselines for early warning signals remains a general challenge},
+            pdftitle={No early warning signals for stochastic transitions: insights from large deviation theory},
             colorlinks=true,
             urlcolor=blue,
             linkcolor=magenta,
@@ -83,8 +83,8 @@
 
 \begin{document}
 \begin{frontmatter}
-  \title{No indicators for stochastic transitions but establishing baselines for
-         early warning signals remains a general challenge}
+  \title{No early warning signals for stochastic transitions: insights from large
+         deviation theory}
   \author[cstar]{Carl Boettiger\corref{cor1}}
   \cortext[cor1]{Corresponding author}
   \ead{cboettig@ucsc.edu}
@@ -98,81 +98,97 @@ In Boettiger \& Hastings {[}1{]} we demonstrated that conditioning on
 observing a purely stochastic transition from one stable basin to
 another could generate time-series trajectories that could be mistaken
 for an early warning signal of a critical transition (such as might be
-due to a fold bifurcation; {[}2{]}, when instead the shift is merely due
+due to a fold bifurcation {[}2{]}), when instead the shift is merely due
 to chance. While the goal was to highlight a potential danger in mining
 historical records for patterns showing sudden shifts when seeking to
 test early warning techniques, Drake {[}3{]} draws attention to a
 potentially more interesting consequence of our analysis. Drake argues
 that the bias observed could be used to forecast purely stochastic
-transitions -- a task previously thought to be impossible (e.g.
-@Ditsleven2010, also Reference 4 for a brief overview of other
-examples). Unfortunately, we feel this interpretation too generous and
-must agree with the prevailing opinion that early warning signals for
-purely stochastic transitions do not exist. Drake demonstrates how the
-patterns presented in {[}1{]} show an indisputable difference between
-the time series that transition by chance and the much larger population
-of replicate time series driven by the identical mechanism that do not
-transition by chance. We show that this pattern in question is a
-consequence of any large deviation, and not caused by or indicative of
-any impending shift to an alternative stable state.
+transitions -- a task previously thought to be impossible {[}4{]}. We
+feel this interpretation is too generous; as the pattern Drake points to
+arises in any large deviation, regardless of whether a system is or is
+not at elevated risk for a transition.
 
-We here provide a numerical demonstration that the pattern in question
+Here we provide a numerical demonstration that the pattern in question
 for consideration of an early warning signal appears not only before
-purely stochastic transitions (as seen in Reference 1) but also in large
-deviations from a single stable point, in which no such transition is
-possible.
+purely stochastic transitions (as seen in Reference 1) but during any
+large deviation. As large deviations can occur even in stochastic
+systems that have only a single stable point, these patterns cannot be
+considered indicators of stochastic transitions. We demonstrate this in
+two scenarios: first using the Allee model of alternative stable states
+considered in Reference 1, Eqn 2.1 - 2.2 and Figure 2, and then in a
+simple Ornstein-Uhlenbeck (OU) model which has only a single stable
+state. Rather than condition on a stochastic transition having occurred
+(as in Reference 1), we now condition on having merely observed a
+sufficiently large deviation. It does not matter precisely what
+``large'' deviation is considered, only that the larger the deviation
+the more replicates or longer simulation times will be needed to
+sufficiently populate the sample. We pick values such that we get a
+sample of a few hundred large deviation events in a sample of 20,000
+replicates.
 
-We replicate the analysis of Boettiger and Hastings {[}1{]} using time
-series replicates produced by an Ornstein-Uhlenbeck (OU) process: a
-stochastic differential equation in which there is only a single optimum
-whose strength is proportional to the displacement,
+The OU model is defined by a stochastic differential equation in which
+there is only a single optimum whose strength is proportional to the
+displacement,
 
-\[ dX = - \alpha X dt + \sigma dBt \]
+\[ dX_t = - \alpha X_t dt + \sigma dB_t, \]
 
-Instead of conditioning on trajectories that experience a large
-deviation, we condition on trajectories that experience a very large
-deviation. We then compute warning signals for each of these large
-deviation trajectories, and compare their distribution to that of the
-entire population of trajectories as shown in Figure 1. We note that the
-same bias is observed. This should help illustrate that observations we
-reported are driven by the large deviation preceding the transition, and
-are simply evidence of this fact and not of an impending transition per
-se. While trajectories already far from the origin are more likely to
-transition than ones close to the average, such events can be trivially
-identified by comparing their states to the historical average.
+where the state $X_t$ oscillates around a stable point (at zero in these
+arbitrary units), driven by Brownian noise $dB_t$ of intensity $\sigma$
+and restorative force $\alpha$.
+
+The analysis for each model proceeds exactly as in Reference 1: For each
+model we generate 20,000 replicate time series. We condition upon only
+those experiencing a deviation of size $L$ ($X \leq 250$ in the Allee
+model and $X \leq -4$ in the OU model). For the sequence of observations
+immediately leading up to the large deviation we compute the warning
+signals of variance and autocorrelation over a sliding window of half
+the length of the time-series, and we summarise the increasing or
+decreasing trend observed in the variance and autocorrelation using
+Kendall's $\tau$ rank correlation coefficient (all following the method
+for early warning indicators outlined in Reference 5). We repeat this
+analysis on the entire set of time-series under each model to obtain
+null distributions for $\tau$ statistic.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{figure1.pdf}
+\includegraphics{figure/Figure1.pdf}
 \caption{Figure 1. Histogram shows the frequency the correlation
 statistic $\tau$ observed for each warning signal (variance,
-autocorrelation coefficient) on the large deviation samples. Background
-distribution of all samples show by smooth line (kernel density
-estimate). More positive values of tau are supposed to indicate a rising
-indicator which can be a signal of an approaching transition {[}2{]}.
-$\alpha = 5$, $\sigma=3.5$, $t \in (0, 10)$, 2000 replicates, 20,000
-sample points each. Conditionally selected trajectories experiencing a
-deviation of at least -4, and analyzed the 1,500 data points prior to
-the threshold to determine a warning signal (following Reference 5).
-(\href{https://raw.github.com/cboettig/earlywarning/7460ea94c293844d8e88c83b95e3d80004817de6/inst/examples/beer.md}{link
+autocorrelation coefficient) on the large deviation samples from each
+model. Background distribution of all samples show by smooth line
+(kernel density estimate). More positive values of tau are supposed to
+indicate a rising indicator which can be a signal of an approaching
+transition {[}2{]}. The OU model uses $\alpha = 5$, $\sigma=3.5$,
+$t \in (0, 10)$, 2000 replicates, 20,000 sample points each.
+Conditionally selected trajectories experiencing a deviation of at least
+-4, and analyzed the 1,500 data points prior to the threshold to
+determine a warning signal (following Reference 5).
+(\href{https://raw.github.com/cboettig/earlywarning/68f7bba05586d425f1bbfcdb1fe66f0597a3d35b/inst/doc/Figure1.Rmd}{link
 to code},
-\href{https://raw.github.com/cboettig/earlywarning/7460ea94c293844d8e88c83b95e3d80004817de6/inst/examples/beer_nulldat.csv}{null
-distribution data},
-\href{https://raw.github.com/cboettig/earlywarning/7460ea94c293844d8e88c83b95e3d80004817de6/inst/examples/beer_dat.csv}{conditional
-distribution data})}
+\href{https://raw.github.com/cboettig/earlywarning/68f7bba05586d425f1bbfcdb1fe66f0597a3d35b/inst/doc/Figure1.csv}{data}}
 \end{figure}
 
-Observing the bias shown in Figure 1 depends on having a rapid enough
-sample frequency to capture the escape trajectory and a long enough
-trajectory for the statistic to demonstrate an increase over time. Since
-large deviations due to stochastic forces alone must be fast so must the
-accompanying warning signal and managemnt response, which will show up
-on the time scale of the perturbation. Of course fast relative to the
-system dynamics, may or may not be fast relative to the timescale of
-management; just as in the case of bifurcation-driven warning signals
-(see Reference 6).
+We find (Figure 1) that $\tau$ is significantly skewed towards positive
+values when conditioning on large deviations in both models. This
+demonstrates that it is the presence of the large deviation, not the
+presence of the stochastic transition we condition on in Reference 1,
+that is responsible for this pattern (just as we claimed without example
+then).
 
-One might consider this a corallary of the Prosecutor's Fallacy we
+Observing the bias shown in the figures here depends on having a rapid
+enough sample frequency to capture the escape trajectory and a long
+enough trajectory for the statistic to demonstrate an increase over
+time. Since large deviations due to stochastic forces alone must be
+fast, so must the accompanying warning signal and management response
+(which will show up on the time scale of the perturbation). Note that
+fast relative to the system dynamics may or may not be fast relative to
+the timescale of management (just as with bifurcation-driven warning
+signals, Reference 6). The wider null distribution in the OU model
+results from the sample window being shorter relative to the system
+timescale.
+
+One might consider this a corollary of the Prosecutor's Fallacy we
 originally presented, which demonstrated that examples of sudden
 transitions historically selected from the literature could be mistaken
 for positive evidence of early warning signals when they were in fact
@@ -184,29 +200,29 @@ about why these chance deviations show much higher variance and
 autocorrelation than expected from the stationary distribution of a
 stable point. Though large deviations are rare -- the time we must wait
 to observe a deviation of size $L$ in the system above scales as
-$\exp\left(L^2/\sigma^2\right)$ (the familiar Ahrennius relationship),
+$\exp\left(L^2/\sigma^2\right)$ (the familiar Arrhenius relationship),
 when these deviations occur they occur very rapidly. The expected time
-for an exersion to a distant point $L$ that does not again cross the
+for an excursion to a distant point $L$ that does not again cross the
 stable point before reaching $L$ scales as $\log(L/\sigma)$, just as a
-trajectory returing down the gradient of the attractor from $L$ to the
+trajectory returning down the gradient of the attractor from $L$ to the
 stable point (proofs in Reference 7 or Reference 8). While most
 trajectories in the stationary distribution take steps in each direction
 with equal probability, these large deviations moving rapidly to the
-boundary will consequently show the much greater autocorrelation, and in
-achieving a much greater deviation than typically observed, also show
-the spike in variance we observe. That such trajectories appear to be
-pulled in the direction of their escape rather than climbing away
-against a restorative force has led to confusion before. Reference 8
-argues how this shows how a ``punctuated equilibrium'' pattern of statis
-followed by rapid change could arise entirely from small steps, and
-Reference 9 empirically demonstrates this phenomena in the trajectories
-of local population extinctions.
+boundary will consequently show the greater autocorrelation. In
+achieving a much greater deviation than typically observed, these
+trajectories will also show an increase in variance, as observed. That
+such trajectories appear to be pulled in the direction of their escape
+rather than climbing away against a restorative force has led to
+confusion before. Reference 8 argues how this shows how a ``punctuated
+equilibrium'' pattern of stasis followed by rapid change could arise
+entirely from small steps, and Reference 9 empirically demonstrates this
+phenomena in the trajectories of local population extinctions.
 
 In conclusion, we heartily agree with the need for a decision-theoretic
 approach to early warning signal questions {[}10{]}. Central to a
 decision-theoretic approach is enumerating alternative scenarios that
-are possible given the observed data. We have highlighted how purley
-stochastic transitions and large deviations are such possiblities. The
+are possible given the observed data. We have highlighted how purely
+stochastic transitions and large deviations are such possibilities. The
 challenge of sufficient or unique early warning indicators is not
 limited to stochastic shifts, but includes the more typical critical
 transitions. For instance, rising variance or autocorrelation patterns
@@ -222,6 +238,10 @@ purely stochastic transitions, perhaps these approaches in this
 discussion may lead to more unique and sufficient indicators for true
 critical transitions.
 
+The authors acknowledge the generous support of NSF grant to AH and
+helpful comments from TA Perkins, as well as the reviews from an
+anonymous reviewer and P. Ditlevsen.
+
 1 Boettiger, C. \& Hastings, A. 2012 Early warning signals and the
 prosecutor's fallacy. \emph{Proceedings of the Royal Society B:
 Biological Sciences} (doi:10.1098/rspb.2012.2085)
@@ -232,9 +252,9 @@ transitions. \emph{Nature} \textbf{461}, 53--9.
 3 Drake, J. M. 2013 Early warning signals of stochastic switching.
 \emph{Proceedings of The Royal Society B} \textbf{in press}.
 
-4 Lenton, T. M. 2011 Early warning of climate tipping points.
-\emph{Nature Climate Change} \textbf{1}, 201--209.
-(doi:10.1038/nclimate1143)
+4 Ditlevsen, P. D. \& Johnsen, S. J. 2010 Tipping points: Early warning
+and wishful thinking. \emph{Geophysical Research Letters} \textbf{37},
+2--5. (doi:10.1029/2010GL044486)
 
 5 Dakos, V., Scheffer, M., van Nes, E. H., Brovkin, V., Petoukhov, V. \&
 Held, H. 2008 Slowing down as an early warning signal for abrupt climate

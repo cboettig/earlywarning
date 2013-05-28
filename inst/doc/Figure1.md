@@ -2,6 +2,13 @@
 
 ```r
 library(data.table)
+```
+
+```
+## data.table 1.8.8 For help type: help("data.table")
+```
+
+```r
 library(reshape2)
 library(ggplot2)
 allee <- read.csv("allee_data.csv")[2:3]

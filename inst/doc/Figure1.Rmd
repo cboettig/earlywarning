@@ -20,7 +20,7 @@ df <- read.csv("Figure1.csv")
 ``` {r Figure1, dev=c("CairoPDF", "CairoPS", "CairoPNG"), fig.width=6, fig.height=4, include=FALSE}
 ggplot(df, aes(value, y=..density..)) + 
   geom_histogram(data = subset(df, data=="conditional"), binwidth=0.3, alpha=.5) +
-  geom_density(data = subset(df, data=="null"), adjust=2) + 
+  stat_density(data = subset(df, data=="null"), geom="path", position="identity", adjust=2) + 
   facet_grid(model~variable, scales="free_y") + xlim(c(-1, 1)) + 
   xlab("Kendall's tau") + theme_bw()
 ````
