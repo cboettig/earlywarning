@@ -1,0 +1,233 @@
+``` {r libraries}
+library(sde)
+library(populationdynamics)
+library(earlywarning)
+library(reshape2)		# data manipulation
+library(data.table)	# data manipulation
+library(ggplot2)		# graphics
+source("~/.knitr_defaults.R")
+````
+
+
+
+# OU Model
+
+
+``` {r simdatf_ou}
+threshold <- -4
+require(sde)
+M <- 2000   # replicates
+N <- 20000 # sample points
+d <- expression(-5 * x)
+s <- expression(3.5)
+X <- sde.sim(X0=0, drift=d, T=10, sigma=s, N = N, M = M)
+timeseries <- matrix(X@.Data, ncol=M)
+```
+
+
+Get the ids of samples that have a point less than the theshold
+
+```{r}
+w <- sapply(data.frame(timeseries), function(x) any(x < threshold))
+```
+
+extract that subset by id and take the 1500 points prior to the observation 
+
+```{r}
+W <- timeseries[,w]
+sample <- 1500 # sample length
+dev <- sapply(as.data.frame(W), which.min)
+drop <- which(dev - sample < 1)
+if(length(drop) > 0){
+  W <- W[,-drop]
+  dev <- dev[-drop]
+}
+D <- rbind((dev - sample), dev)
+M <- as.matrix(W)
+```
+
+Reorganize the data
+
+```{r}
+dat <- sapply(1:length(dev), function(i) M[D[1,i]:D[2,i], i])
+dat <- as.data.frame(dat)
+dat <- as.data.frame(cbind(time = 1:dim(dat)[1], dat))
+df <- melt(dat, id="time")
+names(df) = c("time", "reps", "value")
+levels(df$reps) <- 1:length(levels(df$reps)) # use numbers for reps instead of V1, V2, etc
+zoom <- df
+````
+
+
+Compute model-based warning signals on all each of these.  
+
+``` {r plots_fallacy}
+dt <- data.table(zoom)
+var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
+````
+
+### Null distribution for OU model 
+
+To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
+
+``` {r simdatf_null}
+null <- timeseries[1000:1201,]
+null <- as.data.frame(cbind(time = 1:dim(null)[1], null))
+ndf <- melt(null, id="time")
+names(ndf) = c("time", "reps", "value")
+levels(ndf$reps) <- 1:length(levels(ndf$reps)) # use numbers for reps instead of V1, V2, etc
+nulldt <- data.table(ndf)
+nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
+````
+
+Rename data objects to indicate the model
+
+```{r}
+allee <- dat
+allee_null <- null_dat
+```
+
+
+# Allee model
+
+
+For the individual-based simulation, the population dynamics are given by
+
+<div>
+\begin{align}
+  \frac{dP(n,t)}{dt} &= b_{n-1} P(n-1,t) + d_{n+1}P(n+1,t) - (b_n+d_n) P(n,t)  \label{master}, \\
+    b_n &= \frac{e K n^2}{n^2 + h^2}, \\
+    d_n &= e n + a,
+\end{align}
+</div>
+
+which is provided by the `saddle_node_ibm` model in `populationdynamics`. 
+
+ 
+``` {r libs}
+library(populationdynamics)
+library(snowfall)   # parallel
+````
+
+
+``` {r simdatf}
+threshold <- 250
+select_crashes <- function(n){
+  T<- 5000
+  n_pts <- n
+  pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
+    i = 0, Da = 0, Dt = 0, p = 2)
+  sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=1000)
+  d <- dim(sn$x1)
+  crashed <- which(sn$x1[d[1],] <= threshold)
+# crashed <- which(sn$x1[d[1],]==0)
+  sn$x1[,crashed] 
+}
+````
+
+
+``` {r simdat, dependson="simdatf"}
+examples <- lapply(1:20, function(i) select_crashes(50000))
+dat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
+names(dat) = c("time", "reps", "value")
+levels(dat$reps) <- 1:length(levels(dat$reps)) # use numbers for reps
+````
+
+
+Zoom in on the relevant area of data near the crash
+
+``` {r subsetdata, dependson="simdat" }
+require(plyr)
+zoom <- ddply(dat, "reps", function(X){
+    tip <- min(which(X$value<threshold))
+    index <- max(tip-200,1):tip
+    data.frame(time=X$time[index], value=X$value[index])
+    })
+````
+
+
+Compute model-based warning signals on all each of these.  
+
+``` {r plots_fallacy, dependson="subsetdata"}
+dt <- data.table(subset(zoom, value>threshold))
+var <- dt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+acor <- dt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+dat <- melt(data.frame(Variance=var, Autocorrelation=acor))
+````
+
+### Null distribution 
+
+To compare against the expected distribution of these statistics, we create another set of simulations without conditioning on having experienced a chance transition, on which we perform the identical analysis.  
+
+``` {r simdatf_null}
+threshold <- 250
+select_crashes <- function(n){
+  T<- 5000
+  n_pts <- n
+  pars = c(Xo = 500, e = 0.5, a = 180, K = 1000, h = 200,
+    i = 0, Da = 0, Dt = 0, p = 2)
+  sn <- saddle_node_ibm(pars, times=seq(0,T, length=n_pts), reps=500)
+  d <- dim(sn$x1)
+  sn$x1[1:501,]
+}
+````
+
+
+``` {r simdat_null, dependson="simdatf_null"}
+sfExportAll()
+examples <-  sfLapply(1:10, function(i) select_crashes(50000))
+nulldat <- melt(as.matrix(as.data.frame(examples, check.names=FALSE)))
+nulldat <- melt(examples)
+names(nulldat) = c("time", "reps", "value")
+levels(nulldat$reps) <- 1:length(levels(dat$reps)) 
+````
+
+Zoom in on the relevant area of data near the crash
+
+``` {r nullzoom, dependson="simdat_null"}
+require(plyr)
+nullzoom <- ddply(nulldat, "reps", function(X){
+    data.frame(time=X$time, value=X$value)
+    })
+````
+
+``` {r nullmelt, dependson="nullzoom"}
+nulldt <- data.table(nullzoom)
+nullvar <- nulldt[, warningtrend(data.frame(time=time, value=value), window_var), by=reps]$V1
+nullacor <- nulldt[, warningtrend(data.frame(time=time, value=value), window_autocorr), by=reps]$V1
+nulldat <- melt(data.frame(Variance=nullvar, Autocorrelation=nullacor))
+````
+
+```{r}
+ou <- dat
+ou_null <- null_dat
+```
+
+# Assemble all data and plot 
+
+
+```{r}
+df <- melt(list(OU = list(conditional=ou, null=ou_null), 
+                Allee = list(conditional=allee, null = allee_null)), 
+                id=c("variable", "value"))
+names(df) = c("variable", "value", "data", "model")
+write.csv(df, "Figure1.csv")
+df <- read.csv("Figure1.csv")
+```
+
+
+``` {r Figure1, dev=c("CairoPDF", "CairoPS", "CairoPNG"), fig.width=6, fig.height=4, include=FALSE}
+ggplot(df, aes(value, y=..density..)) + 
+  geom_histogram(data = subset(df, data=="conditional"), binwidth=0.3, alpha=.5) +
+  stat_density(data = subset(df, data=="null"), geom="path", position="identity", adjust=2) + 
+  facet_grid(model~variable, scales="free_y") + xlim(c(-1, 1)) + 
+  xlab("Kendall's tau") + theme_bw()
+````
+
+
+
+
