@@ -1,97 +1,21 @@
-\documentclass[review]{elsarticle} %review=doublespace preprint=single 5p=2 column
-%%% Begin My package additions %%%%%%%%%%%%%%%%%%%
-\usepackage[hyphens]{url}
-\usepackage{lineno} % add 
-\linenumbers % turns line numbering on 
-\bibliographystyle{elsarticle-harv}
-\biboptions{sort&compress} % For natbib
-\usepackage{graphicx}
-\usepackage{booktabs} % book-quality tables
-%% Redefines the elsarticle footer
-\makeatletter
-\def\ps@pprintTitle{%
- \let\@oddhead\@empty
- \let\@evenhead\@empty
- \def\@oddfoot{\it \hfill\today}%
- \let\@evenfoot\@oddfoot}
-\makeatother
-
-% A modified page layout
-\textwidth 6.75in
-\oddsidemargin -0.15in
-\evensidemargin -0.15in
-\textheight 9in
-\topmargin -0.5in
-%%%%%%%%%%%%%%%% end my additions to header
-
-
-
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{amssymb,amsmath}
-\usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
-% use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-  \usepackage[utf8]{inputenc}
-\else % if luatex or xelatex
-  \usepackage{fontspec}
-  \ifxetex
-    \usepackage{xltxtra,xunicode}
-  \fi
-  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
-  \newcommand{\euro}{€}
-\fi
-% use microtype if available
-\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\documentclass{article} 
+\usepackage{hyperref}
 \usepackage{graphicx}
 % We will generate all images so they have a width \maxwidth. This means
 % that they will get their normal width if they fit onto the page, but
 % are scaled down if they would overflow the margins.
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
-\else\Gin@nat@width\fi}
-\makeatother
-\let\Oldincludegraphics\includegraphics
-\renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=\maxwidth]{#1}}
-\ifxetex
-  \usepackage[setpagesize=false, % page size defined by xetex
-              unicode=false, % unicode breaks when used with xetex
-              xetex]{hyperref}
-\else
-  \usepackage[unicode=true]{hyperref}
-\fi
-\hypersetup{breaklinks=true,
-            bookmarks=true,
-            pdfauthor={},
-            pdftitle={No early warning signals for stochastic transitions: insights from large deviation theory},
-            colorlinks=true,
-            urlcolor=blue,
-            linkcolor=magenta,
-            pdfborder={0 0 0}}
-\urlstyle{same}  % don't use monospace font for urls
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-\setlength{\emergencystretch}{3em}  % prevent overfull lines
-\setcounter{secnumdepth}{0}
-% Pandoc toggle for numbering sections (defaults to be off)
-\setcounter{secnumdepth}{0}
-% Pandoc header
 
+\usepackage{setspace, lineno}
+\doublespacing
+\linenumbers
 
-
+\title{No early warning signals for stochastic transitions: insights from large
+       deviation theory}
+\author{%
+  Carl Boettiger\thanks{Center for Stock Assessment Research, Department of Applied Math and Statistics, University of California, Mail Stop SOE-2, Santa Cruz, CA 95064, USA} \and Alan Hastings\thanks{Department of Environmental Science and Policy, University of California Davis, 1 Shields Avenue, Davis, CA 95616 USA}}
 \begin{document}
-\begin{frontmatter}
-  \title{No early warning signals for stochastic transitions: insights from large
-         deviation theory}
-  \author[cstar]{Carl Boettiger\corref{cor1}}
-  \cortext[cor1]{Corresponding author}
-  \ead{cboettig@ucsc.edu}
-  \address[cstar]{Center for Stock Assessment Research, Department of Applied Math and Statistics, University of California, Mail Stop SOE-2, Santa Cruz, CA 95064, USA}
-  \author[esp]{Alan Hastings}
-  \address[esp]{Department of Environmental Science and Policy, University of California, Davis, CA, 95616 United States}
- \end{frontmatter}
+  
+\maketitle
 
 
 In Boettiger \& Hastings {[}1{]} we demonstrated that conditioning on
@@ -152,7 +76,7 @@ null distributions for $\tau$ statistic.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{figure/Figure1.pdf}
+\includegraphics{Figure1.pdf}
 \caption{Figure 1. Histogram shows the frequency the correlation
 statistic $\tau$ observed for each warning signal (variance,
 autocorrelation coefficient) on the large deviation samples from each
@@ -163,10 +87,10 @@ transition {[}2{]}. The OU model uses $\alpha = 5$, $\sigma=3.5$,
 $t \in (0, 10)$, 2000 replicates, 20,000 sample points each.
 Conditionally selected trajectories experiencing a deviation of at least
 -4, and analyzed the 1,500 data points prior to the threshold to
-determine a warning signal (following Reference 5).
-(\href{https://raw.github.com/cboettig/earlywarning/68f7bba05586d425f1bbfcdb1fe66f0597a3d35b/inst/doc/Figure1.Rmd}{link
-to code},
-\href{https://raw.github.com/cboettig/earlywarning/68f7bba05586d425f1bbfcdb1fe66f0597a3d35b/inst/doc/Figure1.csv}{data}}
+determine a warning signal (following Reference 5). (Code at:
+https://raw.github.com/cboettig/earlywarning/resubmission/inst/doc/Figure1.Rmd,
+data at:
+https://raw.github.com/cboettig/earlywarning/resubmission/inst/doc/Figure1.csv}
 \end{figure}
 
 We find (Figure 1) that $\tau$ is significantly skewed towards positive
