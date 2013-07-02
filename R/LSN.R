@@ -11,6 +11,7 @@
 #' @return a list with values Ex, the expected x value, and 
 #' Vx, the expected variance
 #' @keywords internal
+#' @import deSolve
 LSN <- function(Xo, to, t1, pars){
 
   R <- function(t, pars){pars[1] + pars[2]*t }

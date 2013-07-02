@@ -12,7 +12,7 @@ Description: Tools for the detection of early warning signals of critical
 License: CC0
 URL: https://github.com/cboettig/earlywarning
 Imports:
-    odesolve,
+    deSolve,
     psych,
     reshape2,
     plyr

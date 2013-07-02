@@ -10,7 +10,7 @@ Installation
 #### Requirements
 
 * R (>= 2.15)
-* R packages: `devtools,` `ggplot2`, `odesolve`, `reshape2`, `psych`, and `plyr`
+* R packages: `devtools,` `ggplot2`, `deSolve`, `reshape2`, `psych`, and `plyr`
 * Install the package for generating the simulations
 
 ```r

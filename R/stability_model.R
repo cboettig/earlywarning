@@ -13,7 +13,7 @@
 #' and a convergence indicator
 #' @details depends on the gauss class of functions and the model 
 #' definitions LSN and constOU.  
-#' @import odesolve
+#' @import deSolve
 #' @export
 stability_model <- function(X, model=c("LSN", "OU"), p = NULL, ..., 
                             store_data=TRUE){
