@@ -13,7 +13,7 @@ License: BSD
 URL: https://github.com/cboettig/earlywarning
 Imports:
 		methods,
-    odesolve,
+    deSolve,
     psych,
     reshape2,
     plyr
