@@ -37,7 +37,7 @@ LSN <- function(Xo, to, t1, pars){
 		times <- matrix(c(to, t1), nrow=length(to))
 		out <- lapply(1:length(Xo), function(i){
 			lsoda(y=c(xhat=Xo[i], sigma2=0), times=times[i,], func=moments, 
-			      parms=pars, jac=jacfn) 
+			      parms=pars, jacfunc=jacfn) 
 		})
 		Ex <- sapply(1:length(Xo), function(i) out[[i]][2,2]) # times are in rows, cols are time, par1, par2
 		Vx <- sapply(1:length(Xo), function(i) out[[i]][2,3])
