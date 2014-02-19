@@ -1,8 +1,17 @@
 library(earlywarning)
 data(chemostat)
 X <- data.frame(as.numeric(time(chemostat)), chemostat@.Data)
-logpriors <-  function(pars) sum(log(sapply(pars, dunif, min = 1e-20, max = 100)))
-#out <- lsn_mcmc(X, logpriors, inits=NULL, n = 1e4)
+
+
+
+logpriors <-  function(pars)
+  unname(dlnorm(pars[1], log(inits[1]),  10, log=TRUE) + 
+  dnorm(pars[2], inits[2],  100, log=TRUE) + 
+  log(dunif(pars[3], 0,  100)) + 
+  dlnorm(pars[4], log(inits[4]),  10, log=TRUE))
+  
+#logpriors <-  function(pars) sum(log(sapply(pars, dunif, min = 1e-20, max = 100)))
+out <- lsn_mcmc(X, logpriors, inits=NULL, n = 1e4)
   
 #' mcmc posteriors for time-dependent OU model
 #' 
@@ -47,34 +56,24 @@ lsn_mcmc <- function(X, logpriors, inits=NULL, n = 1e4){
 
 
 
-summary_lsn_mcmc <- function(gp, burnin=0, thin=1){
+summary_lsn_mcmc <- function(obj, burnin=0, thin=1){
   
-  postdist <- cbind(index=1:gp$nbatch, as.data.frame(exp(gp$batch)))
-  s <- seq(burnin+1, gp$nbatch, by=thin)
+  postdist <- cbind(index=1:obj$nbatch, as.data.frame(exp(obj$batch)))
+  s <- seq(burnin+1, obj$nbatch, by=thin)
   postdist <- postdist[s,]
-  names(postdist) <- c("index", names(gp$initial))
+  names(postdist) <- c("index", names(obj$initial))
   
   # TRACES
   df <- melt(postdist, id="index")
   traces_plot <- 
     ggplot(df) + geom_line(aes(index, value)) + 
     facet_wrap(~ variable, scale="free", ncol=1)
-  
-  
-  prior_curves <- ddply(df, "variable", function(dd){
-    grid <- seq(min(dd$value), max(dd$value), length = 100)
-    data.frame(value = grid, density = prior_fns[[dd$variable[1]]](grid))
-  })
-  
+    
   # Posteriors (easier to read than histograms)
   posteriors_plot <- ggplot(df, aes(value)) + 
     stat_density(geom="path", position="identity", alpha=0.7) +
-    geom_line(data=prior_curves, aes(x=value, y=density), col="red") + 
-    facet_wrap(~ variable, scale="free", ncol=2)
-  
-  # print(traces_plot)
-  #  print(posteriors_plot)
-  
+    facet_wrap(~ variable, scale="free", ncol=2) 
+    
   out <- list(traces_plot = traces_plot, posteriors_plot = posteriors_plot)
   invisible(out)
 }
