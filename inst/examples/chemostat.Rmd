@@ -7,7 +7,7 @@ require(earlywarning)
 require(snow)
 require(ggplot2)
 require(reshape2)
-cl <- makeCluster(20, type="MPI")
+cl <- makeCluster(4, type="SOCK")
 clusterEvalQ(cl, library(earlywarning))
 ````
 

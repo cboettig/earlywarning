@@ -7,7 +7,7 @@
 library(earlywarning)
 library(snow)
 library(methods)
-cl <- makeCluster(20, type="MPI")
+cl <- makeCluster(4, type="SOCK") # makeCluster(20, type="MPI")
 clusterEvalQ(cl, library(earlywarning))
 ````
 
