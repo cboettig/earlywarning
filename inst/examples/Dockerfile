@@ -1,4 +1,13 @@
+##
+##  Use:
+##
+##     docker run -v $(pwd):/earlywarning -w /earlywarning \
+##      --rm -it cboettig/earlywarning \
+##      Rscript -e 'rmarkdown::render("simulation.Rmd")'
+## 
+
 FROM rocker/hadleyverse
+MAINTAINER Carl Boettiger cboettig@ucsc.edu
 
 RUN apt-get update && apt-get install -y \
     libgsl0-dev \
@@ -11,8 +20,4 @@ RUN git clone https://github.com/cboettig/earlywarning.git
 RUN Rscript -e 'devtools::install("/earlywarning")'
 RUN chown -R docker:docker /earlywarning
 
-##  Use:
-##     docker run -v $(pwd):/earlywarning -w /earlywarning \
-        --rm -it cboettig/earlywarning \
-        Rscript -e 'rmarkdown::render("simulation.Rmd")'
 
