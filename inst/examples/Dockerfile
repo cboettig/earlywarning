@@ -1,10 +1,10 @@
 ##
 ##  Use:
 ##
-##     docker run -v $(pwd):/earlywarning -w /earlywarning \
-##      --rm -it cboettig/earlywarning \
+##    docker run -w /earlywarning --rm -it \
+##      --name earlywarning cboettig/earlywarning \
 ##      Rscript -e 'rmarkdown::render("simulation.Rmd")'
-## 
+##    docker copy earlywarning:/earlywarning/simulation.md .
 
 FROM rocker/hadleyverse
 MAINTAINER Carl Boettiger cboettig@ucsc.edu
