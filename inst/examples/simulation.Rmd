@@ -15,7 +15,7 @@ observed <- -2 * (logLik(A) - logLik(B))
 ````
 
 ```{r }
-reps <- lapply(cl, 1:500, function(i) compare(A,B))
+reps <- lapply(1:500, function(i) compare(A,B))
 lr <- lik_ratios(reps)
 roc <- roc_data(lr)
 ````
