@@ -16,8 +16,7 @@ RUN apt-get update && apt-get install -y \
     r-cran-desolve \
     r-cran-psych \
     && installGithub.r cboettig/populationdynamics
-RUN mkdir /home/rstudio && git clone https://github.com/cboettig/earlywarning.git /home/rstudio/earlywarning
+RUN git clone https://github.com/cboettig/earlywarning.git /home/rstudio/earlywarning
 RUN Rscript -e 'devtools::install("/home/rstudio/earlywarning")'
-RUN chown -R docker:docker /home/rstudio
 
 
