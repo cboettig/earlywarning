@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/3328506.svg)](https://zenodo.org/badge/latestdoi/3328506)
+
+
 Quantifying the Detection of Early Warning Signals
 ==================================================
 
