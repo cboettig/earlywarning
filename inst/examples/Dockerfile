@@ -10,11 +10,8 @@ FROM rocker/verse:3.3.1
 MAINTAINER Carl Boettiger cboettig@ucsc.edu
 
 RUN apt-get update && apt-get install -y \
-    libgsl0-dev \
-    r-cran-snow \
-    r-cran-rmpi \
-    r-cran-desolve \
-    r-cran-psych \
+    libgsl0-dev libnlopt-dev \
+    && install2.r snow rmpi desolve psych \
     && installGithub.r cboettig/populationdynamics
 RUN git clone https://github.com/cboettig/earlywarning.git /home/rstudio/earlywarning
 RUN Rscript -e 'devtools::install("/home/rstudio/earlywarning")'
