@@ -6,7 +6,7 @@
 ##      Rscript -e 'rmarkdown::render("simulation.Rmd")'
 ##    docker cp earlywarning:/earlywarning/inst/examples/simulation.html .
 
-FROM rocker/hadleyverse
+FROM rocker/verse:3.3.1
 MAINTAINER Carl Boettiger cboettig@ucsc.edu
 
 RUN apt-get update && apt-get install -y \
